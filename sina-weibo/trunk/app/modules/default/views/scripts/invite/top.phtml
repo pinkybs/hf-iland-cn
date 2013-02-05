@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>邀请朋友 - 快乐岛主</title>
+<link href="{%$staticUrl%}/apps/island/css_2011041102.css?v=1.01" rel="stylesheet" type="text/css" />
+<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/js/jquery.flashSlider-1.0.min.js" type="text/javascript"></script>
+<style type="text/css">
+<!--
+a img,:link img,:visited img {
+	border: 0 none;
+}
+-->
+</style>
+</head>
+<body>
+    <div class="main">
+    {%include file="menu.phtml"%}
+        <div id="main_content" class="content" style="height:820px;padding-top:2px;">
+       	<div id="invite_award">
+           <table width="748" border="0" cellspacing="0" cellpadding="0">
+            	<tr>
+            		<td height="39" colspan="5" background="{%$staticUrl%}/apps/island/images/invite/bg_01.gif">
+            		<table width="100" border="0" align="right" cellpadding="0" cellspacing="0">
+            			<tr>
+            				<td><a href="http://game.weibo.com/{%$smarty.const.APP_NAME%}/" target="_top">返回游戏&gt;&gt;</a></td>
+            			</tr>
+            		</table>
+            		</td>
+            	</tr>
+            	<tr>
+            		<td height="355" width="43" background="{%$staticUrl%}/apps/island/images/invite/bg_02.gif"></td>
+            		<td height="355" width="191" background="{%$staticUrl%}/apps/island/images/invite/{%$epath%}bg_013.gif"></td>
+            		<td height="355" width="315" background="{%$staticUrl%}/apps/island/images/invite/{%$epath%}bg_14.gif"></td>
+            		<td height="355" width="157" background="{%$staticUrl%}/apps/island/images/invite/{%$epath%}bg_15.gif"></td>
+            		<td height="355" width="42" background="{%$staticUrl%}/apps/island/images/invite/bg_06.gif"></td>
+            	</tr>
+            	<tr>
+            		<td height="34" width="43" background="{%$staticUrl%}/apps/island/images/invite/bg_07.gif"></td>
+            		<td colspan="3" bgcolor="#E5F6FD" align="center">
+            			<a href="#" onclick="show();"><img src="{%$staticUrl%}/apps/island/images/invite/btnInvite.gif" alt="邀请好友" width="129" height="33" border="0" /></a>
+            		</td>
+            		<td height="34" width="42" background="{%$staticUrl%}/apps/island/images/invite/bg_12.gif"></td>
+            	</tr>
+            	<tr>
+            		<td height="37" colspan="5" background="{%$staticUrl%}/apps/island/images/invite/bg_13.gif"></td>
+            	</tr>
+            </table>
+{% if $platformUid == 2138401295 %}
+<a href="{%$hostUrl%}/test/achieve">test achieve</a><br/>
+<a href="{%$hostUrl%}/test/rank">test rank</a><br/>
+<a href="{%$hostUrl%}/test/follow">test follow</a><br/>
+<a href="{%$hostUrl%}/test/sendn">test send notice</a><br/>
+<a href="{%$hostUrl%}/test/isfan">test is fan</a><br/>
+<a href="{%$hostUrl%}/pay/top">test payment</a><br/>
+{% /if %}
+            </div>
+        </div>
+    </div>
+
+<div id="selFriend" style="position:absolute;left:0px;top:150px;width:750px;height:500px;">
+<div style="float:right"><a href="#" onclick="show();">关闭</a>&nbsp;&nbsp;</div>
+{% if $smarty.const.APP_ID==1142074347 %}
+<!-- test -->
+<iframe src="http://game.weibo.com/center/widget/selector?&target=top&appId=1142074347&mode=naf&action=http%3A%2F%2Fweibo-t1.happyfish001.com%2Finvite%2Fsend&type=post&excludeIds=&pageSize=20&content=%E9%82%80%E8%AF%B7%E5%A5%BD%E5%8F%8B%E4%B8%80%E8%B5%B7%E6%9D%A5%E7%8E%A9%E5%90%A7&inviteType=game" width="100%" height="500px" frameborder="no"></iframe>
+{% else %}
+<!-- real -->
+<iframe src="http://game.weibo.com/home/widget/selector?&target=top&appId=401380203&mode=naf&action=http%3A%2F%2Ft.happyfishgame.com.cn%2Finvite%2Fsend&type=post&excludeIds=&pageSize=20&content=%E8%B7%9F%E6%88%91%E4%B8%80%E8%B5%B7%E6%9D%A5%E7%8E%A9%E5%90%A7%EF%BC%81&callback=http%3A%2F%2Fgame.weibo.com%2Fhappyisland%2F" width="100%" height="500px" frameborder="no"></iframe>
+{% /if %}
+</div>
+
+{%include file="cmscript.phtml"%}
+<script type="text/javascript">
+function show()
+{
+	if (document.getElementById('selFriend').style.display=='block') {
+		document.getElementById('selFriend').style.display='none';
+		document.getElementById('main_content').style.display='block';
+	}
+	else {
+		document.getElementById('selFriend').style.display='block';
+		document.getElementById('main_content').style.display='none';
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<div><iframe width="750" height="160" frameborder="0" scrolling="no" src="{%$staticUrl%}/html/b/index.html?v=2011070701"></iframe></div>
+
+<div style="width:750px;align:center;text-align:center;font-weight:bold;">
+    <div>【快乐岛主】应用由上海乐鱼数码提供，若您在游戏中遇到问题，请<a href="http://q.weibo.com/472308" target="_blank">点击这里</a>，或者联系乐乐：<a href="http://weibo.com/2155826421" target="_blank">@快乐岛主乐乐</a>&nbsp;Tel:021-61219899</div>
+    <div style="text-align: center;  margin-top:5px;">工作时间：9:00-21:00</div>
+    <div style="color:#3b5998;padding-top:2px;padding-bottom:12px;"><a href="javascript:addFavor();"><img src="{%$staticUrl%}/apps/island/images/common/favorite.png" style="top:6px;position:relative;padding-right:8px;" /></a>小岛门牌号: {%$uid%}<span id="userinfo" style="color:red;"></span></div>
+</div>
+<div id="extfrmRank" style="width:760px;align:center;text-align:center;">
+</div>
+{%include file="cmscript.phtml"%}
+<script type="text/javascript">
+	var _hfconfig = {
+        appUrl:"http://game.weibo.com/{%$smarty.const.APP_NAME%}",
+        appId:"{%$appId%}",
+        appKey:"{%$appKey%}",
+        userId:"{%$uid%}",
+		platformUid:"{%$platformUid%}",
+		staticUrl:"{%$staticUrl%}",
+        inviteCallbackUrl:"{%$hostUrl%}/callback/invite",
+        freegiftLink:"",
+        gameMode:"opaque"
+    };
+
+    function sendNormalFeed()
+	{
+		var feedSettings = new Object();
+		feedSettings.text = '阳光？沙滩？美女？帅哥！尽在快乐岛主！赶快加入吧~';
+		feedSettings.img = '{%$staticUrl%}/apps/island/images/feed/join.gif';
+		feedSettings.linktext = '开始游戏';
+		feedSettings.templateContent = '快来一起玩吧~';
+    	HFApp.feed(feedSettings);
+    	return;
+	}
+
+	function sendFeed(feed)
+	{
+		if (FIRST_LOGIN == '1') {
+			return;
+		}
+		var feedSettings = $.parseJSON(feed);
+
+		HFApp.feed(feedSettings);
+	}
+
+	function sendAchieve(achvId)
+	{
+		//alert(achvId);
+		//var wbAchieve = [];
+		//HFApp.achieve(achvId);
+		return;
+	}
+
+	function sendStromFeed()
+    {
+		if (FIRST_LOGIN == '1') {
+			return;
+		}
+
+		var ajaxurl = "{%$hostUrl%}/event/sendstromfeed";
+		$.ajax({
+			   type: "post",
+			   url: ajaxurl,
+			   dataType: "text",
+			   success: function(msg){
+					sendFeed(msg);
+			   }
+		});
+    }
+
+	function sendTeamBuyFeed()
+    {
+		if (FIRST_LOGIN == '1') {
+			return;
+		}
+		var ajaxurl = "{%$hostUrl%}/event/sendteambuyfeed";
+		$.ajax({
+			   type: "post",
+			   url: ajaxurl,
+			   dataType: "text",
+			   success: function(msg){
+					sendFeed(msg);
+			   }
+		});
+    }
+
+	function sendUserLevelUpFeed(flag)
+	{
+		if (FIRST_LOGIN == '1') {
+			return;
+		}
+
+		var feedSettings = new Object();
+		if (flag == 1) {
+			feedSettings.text = '你的海岛变大了吗？看看谁的海岛更漂亮';
+			feedSettings.img = '{%$staticUrl%}/apps/island/images/feed/island_level_up.gif';
+			feedSettings.linktext = '开始游戏';
+			feedSettings.templateContent = '敢不敢比一比！';
+
+		} else {
+			feedSettings.text = '玩快乐岛主有木有？来比一比谁的级别高';
+			feedSettings.img = '{%$staticUrl%}/apps/island/images/feed/user_level_up.gif';
+			feedSettings.linktext = '开始游戏';
+			feedSettings.templateContent = '有胆你就来！';
+		}
+		HFApp.feed(feedSettings);
+	}
+
+	function sendDailyTaskFeed()
+	{
+		if (FIRST_LOGIN == '1') {
+			return;
+		}
+		var feedSettings = new Object();
+		feedSettings.text = '每日任务都完成了耶！';
+		feedSettings.img = '{%$staticUrl%}/apps/island/images/feed/daily_mission_complete.gif';
+		feedSettings.linktext = '开始游戏';
+		feedSettings.templateContent = '努力就有回报，不要羡慕我哦！';
+		HFApp.feed(feedSettings);
+	}
+
+	function addFavor()
+	{
+		var url = "http://game.weibo.com/{%$smarty.const.APP_NAME%}";
+		var title = "快乐岛主";
+		if (document.all) {
+			window.external.AddFavorite( url, title);
+		} else if (window.sidebar) {
+			window.sidebar.addPanel(title, url,"");
+		} else if (window.opera && window.print) {
+			var mbm = document.createElement('a');
+			mbm.setAttribute('rel','sidebar');
+			mbm.setAttribute('href',url);
+			mbm.setAttribute('title',title);
+			mbm.click();
+		} else {
+			alert("浏览器不支持直接加入收藏夹，请手动添加。");
+		}
+	}
+
+
+	function sendFriendHelpFeed()
+    {
+	    var feedSettings = new Object();
+	    feedSettings.text = 'TA得到超级宝箱,需要你帮忙打开';
+	    feedSettings.img = '{%$staticUrl%}/apps/island/images/feed/baoxiang.gif';
+	    feedSettings.para = 'friendhelp={% $authcodeuid %}';
+	    feedSettings.linktext = '帮帮我';
+	    feedSettings.templateContent = '快来帮帮忙~';
+	    HFApp.feed(feedSettings);
+    }
+
+	function sendGuoQingFeed()
+    {
+	    var feedSettings = new Object();
+	    feedSettings.text = '想要穿越啊，给张通行证吧！';
+	    feedSettings.img = '{%$staticUrl%}/apps/island/images/feed/guoqing.gif';
+	    feedSettings.para = 'guoqinghelp={% $authcodeuid %}';
+	    feedSettings.linktext = '帮帮我';
+	    feedSettings.templateContent = '快来帮帮忙~';
+	    HFApp.feed(feedSettings);
+    }
+    function addfans()
+    {
+    	showFanbox();
+    }
+
+	function goInvite()
+	{
+		showInvite();
+		return;
+		//location.href = '{%$hostUrl%}/invite/top';
+	}
+
+	function goPay()
+	{
+		location.href = '{%$hostUrl%}/pay/top';
+	}
+
+	function returnGift()
+	{
+		//location.href = '{%$hostUrl%}/gift/top';
+		showGift();
+		return;
+	}
+
+	function showuser(uid, name, face)
+	{
+	}
+
+	function reloadGame()
+	{
+		top.location.href = 'http://game.weibo.com/{%$smarty.const.APP_NAME%}/';
+	}
+
+	var FIRST_LOGIN = '{%$newuser%}';
+    if (FIRST_LOGIN == '1') {
+		window.setTimeout(sendNormalFeed, 5000);
+	}
+
+    window.setTimeout(function(){HFApp.resize();}, 6000);
+</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25029772-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>

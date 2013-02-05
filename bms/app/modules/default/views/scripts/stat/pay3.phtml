@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>运营充值</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 100%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;}
+td{padding:2px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<div id="searchTab" class="div7">
+		<label style="padding-left: 15px;">统计开始日期:<input type="text" value="{%$startday%}" class="DatePicker" name="startday" id="startday"></label>
+		<label style="padding-left: 15px;">统计结束日期:<input type="text" value="{%$endday%}" class="DatePicker" name="endday" id="endday"></label>
+		<input type="button" name="submit" id="submit" onclick="javascript:getContent();" value="查看" />
+	</div>
+	<div id="data_area" style="margin:10px;"></div>
+	<h3>对比：</h3>
+	<div id="searchTab2" class="div7">
+		<label style="padding-left: 15px;">统计开始日期:<input type="text" value="{%$startday2%}" class="DatePicker" name="startday2" id="startday2"></label>
+		<label style="padding-left: 15px;">统计结束日期:<input type="text" value="{%$endday2%}" class="DatePicker" name="endday2" id="endday2"></label>
+		<input type="button" name="submit2" id="submit2" onclick="javascript:getContent2();" value="查看" />
+	</div>
+	<div id="data_area2" style="margin:10px;"></div>
+
+
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function getContent()
+{
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var dt = {startday:startday, endday:endday};
+	$.get('/statapi/paymentcompare?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>充值用户类别</th><th>用户数</th><th>充值金额</th><th>平均充值金额</th><th>占充值总金额百分比</th></tr>';
+
+			var content = data.data;
+			if (content) {
+				var newuser_count = parseInt(content.newuser_count);
+				var newuser_amount = parseInt(content.newuser_amount);
+				var totaluser_count = parseInt(content.totaluser_count);
+				var totaluser_amount = parseInt(content.totaluser_amount);
+				var olduser_count = totaluser_count - newuser_count;
+				var olduser_amount = totaluser_amount - newuser_amount;
+    			html += '<tr><td>新增充值用户</td>'
+    				  + '<td>' + newuser_count + '</td>'
+    				  + '<td>' + newuser_amount + '</td>'
+    				  + '<td>' + Math.round(newuser_amount*100.0/newuser_count)/100 + '</td>'
+    				  + '<td>' + Math.round(newuser_amount*10000.0/totaluser_amount)/100 + '%</td></tr>'
+    				  + '<tr><td>老充值用户</td>'
+    				  + '<td>' + olduser_count + '</td>'
+    				  + '<td>' + olduser_amount + '</td>'
+    				  + '<td>' + Math.round(olduser_amount*100.0/olduser_count)/100 + '</td>'
+    				  + '<td>' + Math.round(olduser_amount*10000.0/totaluser_amount)/100 + '%</td></tr>'
+    				  + '<tr><td>总充值用户</td>'
+    				  + '<td>' + totaluser_count + '</td>'
+    				  + '<td>' + totaluser_amount + '</td>'
+    				  + '<td>' + Math.round(totaluser_amount*100.0/totaluser_count)/100 + '</td>'
+    				  + '<td>100%</td></tr>';
+			}
+
+			html += '</table>';
+			$('#data_area').html(html);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+function getContent2()
+{
+	var startday = $("#startday2").val();
+	var endday = $("#endday2").val();
+	var dt = {startday:startday, endday:endday};
+	$.get('/statapi/paymentcompare?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>充值用户类别</th><th>用户数</th><th>充值金额</th><th>平均充值金额</th><th>占充值总金额百分比</th></tr>';
+
+			var content = data.data;
+			if (content) {
+				var newuser_count = parseInt(content.newuser_count);
+				var newuser_amount = parseInt(content.newuser_amount);
+				var totaluser_count = parseInt(content.totaluser_count);
+				var totaluser_amount = parseInt(content.totaluser_amount);
+				var olduser_count = totaluser_count - newuser_count;
+				var olduser_amount = totaluser_amount - newuser_amount;
+    			html += '<tr><td>新增充值用户</td>'
+    				  + '<td>' + newuser_count + '</td>'
+    				  + '<td>' + newuser_amount + '</td>'
+    				  + '<td>' + Math.round(newuser_amount*100.0/newuser_count)/100 + '</td>'
+    				  + '<td>' + Math.round(newuser_amount*10000.0/totaluser_amount)/100 + '%</td></tr>'
+    				  + '<tr><td>老充值用户</td>'
+    				  + '<td>' + olduser_count + '</td>'
+    				  + '<td>' + olduser_amount + '</td>'
+    				  + '<td>' + Math.round(olduser_amount*100.0/olduser_count)/100 + '</td>'
+    				  + '<td>' + Math.round(olduser_amount*10000.0/totaluser_amount)/100 + '%</td></tr>'
+    				  + '<tr><td>总充值用户</td>'
+    				  + '<td>' + totaluser_count + '</td>'
+    				  + '<td>' + totaluser_amount + '</td>'
+    				  + '<td>' + Math.round(totaluser_amount*100.0/totaluser_count)/100 + '</td>'
+    				  + '<td>100%</td></tr>';
+			}
+
+			html += '</table>';
+			$('#data_area2').html(html);
+		} else {
+			$('#data_area2').html('获取数据失败');
+		}
+	}, "json");
+}
+
+
+</script>
+</body>
+</html>

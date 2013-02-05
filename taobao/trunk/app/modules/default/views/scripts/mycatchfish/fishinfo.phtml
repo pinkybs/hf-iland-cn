@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>捕鱼后台</title>
+<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div>
+	<table align=center>
+		<tr>
+			<td><a href="{%$hostUrl%}/mycatchfish/fishinfo">修改鱼信息</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/probability">修改鱼捕获概率</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/relicplant">修改遗迹建筑</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/stat">查看统计</a>&nbsp;&nbsp;&nbsp;</td>
+		</tr>
+	</table>
+	</div>
+	<br><br>
+	<div>	
+		<form action="{%$hostUrl%}/mycatchfish/fishinfo" method="get">
+		<table align=center>
+			<tr>
+				<td>请输入鱼ID:</td>
+				<td><input type="text" name="fishid" value="{%$fishid%}"></td>
+				<td><input type="submit" name="search" value="查询"></td>
+			</tr>
+		</table>
+		<input type="hidden" name="act" value="search">
+		</form>
+		<table align=center>
+			<tr>
+				<td height=30>&nbsp;</td>
+			</tr>
+		</table>
+		{% if $fishinfo.fishid>=1 %}	
+		<form action="{%$hostUrl%}/mycatchfish/fishinfo" method="post" target="tgIframe">		
+		  <table border=0 width=75% align=center>
+		  	<tr>
+		  		<td width=10% align=left><b>ID</b></td>
+		  		<td>{%$fishinfo.fishid%}</td>
+		  	</tr>
+		  	<tr>
+		  		<td width=10% align=left><b>所在海图</b></td>
+		  		<td>{%$fishinfo.map%}</td>
+		  	</tr>
+			<tr>
+				<td width=10% align=left><b>名称</b></td>
+				<td><input type="text" name="name" value="{%$fishinfo.name%}" style="width:150px;"></td>
+			</tr>
+			<tr>
+				<td width=10% align=left><b>是否为垃圾</b></td>
+				<td>
+				<select name="isfish" style="width:100px;">
+					<option value="0" {% if $fishinfo.isfish==0%} selected {%/if%} >是</option>
+					<option value="1" {% if $fishinfo.isfish==1%} selected {%/if%} >否</option>
+				</select>				
+				</td>
+			</tr>			
+			<tr>
+				<td width=10% align=left><b>出现岛屿</b></td>
+				<td><input type="text" name="islandids" value="{%$fishinfo.islandids%}" style="width:150px;" id="islandids">如在第一个岛屿出现则1,如在第一和第二出现则1,2, 以此类推</td>
+			</tr>
+			<tr>
+				<td width=10% align=left><b>是否为任务鱼</b></td>
+				<td>
+				<select name="istask" style="width:100px;">
+					<option value="0" {% if $fishinfo.istask==0%} selected {%/if%} >否</option>
+					<option value="1" {% if $fishinfo.istask==1%} selected {%/if%} >是</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+			<td width=10% align=left><b>奖励类型</b></td>
+			<td>
+			<select name="type" style="width:100px;">
+				<option value="0" {% if $fishinfo.type==0%} selected {%/if%} >无奖励</option>
+				<option value="1" {% if $fishinfo.type==1%} selected {%/if%} >建筑</option>
+				<option value="2" {% if $fishinfo.type==2%} selected {%/if%} >金币</option>
+				<option value="3" {% if $fishinfo.type==3%} selected {%/if%} >宝石</option>
+				<option value="4" {% if $fishinfo.type==4%} selected {%/if%} >道具(卡片等)</option>
+	
+			</select>
+			</td>
+			</tr>
+			<tr>
+				<td width=10% align=left><b>建筑CID</b></td>
+				<td><input type="text" name="cid" value="{%$fishinfo.cid%}" style="width:150px;" id="cid"></td>
+			</tr>
+			<tr>
+				<td width=10% align=left><b>道具CID</b></td>
+				<td><input type="text" name="itemid" value="{%$fishinfo.itemid%}" style="width:150px;" id="itemid"></td>
+			</tr>
+			<tr>
+				<td width=10% align=left><b>建筑或道具数量</b></td>
+				<td><input type="text" name="num" value="{%$fishinfo.num%}" style="width:150px;" id="num"></td>
+			</tr>					
+			<tr>
+				<td width=10% align=left><b>金币数</b></td>
+				<td><input type="text" name="coin" value="{%$fishinfo.coin%}" style="width:150px;" id="coin"></td>
+			</tr>	
+			<tr>
+				<td width=10% align=left><b>宝石数</b></td>
+				<td><input type="text" name="gold" value="{%$fishinfo.gold%}" style="width:150px;" id="gold"></td>
+			</tr>
+			<tr>
+				<td width=10% align=left><b>捕获难度</b></td>
+				<td><input type="text" name="difficulty" value="{%$fishinfo.difficulty%}" style="width:150px;" id="difficulty"></td>
+			</tr>	
+			<tr>
+				<td width=10% align=left><b>获得奖励概率</b></td>
+				<td><input type="text" name="probability" value="{%$fishinfo.probability%}" style="width:150px;" id="probability">[如:80,70前者为大鱼炮概率,后者为小鱼炮概率]</td>
+			</tr>																
+			<tr><td align=center colspan=2><input type="submit" name="update" value="修改并更新缓存"></td></tr>
+		  </table>
+		  <input type="hidden" name="fishid" value="{%$fishinfo.fishid%}">
+		  <input type="hidden" name="act" value="update">
+		  </form>
+		  {% /if %}
+	</div>
+</body>
+<iframe name="tgIframe" id="tgIframe" style="display:none;width:0;height:0;"></iframe>
+</html>

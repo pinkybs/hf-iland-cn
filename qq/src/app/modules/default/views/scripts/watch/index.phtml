@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>欢乐海岛</title>
+<link href="{%$staticUrl%}/apps/island/main_2011041201.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+object#swfcontent {
+	display: inline;
+}
+
+.box {
+	border: 1px solid #CCCCCC;
+}
+-->
+</style>
+</head>
+<body>
+<div class="main" style="height:725px;">
+{%include file="menu.phtml"%}
+    {% if $showNotice == true %}
+	  <div class="guang">
+    	  <div class="guang_b" style="clear:both;"></div>
+	  {% foreach from=$mainNotice item=data %}
+    	  <div class="zleft guang_z ">{%if $data.link%}<a href="{%$data.link%}" target="_blank">[{%$data.create_time|date_format:"%Y-%m-%d"%}]  {%$data.title%}</a>{%else%}[{%$data.create_time|date_format:"%Y-%m-%d"%}]  {%$data.title%}{%/if%}</div>
+    	 {% /foreach %}
+</div>
+{% /if %}
+<div style="clear:both;"></div>
+	<div id="main_content">
+		<div id="loadingdiv" style="position: absolute; left: 350px; top: 250px;"><img src="{%$staticUrl%}/apps/island/images/common/loading0.gif" /><br/>加载中......</div>
+		<div id="flashdiv"></div>
+		<script src="{%$staticUrl%}/js/swfobject.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			function getCookie(name) {
+				var arr = document.cookie.match(new RegExp('(^| )'+name+'=([^;]*)(;|$)'));
+				if(arr != null) return unescape(arr[2]); return null;
+			}
+			var hf_skey = getCookie('hf_skey');
+			if (hf_skey) {
+	        	var flashVars={"ver":"11","pNum":"10","uid":"{%$uid%}","loadingUi":"{%$staticUrl%}/swf/v2.0.1/loadingUi2.swf?v=2010112501", "interfaceUrl":"{%$hostUrl%}/api/initswf?v=2011101101","snsType":"qzone","pic1":"{%$staticUrl%}/html/b/images/load01.jpg","pic2":"{%$staticUrl%}/html/b/images/load02.jpg"};
+	        	var params = { base: "{%$staticUrl%}/", allowScriptAccess: "always", menu:"false", wmode: "opaque", allowFullScreen: "true", bgcolor: "#ffffff", align: "middle", quality: "high"};
+	        	var attrs = { id: "islandLoader", name: "islandLoader" };
+	        	swfobject.embedSWF("{%$staticUrl%}/swf/v2.0.1/islandLoader.swf?v=2011041101", "flashdiv",  "748", "600", "10.0", "{%$staticUrl%}/expressInstall.swf", flashVars, params, attrs);
+	        } else {
+	        	var html = '<div style="padding-top:50px;color:red;font-size:14px;text-align:center;">检测到您的浏览器没有开启或接收Cookie！请尝试开启后，重新进入。</div>'
+	        	$('#flashdiv').html(html);
+	        }
+
+			function hideLoading()
+			{
+	        	document.getElementById('loadingdiv').style.display = "none";
+			}
+		</script>
+	</div>
+</div>
+<script type="text/javascript">
+	var VIEWER_ID = {%$uid%};
+	var OWNER_ID = VIEWER_ID;
+	function goInvite()
+	{
+		location.href = '{%$hostUrl%}/invite/top';
+	}
+
+	function goPay()
+	{
+		window.open('http://pay.qq.com/app_pay/pay.shtml?appid=610');
+		return;
+	}
+
+	function showuser(uid, name, face)
+	{
+		OWNER_ID = uid;
+		var userinfo = document.getElementById('userinfo');
+		if (userinfo) {
+			if (OWNER_ID != VIEWER_ID) {
+				userinfo.innerHTML = ' [当前好友门牌号：' + OWNER_ID + ']';
+			} else {
+				userinfo.innerHTML = '';
+			}
+		}
+	}
+	function reloadGame()
+	{
+		top.location.href = 'http://app.pengyou.qq.com/appframe.html?appid=610&height=950&frame=http%3A%2F%2Fmain.island.qzoneapp.com%2F';
+	}
+	function returnGift()
+	{
+		location.href = '{%$hostUrl%}/gift/top';
+	}
+	function goqqpay()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=mobile&aid=hlhd.op');
+	}
+	function goqqpay()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=mobile&aid=hlhd.op');
+	}
+	function goqqpayyear()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=qdqb&aid=hlhd.yop&paytime=year');
+	}
+	function goqqmonth()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=mobile&aid=hlhd.op');
+	}
+	function goqqyear()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=qdqb&aid=hlhd.yop&paytime=year');
+	}
+	function goqqyellow()
+	{
+		window.open('{%$staticUrl%}/html/hz/hz.html');
+	}
+	function gotoLuckyDraw()
+	{
+		window.open('http://qbar.qq.com/opensns/1098477.htm');
+	}
+	function sendLuckyDrawFeed()
+	{
+		var title = '快乐岛主嘉年华—IPAD等你拿哦！你还在犹豫什么？赶快来参加吧！还有更多实物奖励哦~<a href="http://qbar.qq.com/opensns/1098477.htm">【点击查看详情】</a>';
+		var picUrl = '';
+
+		shareToWb(title, picUrl);
+	}
+	function sendTeamBuyFeed()
+    {
+		var title = '参加快乐岛主大团购活动，齐心协力捡便宜啦！ 你还在犹豫什么呢？快点进入游戏参活动吧！';
+		var picUrl = 'http://imgcache.qzoneapp.com/island/apps/island/images/event/teambuy.jpg';
+
+		shareToWb(title, picUrl);
+    }
+</script>
+
+ {%include file="footer.phtml"%}

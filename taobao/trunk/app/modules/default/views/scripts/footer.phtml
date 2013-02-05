@@ -1,0 +1,102 @@
+<div style="width:750px;">
+<iframe width="750px" height="160px" frameborder="0" scrolling="no" src="{%$staticUrl%}/html/b/index.html?v=2011062201"></iframe>
+<div id="footer" style="text-align:center;font-size:12px;">小岛门牌号: {%$platformUid%} ({%$uid%}){% if $hfDev == 1 %}<span id="userinfo" style="color:red;"></span>{% /if %}</div>
+<br/><div>[快乐岛主]应用由上海乐鱼数码提供，若您在游戏中遇到问题，请联系官方旺旺客服：快乐岛主乐乐<a href="http://amos.im.alisoft.com/msg.aw?v=2&amp;uid=%E5%BF%AB%E4%B9%90%E5%B2%9B%E4%B8%BB%E4%B9%90%E4%B9%90&amp;site=cntaobao&amp;s=1&amp;charset=utf-8" target="_blank"><img alt="点击这里给我发消息" border="0" style="top:5px; position: relative;" src="http://amos.im.alisoft.com/online.aw?v=2&amp;uid=%E5%BF%AB%E4%B9%90%E5%B2%9B%E4%B8%BB%E4%B9%90%E4%B9%90&amp;site=cntaobao&amp;s=1&amp;charset=utf-8"/></a>，工作时间9:30-19:00</div>
+<div style="display:none"><a href="#" id="mnushare" onclick="shareItem(this);" data-shareparam=''></a></div>
+<input type="hidden" id="J_ShareParam" value='{"client_id":"911"}' />
+</div>
+
+    <script src="{%$staticUrl%}/js/json.js?v=1.1" type="text/javascript"></script>
+    <script src="http://img.im.alisoft.com/webim/js/website.js" type="text/javascript"  charset="utf-8"></script>
+    <script src="{%$staticUrl%}/apps/island/js/nav.js?v=1.0" type="text/javascript"></script>
+    <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
+    <script type="text/javascript">
+        try {
+        	var pageTracker = _gat._getTracker("UA-15390609-1");
+        	pageTracker._trackPageview();
+        } catch(err) {}
+
+        function trackPage(page)
+        {
+        }
+
+        var VIEWER_ID = {%$uid%};
+    	var OWNER_ID = VIEWER_ID;
+        function showuser(uid, name, face)
+    	{
+    		OWNER_ID = uid;
+    		var userinfo = document.getElementById('userinfo');
+    		if (userinfo) {
+    			if (OWNER_ID != VIEWER_ID) {
+    				userinfo.innerHTML = ' [当前好友门牌号：' + OWNER_ID + ']';
+    			} else {
+    				userinfo.innerHTML = '';
+    			}
+    		}
+    	}
+        
+        function shareItem(item){
+        	TS.require('Share', '2.0', function() {
+        	new TS.Share(item).show('');
+        	});
+        	return false;
+        }
+
+		function sendFeed(datashareparam){
+			if (datashareparam == '') {
+				var datashareparam = '{"title":"点击进入快乐岛主--来自淘宝应用中心", "linkurl":"{%$inviteUrl%}", "comment":"我正在玩快乐岛主，不坑爹，真有爱，还很萌~人多更好玩！你也加入和我一起玩吧！", "itempic":"http://tbcdn.playwhale.com/apps/island/images/lele2.jpg", "props":{"description":""}}';
+			}
+
+			$("#mnushare").attr('data-shareparam', datashareparam);
+			$("#mnushare").trigger("click");
+		}
+		
+    	function sendFishFeed()
+        {
+            var msg = '{"title":"点击进入快乐岛主--来自淘宝应用中心", "linkurl":"{%$inviteUrl%}", "comment":"亚特兰蒂斯遗迹已经开启，参加快乐岛捕鱼，就能发现线索！赶快来看看吧！", "itempic":"http://tbcdn.playwhale.com/apps/island/images/lele2.jpg", "props":{"description":""}}';
+            sendFeed(msg);
+        }
+                
+    	function returnGift()
+    	{
+    		showGift();
+    		return;
+    	}
+    	
+    	function sendTeamBuyFeed()
+        {
+            var msg = '{"title":"点击进入快乐岛主--来自淘宝应用中心", "linkurl":"{%$inviteUrl%}", "comment":"我参加了快乐岛主大团购活动，齐心协力捡便宜啦！ 你还在犹豫什么呢？快点进入游戏参活动吧！", "itempic":"http://tbcdn.playwhale.com/apps/island/images/feed/teambuy.jpg", "props":{"description":""}}';
+            sendFeed(msg);
+        }
+
+    	function sendTaojishiFeed()
+        {
+            var msg = '{"title":"点击进入快乐岛主--来自淘宝应用中心", "linkurl":"{%$inviteUrl%}", "comment":"我在快乐岛主中打开了一个神秘宝箱，你也想获得么？快点进入游戏领取吧！", "itempic":"http://tbcdn.playwhale.com/apps/island/images/feed/taojishifeed.jpg", "props":{"description":""}}';
+            sendFeed(msg);
+        }
+
+    	function pay()
+    	{
+    		window.location = "http://island.hapyfish.com/pay/top";
+    	}
+
+    	function sendStromFeed()
+    	{
+            var msg = '{"title":"点击进入快乐岛主--来自淘宝应用中心", "linkurl":"{%$inviteUrl%}", "comment":"我的小岛上突然来临“风暴”啦！朋友们快来帮帮我！讨厌的“风暴”又来了，大家快点来赶走它吧，！阳光沙滩等你来哦！", "itempic":"http://tbcdn.playwhale.com/apps/island/images/feed/flashstrom.jpg", "props":{"description":""}}';
+            sendFeed(msg);
+        }
+        
+		function inviteFriend()
+		{
+			var datashareparam = '{"title":"点击进入快乐岛主--来自淘宝应用中心", "linkurl":"{%$inviteUrl%}", "comment":"我正在玩快乐岛主，不坑爹，真有爱，还很萌~人多更好玩！你也加入和我一起玩吧！", "itempic":"http://tbcdn.playwhale.com/apps/island/images/lele2.jpg", "props":{"description":""}}';
+			sendFeed(datashareparam);
+		}
+
+		function sendOneGoldShopFeed()
+	    {
+		    console.log('OK');
+	    }
+    </script>
+	<script type="text/javascript" src="http://toptrace.taobao.com/assets/getAppKey.js" topappkey="{%$smarty.const.APP_KEY%}" defer="defer"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>小时数据统计</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 800px;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;}
+td{padding:2px 10px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+.end{background: none repeat scroll 0 0 #EAF2F5;font-weight:bold;text-align:right;}
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/ofc/js/swfobject.js" type="text/javascript"></script>
+	<div>
+		<div  id="searchTab" class="div7">
+			<label style="padding-left: 15px;">统计日期：<input type="text" value="{%$today%}" class="DatePicker" name="begtime" id="stattime"></label>
+			<input type="button" name="btnPre" id="btnPre" onclick="javascript:loadPre();" value=" 前一天 " />
+			<input type="button" name="btnNext" id="btnNext" onclick="javascript:loadNext();" value=" 后一天 " />
+		</div>
+		<!-- <div id="div_chart" class="div1">
+			<div id="chart1"></div>
+			<div style="margin:20px;"></div>
+			<div id="chart2"></div>
+		</div> -->
+	</div>
+	<div id="data_area" style="margin:10px;"></div>
+	<script type="text/javascript">
+		var chart_data_1 = '{%$chart1%}';
+		var chart_data_2 = '{%$chart2%}';
+		var swfReady = false;
+		
+		function findSWF(movieName)
+		{
+		  if (navigator.appName.indexOf("Microsoft")!= -1) {
+		    return window[movieName];
+		  } else {
+		    return document[movieName];
+		  }
+		}
+		
+		function ofc_ready()
+		{
+			swfReady = true;
+		}
+		
+		function open_flash_chart_data_1()
+		{
+		    return chart_data_1;
+		}
+		
+		function open_flash_chart_data_2()
+		{
+		    return chart_data_2;
+		}
+		
+		function showChart1()
+		{
+		  var tmp = swfobject.getObjectById('chart1');
+		  if (tmp) {
+		  	tmp.load(chart_data_1);
+		  }
+		}
+		
+		function showChart2()
+		{
+		  var tmp = swfobject.getObjectById('chart2');
+		  if (tmp) {
+		  	tmp.load(chart_data_2);
+		  }
+		}
+		
+		var params = { allowScriptAccess: "always", menu:"false", wmode: "opaque", allowFullScreen: "false", bgcolor: "#ffffff", align: "middle", quality: "high"};
+		var flashvars1 = {'get-data': 'open_flash_chart_data_1'};
+		swfobject.embedSWF("{%$staticUrl%}/ofc/open-flash-chart.swf", "chart1", "100%", "200", "9.0.0", null, flashvars1, params);
+		var flashvars2 = {'get-data': 'open_flash_chart_data_2'};
+		swfobject.embedSWF("{%$staticUrl%}/ofc/open-flash-chart.swf", "chart2", "100%", "200", "9.0.0", null, flashvars2, params);
+	</script>
+
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function getContent()
+{
+	day = $("#stattime").val();
+	var dt = {day:day};
+	$.get('/statapi/statmainhour?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = ['<table><tr><th>时间点</th><th>新安装用户</th><th>新进入用户</th><th>登录用户数</th><th>PU</th><th>付费人数</th><th>付费金额</th><th>发出宝石</th><th>充值宝石</th><th>消耗宝石</th><th>备注</th></tr>'];
+
+			var content = data.data;
+			if (content) {
+				var i,j;
+				var num = 0;
+				var time1 = '';
+				var time2 = '';
+				
+				var s_install_user = s_join_user = s_active_user = s_pay_user = s_pay_count = s_send_gold = s_pay_gold = s_consume_gold = 0;
+				var a_install_user = a_join_user = a_active_user = a_pay_user = a_pay_count = a_send_gold = a_pay_gold = a_consume_gold = 0;
+				
+				for(i in content) {
+
+					s_install_user += parseInt(content[i].install_user);
+					s_join_user += parseInt(content[i].join_user);
+					s_active_user += parseInt(content[i].active_user);
+					s_pay_user += parseInt(content[i].pay_user);
+					s_pay_count += parseInt(content[i].pay_count);
+					s_send_gold += parseInt(content[i].send_gold);
+					s_pay_gold += parseInt(content[i].pay_gold);
+					s_consume_gold += parseInt(content[i].consume_gold);
+					
+					num++;
+					
+					count1 = parseInt(content[i].add_user);
+					count2 = parseInt(content[i].active_user);
+					j = parseInt(i);
+
+					time1 = (j<10) ? '0' + j : j;
+					time2 = (j+1<10) ? '0' + (j+1) : (j+1);
+					
+	    			html.push('<tr');
+					if (i%2 ==0) {
+						html.push(' class="odd"');
+					}
+	    			html.push('><td>', time1, ':00 - ', time2, ':00', '</td>',
+	    				  '<td>', parseInt(content[i].install_user), '</td>',
+	    				  '<td>', parseInt(content[i].join_user), '</td>',
+	    				  '<td>', parseInt(content[i].active_user), '</td>',
+	    				  '<td>', parseInt(content[i].pu), '</td>',
+	    				  '<td>', parseInt(content[i].pay_user), '</td>',
+	    				  '<td>', parseInt(content[i].pay_count), '</td>',
+	    				  '<td>', parseInt(content[i].send_gold), '</td>',
+	    				  '<td>', parseInt(content[i].pay_gold), '</td>',
+	    				  '<td>', parseInt(content[i].consume_gold), '</td>',
+	    				  '<td>', content[i].memo, '</td>'
+	    				  );
+	    			html.push('</tr>');
+				}
+
+				a_install_user = Math.round(s_install_user/num);
+				a_join_user = Math.round(s_join_user/num);
+				a_active_user = Math.round(s_active_user/num);
+				a_pay_user = Math.round(s_pay_user/num);
+				a_pay_count = Math.round(s_pay_count/num);
+				a_send_gold = Math.round(s_send_gold/num);
+				a_pay_gold = Math.round(s_pay_gold/num);
+				a_consume_gold = Math.round(s_consume_gold/num);
+				
+				html.push('<tr class="end"><td>合计</td><td>', s_install_user, '</td><td>', s_join_user, '</td><td>', s_active_user, '</td><td></td><td>', s_pay_user, '</td><td>', s_pay_count, '</td><td>', s_send_gold, '</td><td>', s_pay_gold, '</td><td>', s_consume_gold, '</td><td></td></tr>');
+				html.push('<tr class="end"><td>平均</td><td>', a_install_user, '</td><td>', a_join_user, '</td><td>', a_active_user, '</td><td></td><td>', a_pay_user, '</td><td>', a_pay_count, '</td><td>', a_send_gold, '</td><td>', a_pay_gold, '</td><td>', a_consume_gold, '</td><td></td></tr>');
+			}
+
+			html.push('</table>');
+			$('#data_area').html(html.join(''));
+			
+			if (data.chart1) {
+				chart_data_1 = data.chart1;
+				showChart1();
+			}
+			if (data.chart2) {
+				chart_data_2 = data.chart2;
+				showChart2();
+			}
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+getContent();
+
+$("#stattime").change(function (){
+	getContent();
+});
+
+function loadPre()
+{
+	var stattime = $("#stattime").val();
+	var d = new Date(stattime.replace(/-/g, '/'));
+	d.setDate(d.getDate()-1);
+	$("#stattime").val(d.format('Y-m-d'));
+	
+	getContent();
+}
+
+function loadNext()
+{
+	var stattime = $("#stattime").val();
+	var d = new Date(stattime.replace(/-/g, '/'));
+	d.setDate(d.getDate()+1);
+	$("#stattime").val(d.format('Y-m-d'));
+	
+	getContent();
+}
+
+</script>
+</body>
+</html>

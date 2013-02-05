@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>登录 - 乐鱼数码APP管理平台</title>
+<style type="text/css">
+<!--
+
+body, input {
+font:12px Verdana,Arial,Helvetica,sans-serif;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+object#swfcontent {
+	display: inline;
+}
+
+.loginplan_bg {
+-moz-box-shadow:2px 2px 4px #DDDDDD;
+text-align:left;
+width:326px !important;
+}
+
+.rounded {
+-moz-border-radius:6px 6px 6px 6px;
+}
+
+.loginplan {
+background:none repeat scroll 0 0 #F5F8FC;
+border:1px solid #A9C4E8;
+padding:12px;
+text-align:left;
+width:300px !important;
+}
+
+.loginname {
+border-bottom:1px solid #C7C7C7;
+font:bold 14px Verdana;
+padding:4px 0 6px 2px;
+}
+
+label {
+display:block;
+float:left;
+line-height:24px;
+}
+
+label.column {
+font-size:14px;
+padding:0 0 0 2px;
+text-align:left;
+width:59px;
+}
+
+.infobar {
+clear:both;
+margin:6px 0 0;
+}
+
+.error {
+color:#FF0000;
+}
+
+.wrap {
+    margin: 100px auto;
+    width: 328px;
+}
+
+-->
+</style>
+</head>
+<body>
+<div class="wrap">
+<form action="/index/login" method="post" name="form1">
+<div class="loginplan_bg rounded">
+	<div class="loginplan rounded">
+		<div class="loginname">登录乐鱼数码APP管理平台</div>
+		<div style="margin: 5px 0pt; padding: 4px 0pt 0pt 2px;">
+			<div id="msgContainer">
+				{%if $errtype == 1%}
+				<div id="errorNamePassowrd" class="infobar error">您填写的帐号或密码不正确，请再次尝试。</div>
+				{%/if%}
+			</div>
+		</div>
+		<div style="height: 25px;">
+			<label class="column" for="uin">帐　号：</label>
+			<input type="text" class="text" style="ime-mode: disabled;" tabindex="1" name="uin" id="uin">
+		</div>
+		<div style="height: 25px; margin: 8px 0pt 0pt; clear: left; position: relative;">
+			<label class="column" for="pwd">密　码：</label>
+			<input type="password" class="text" tabindex="2" value="" name="pwd" id="pwd">
+		</div>
+		<div style="padding: 12px 0pt 0pt 61px; clear: both; height: 27px ! important;">
+			<input type="submit" tabindex="4" name="btlogin" id="btlogin" value="登 录" style="font: bold 12px Verdana;">
+		</div>
+	</div>
+</div>
+</form>
+</div>
+</body>
+</html>

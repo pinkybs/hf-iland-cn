@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>快乐岛主</title>
+<link href="{%$staticUrl%}/apps/island/main_2011041101.css?v=1.01" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+body{
+	overflow-x:hidden;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+object#swfcontent {
+	display: inline;
+}
+
+.box {
+	border: 1px solid #CCCCCC;
+}
+-->
+</style>
+</head>
+<body>
+<div class="main" style="height:857px;">
+{%include file="menu.phtml"%}
+<!-- <div style="display:block;float:right; width:118px;height:26px;"></div> -->
+<!-- <iframe src="http://www.connect.renren.com/like?url=http%3A%2F%2Fpage%2Erenren%2Ecom%2Frrisland" style="width:135px;height:25px;" scrolling="no" frameborder="0" allowTransparency="true"></iframe> -->
+<div style="clear:both;"></div>
+	<div id="main_content">
+		<div id="loadingdiv" style="position: absolute; left: 350px; top: 250px;"><img src="{%$staticUrl%}/apps/island/images/common/loading0.gif" /><br/>加载中......</div>
+		<div id="flashdiv"></div>
+		<script src="{%$staticUrl%}/js/swfobject.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			var VIEWER_ID = {%$uid%};
+			var OWNER_ID = VIEWER_ID;
+			var FIRST_LOGIN = {%$newuser%};
+
+			function getCookie(name) {
+				var arr = document.cookie.match(new RegExp('(^| )'+name+'=([^;]*)(;|$)'));
+				if(arr != null) return unescape(arr[2]); return null;
+			}
+			var hf_skey = getCookie('hf_skey');
+			if (hf_skey) {
+	        	var flashVars={"ver":"4","pNum":"10","uid":"{%$uid%}","loadingUi":"{%$staticUrl%}/swf/loadingUi2.swf?v=2011040701", "interfaceUrl":"{%$hostUrl%}/api/initswf?v=2011102501","snsType":"renren","charge":"1"};
+	        	var params = { base: "{%$staticUrl%}/", allowScriptAccess: "always", menu:"false", wmode: "opaque", allowFullScreen: "true", bgcolor: "#ffffff", align: "middle", quality: "high"};
+	        	var attrs = { id: "islandLoader", name: "islandLoader" };
+	        	swfobject.embedSWF("{%$staticUrl%}/swf/islandLoader.swf?v=2011040701", "flashdiv",  "748", "600", "10.0", "{%$staticUrl%}/expressInstall.swf", flashVars, params, attrs);
+	        } else {
+	        	var html = '<div style="padding-top:50px;color:red;font-size:14px;text-align:center;">检测到您的浏览器没有开启或接收Cookie！请尝试开启后，重新进入。</div>'
+	        	$('#flashdiv').html(html);
+	        }
+
+	        function hideLoading()
+	        {
+	        	$('#loadingdiv').hide();
+	        	if (FIRST_LOGIN) {
+	        		sendNormalFeed();
+	        	}
+	        }
+
+	    	function addfans()
+	    	{
+	    		document.getElementById('fanbox').style.display='block';
+	    		document.getElementById('addfans').style.display='block';
+	    	}
+	    	
+	    	function colsefans()
+	    	{
+	    		document.getElementById('fanbox').style.display='none';
+	    		document.getElementById('addfans').style.display='none';
+	    	}
+	    	function reloadiframe()
+	    	{
+				location.reload();
+			}
+		</script>
+		{% if $hfDev!=1 %}
+		<div id="fanbox" style=" position:absolute; display:none; top:174px;  background-color:#000000;  filter:alpha(opacity=50);  opacity:0.5;  width:748px; height:600px;"></div>
+			<div id="addfans"  style="position:absolute; display:none; top:305px; left:180px; width:395px; height:109px;overflow:hidden; background-image:url('{%$staticUrl%}/apps/island/images/guanzhu-bg_03.gif');">
+		  			<div align="right" style="width:390px; height:27px; padding-top:3px; padding-left:10px;">
+		  				<a onclick="colsefans();"><img src="{%$staticUrl%}/apps/island/images/guanzhu-x.gif" border="0" /></a>
+		  			</div>
+		  			<div style="height:72px; overflow:hidden; width:390px;padding-top:3px; padding-left:3px;">
+		  				<iframe scrolling="no" frameborder="0" src="http://widget.renren.com/fanBoxWidget?appId=94949&pageImg=true&pageName=true&pageFriend=false&characterColor=%23333333&linkColor=%23005EAC&borderColor=%23D3D5D6&mainBackground=%23F0F5F8&subBackground=%23F0F5F8&desc=%E6%88%90%E4%B8%BA%E5%85%B3%E6%B3%A8%E7%9D%80%EF%BC%8C%E8%8E%B7%E5%BE%97%E5%BF%AB%E4%B9%90%E5%A4%A7%E7%A4%BC%E5%8C%85%EF%BC%81" style="width: 390px;height: 80px;"></iframe>
+				</div>
+			</div>
+		{% /if %}
+	</div>
+</div>
+
+{%include file="footer.phtml"%}

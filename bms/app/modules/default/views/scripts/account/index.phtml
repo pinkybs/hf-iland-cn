@@ -1,0 +1,202 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>个人管理</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<style type="text/css">
+
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 800px;margin:10px 15px 10px 5px;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;padding:5px 5px;}
+td{padding:2px 5px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+
+.sys_wrapper {background:url({%$staticUrl%}/image/infocenter/bg.png) repeat-x 0 -50px #FFF;border:#C6D3F3 solid 1px;padding:10px;margin-right:10px;}
+.sys_wrapper h2{font-size:16px;font-weight:bold;margin-bottom:10px;padding-bottom:5px;border-bottom:1px #f1f1e2 solid;}
+.sys_wrapper ul li{margin:20px;float:left;}
+
+#msgboxDiv {display:none;position:absolute;}
+
+</style>
+
+<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+</head>
+<body>
+<div class="sys_wrapper">
+	<h2>个人管理</h2>
+	<ul>
+	   <li><a href="javascript:void(0)" onclick="getAccount();">帐号设置</a></li>
+	   <li><a href="javascript:void(0)" onclick="getLoginLog();">登录日志</a></li>
+	   <li><a href="javascript:void(0)" onclick="getOperationLog();">操作日志</a></li>
+	</ul>
+	<div style="clear:both;"></div>
+	<div id="data_area"></div>
+</div>
+
+<div style="display: none;"></div>
+
+<div style="width: 417px; display: none;" class="layer_global" id="msgboxDiv">
+	<div class="layer_global_main">
+		<div class="layer_global_title"><h3 id="msgboxTitle"></h3><button title="关闭" id="closeQuery" onclick="closeQuery();"><span class="none">╳</span></button></div>
+		<div class="layer_global_cont">
+			<div style="margin: 20px;" class="wrap"><span id="msgboxContent"></span></div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var platform_new_id = 1;
+var platform_row = 0;
+
+var account_new_id = 1;
+var account_row = 0;
+
+var access_new_id = 1;
+var access_row = 0;
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d H:i:s');
+}
+
+function msgbox(title, msg, x, y)
+{
+	if (!x) x = 150;
+	if (!y) y = 50;
+	$('#msgboxDiv').css({left: x, top: y});
+	$('#msgboxTitle').html(title);
+	$('#msgboxContent').html(msg);
+	$('#msgboxDiv').show();
+}
+
+function closeQuery()
+{
+	$('#msgboxDiv').hide();
+}
+
+function getAccount()
+{
+	$.get('/accountapi/getaccount', {}, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>用户ID</th><th>用户名</th><th>真实姓名</th><th>密码</th>'
+					 + '<th>创建时间</th><th></th</tr>';
+
+			var user = data.data;
+			if (user) {
+    			html += '<tr><td>' + user.uid + '</td>'
+    				  + '<td>' + user.name + '</td>'
+    				  + '<td>' + user.real_name + '</td>'
+    				  + '<td><input id="account_pwd" value="******"/></td>'
+    				  + '<td>' + timeFormat(user.create_time) + '</td>'
+    				  + '<td><a href="javascript:void(0)" onclick="updateAccount();">更新</a></td>'
+    				  + '</tr>';
+			}
+
+			html += '</table>';
+			$('#data_area').html(html);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+function updateAccount()
+{
+	var txtPwd = $('#account_pwd');
+
+	var pwd = txtPwd.val();
+	if (pwd == '******' || pwd == '') {
+		return;
+	}
+	
+	txtPwd.attr("disabled", true);
+	
+	var data = {pwd:pwd};
+	
+	$.post('/accountapi/updateaccount', data, function(data) {
+		if (data.errno == 0) {
+			var ok = data.data;
+			if (ok) {
+				msgbox('成功', '更新成功', 250, 100);
+			} else {
+				msgbox('错误', '更新失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '更新失败', 250, 100);
+		}
+		
+		txtPwd.val('******');
+		txtPwd.attr("disabled", false);
+	
+	}, "json");
+}
+
+function getLoginLog()
+{
+	$.get('/accountapi/getloginlog', {}, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>登录时间</th><th>登录IP</th>'
+					 + '</tr>';
+
+			var logs = data.data;
+			if (logs) {
+				for(var i in logs) {
+	    			html += '<tr><td>' + timeFormat(logs[i].login_time) + '</td>'
+	    				  + '<td>' + logs[i].ip + '</td>'
+	    				  + '</tr>';
+    			}
+			}
+
+			html += '</table>';
+			$('#data_area').html(html);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+function getOperationLog()
+{
+	$.get('/accountapi/getoperationlog', {}, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>操作时间</th><th>操作平台</th><th>操作内容</th>'
+					 + '</tr>';
+
+			var logs = data.data;
+			if (logs) {
+				for(var i in logs) {
+	    			html += '<tr><td>' + timeFormat(logs[i].do_time) + '</td>'
+	    				  + '<td>' + logs[i].platform + '</td>'
+	    				  + '<td>' + logs[i].content + '</td>'
+	    				  + '</tr>';
+    			}
+			}
+
+			html += '</table>';
+			$('#data_area').html(html);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+
+</script>
+</body>
+</html>

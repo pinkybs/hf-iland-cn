@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<body>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>乱说话的小宝贝，先凑合着用</title>
+<style type="text/css">
+.basic-input {
+	border: 1px solid #C9C9C9;
+	border-bottom-left-radius: 3px 3px;
+	border-bottom-right-radius: 3px 3px;
+	border-top-left-radius: 3px 3px;
+	border-top-right-radius: 3px 3px;
+	font-size: 14px;
+	height: 15px;
+	padding: 5px;
+	width: 200px;
+}
+.detail {
+	width:80%;
+}
+</style>
+</head>
+
+<div id="wrapper">
+
+	<div id="content">
+	    <!--  
+	    <h1>连续登录查询</h1>
+	    -->
+		<div class="grid-8-2 clearfix">
+	    	<div class="article">
+	    	 <span class="pl">{% if $msg %}{% $msg %}{% /if %}</span>
+				<form name="frm" method="post" action="{% $hostUrl %}/swh/sendtrumpet" >
+		       	<div style="border-bottom: 1px dashed #D4D4D4;margin:20px 0;"></div>
+			        <table>
+			        <tr>
+			        <td><strong>系统公告</strong></td>
+			        <td><textarea rows="3" cols="40" name="msg"></textarea></td>
+			        </tr>
+			        <tr>
+			        <td><strong>有效时间</strong></td>
+			        <td><input name="time" size="30" value="" type="text">
+			        </td>
+			        </tr>
+			        </table>
+			        <input type="submit" value="发送" />
+		       	</form>
+	    	</div>
+	    </div>
+	</div>
+</div>
+</body>
+</html>

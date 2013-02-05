@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>乐鱼数码APP运营管理平台</title>
+
+<link type="text/css" href="{%$staticUrl%}/style/otree.css" rel="stylesheet">
+<script src="{%$staticUrl%}/script/jquery.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/script/otree.js" type="text/javascript"></script>
+<style type="text/css">
+body{padding: 0;margin: 0;}
+.tab {font-size: 12px;}
+.tab a,.tab a:visited{color: #666;}
+.details{padding-top: 4px;}
+</style>
+<script type="text/javascript">
+var STATIC_URL = '{%$staticUrl%}';
+var treeObj_d = new oTree('treeObj_d',0);
+treeObj_d.onClick=function(id)
+{
+    if(top)
+    {
+        top.indexObj.changeNav(id);
+        var indexArr = treeObj_d.getPids(id);
+        for (var i=indexArr.length-1;i>=0;i--)
+    	{
+    	    if(treeObj_d.aNodes[indexArr[i]].dataUrl)
+    	    {
+    	        top.indexObj.currentDMenuId=indexArr[i];
+    	        break;
+    	    }
+    	}
+
+    }
+    if(treeObj_d.aNodes[id]._hc) return;
+    setPath(id);
+}
+function setPath(id)
+{
+	var indexArr = treeObj_d.getPids(id);
+	indexArr.push(id);
+	var ps = new Array();
+	ps.push('首页');
+	for (var i=0;i< indexArr.length;i++)
+	{
+	   if(typeof treeObj_d.aNodes[indexArr[i]]=='undefined')return;
+        //这里的clickTreeNode方法定义在tree.html中
+        if(typeof treeObj_d.aNodes[indexArr[i]].title=='undefined') continue;
+        ps.push('<a href="javascript:void(0)" onclick="tree.treeObj_d.toggle(' + indexArr[i] +')">' + treeObj_d.aNodes[indexArr[i]]['title'] + '</a>');
+    }
+    if(top)//父框架
+    {
+    	var path = ps.join(' - ');
+        top.window.document.getElementById('cont_general_op_path').innerHTML =  path;
+    }
+
+}
+
+{% if $accessList %}
+{% foreach from=$accessList item=data %}
+
+{% if $data.m_1 == 1 %}
+treeObj_d.add({%$data.pid*100+1 %}, {%$data.pid%}, '客服工具', '', '客服工具', 'main', '', '', false, '',0);
+	{% if $data.name == 'qq' %}
+	treeObj_d.add({%$data.pid*100+2 %}, {%$data.pid*100+1 %}, '用户信息', '/tools/qqcs?platform={%$data.name%}', '用户信息', 'main', '', '', false, '',0);
+	{% else %}
+	treeObj_d.add({%$data.pid*100+2 %}, {%$data.pid*100+1 %}, '用户信息', '/tools/cs?platform={%$data.name%}', '用户信息', 'main', '', '', false, '',0);
+	{% /if %}
+	{% if $data.name == 'alchemy_renren' || $data.name == 'alchemy_kaixin'%}
+	treeObj_d.add({%$data.pid*100+3 %}, {%$data.pid*100+1 %}, '问题反馈', '/stat/getfaq?platform={%$data.name%}', '问题反馈', 'main', '', '', false, '',0);
+	{% /if %}
+	{% /if %}
+
+{% if $data.m_2 == 1 %}
+treeObj_d.add({%$data.pid*100+11 %}, {%$data.pid%}, '运营工具', '', '运营工具', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+12 %}, {%$data.pid*100+11 %}, '公告管理', '/maintenance/notice?platform={%$data.name%}', '公告管理', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+13 %}, {%$data.pid*100+11 %}, '系统发放及补偿', '/maintenance/compensation?platform={%$data.name%}', '系统发放及补偿', 'main', '', '', false, '',0);
+	{% if $data.name == 'ipanda_taobao' %}
+	treeObj_d.add({%$data.pid*100+14 %}, {%$data.pid*100+11 %}, '系统通知Feed发送', '/maintenance/feed?platform={%$data.name%}', '系统通知Feed发送', 'main', '', '', false, '',0);
+	{% /if %}
+	treeObj_d.add({%$data.pid*100+15 %}, {%$data.pid*100+11 %}, '充值设置管理', '/maintenance/paysetting?platform={%$data.name%}', '充值设置管理', 'main', '', '', false, '',0);
+	{% if $data.name == 'taobao' %}
+		{% if $movedataaccess == 1 %}
+			treeObj_d.add({%$data.pid*100+16 %}, {%$data.pid*100+11 %}, '用户数据迁移', '/maintenance/movedata?platform={%$data.name%}', '用户数据迁移', 'main', '', '', false, '',0);
+		{% /if %}
+	{% /if %}
+	{% if $data.name == 'alchemy_kaixin' %}
+		treeObj_d.add({%$data.pid*100+17 %}, {%$data.pid*100+11 %}, '数值比对', '/stat/contrast?platform={%$data.name%}', '数值比对', 'main', '', '', false, '',0);
+{% /if %}
+{% /if %}
+
+{% if $data.m_3 == 1 %}
+treeObj_d.add({%$data.pid*100+31 %}, {%$data.pid%}, '运维工具', '', '运维工具', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+32 %}, {%$data.pid*100+31 %}, '服务器监视信息', '/monitor/index?platform={%$data.name%}', '服务器监视信息', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+33 %}, {%$data.pid*100+31 %}, '应用信息管理', '/appadmin/changestatus?platform={%$data.name%}', '应用信息管理', 'main', '', '', false, '',0);
+	{% if $data.name == 'taobao' %}
+	treeObj_d.add({%$data.pid*100+33 %}, {%$data.pid*100+31 %}, '应用信息管理', '/appadmin/changestatus?platform={%$data.name%}', '应用信息管理', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+34 %}, {%$data.pid*100+31 %}, '自动化更新', '/monitor/update?platform={%$data.name%}', '自动化更新', 'main', '', '', false, '',0);
+    {% /if %}
+{% /if %}
+
+{% if $data.m_4 == 1 %}
+treeObj_d.add({%$data.pid*100+41 %}, {%$data.pid%}, '统计工具', '', '统计工具', 'main', '', '', false, '',0);
+	{% if $data.name == 'qq' %}
+	treeObj_d.add({%$data.pid*100+42 %}, {%$data.pid*100+41 %}, '主要内容', '/stat/main2?platform={%$data.name%}', '主要内容', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+43 %}, {%$data.pid*100+41 %}, '每日收入详细', '/stat/pay?platform={%$data.name%}', '每日收入详细', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+44 %}, {%$data.pid*100+41 %}, '收入概览', '/stat/pay2?platform={%$data.name%}', '收入概览', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+45 %}, {%$data.pid*100+41 %}, '留存率', '/stat/retention?platform={%$data.name%}', '留存率', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+46 %}, {%$data.pid*100+41 %}, '活跃用户等级分布', '/stat/activeuserlevel?platform={%$data.name%}', '活跃用户等级分布', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+47 %}, {%$data.pid*100+41 %}, '小时分布数据', '/stat/mainhour?platform={%$data.name%}', '小时分布数据', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+48 %}, {%$data.pid*100+41 %}, '月度数据', '/stat/mainmonth?platform={%$data.name%}', '月度数据', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+49 %}, {%$data.pid*100+41 %}, '新手引导', '/stat/tutorial?platform={%$data.name%}', '新手引导', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+50 %}, {%$data.pid*100+41 %}, '道具出售', '/stat/sale?platform={%$data.name%}', '道具出售', 'main', '', '', false, '',0);
+	{% elseif $data.name == 'ipanda_taobao' %}
+	treeObj_d.add({%$data.pid*100+42 %}, {%$data.pid*100+41 %}, '主要内容', '/stat/main?platform={%$data.name%}', '主要内容', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+43 %}, {%$data.pid*100+41 %}, '留存率', '/stat/retention?platform={%$data.name%}', '留存率', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+44 %}, {%$data.pid*100+41 %}, '活跃用户等级分布', '/stat/activeuserlevel?platform={%$data.name%}', '活跃用户等级分布', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+45 %}, {%$data.pid*100+41 %}, '所有用户等级分布', '/stat/alluserlevel?platform={%$data.name%}', '所有用户等级分布', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+46 %}, {%$data.pid*100+41 %}, '每日升级人数', '/stat/levelup?platform={%$data.name%}', '每日升级人数', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+47 %}, {%$data.pid*100+41 %}, '各充值额度次数分布（全程数据）', '/stat/payamount?platform={%$data.name%}', '各充值额度次数分布（全程数据）', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+48 %}, {%$data.pid*100+41 %}, '每日首次充值的等级分布（每日数据）', '/stat/payfirst?platform={%$data.name%}', '每日首次充值的等级分布（每日数据）', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+49 %}, {%$data.pid*100+41 %}, '所有等级玩家充值次数和总额（全程数据）', '/stat/payall?platform={%$data.name%}', '所有等级玩家充值次数和总额（全程数据）', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+50 %}, {%$data.pid*100+41 %}, '捐赠金额走势', '/stat/donateall?platform={%$data.name%}', '捐赠金额走势', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+51 %}, {%$data.pid*100+41 %}, '捐赠额度分布', '/stat/donatespread?platform={%$data.name%}', '每日捐赠额度分布', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+52 %}, {%$data.pid*100+41 %}, '客户端加载时间', '/stat/cloadtm?platform={%$data.name%}', '客户端加载时间', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+53 %}, {%$data.pid*100+41 %}, '平台feed数据统计', '/stat/feed?platform={%$data.name%}', '平台feed数据统计', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+54 %}, {%$data.pid*100+41 %}, '活动推广链接数据统计', '/stat/promote?platform={%$data.name%}', '活动推广链接数据统计', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+55 %}, {%$data.pid*100+41 %}, '粉丝数·熊猫问答数·新手引导', '/stat/fans?platform={%$data.name%}', '粉丝数·熊猫问答数·新手引导', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+56 %}, {%$data.pid*100+41 %}, '七天未登录用户-基础信息', '/stat/lossuserinfo?platform={%$data.name%}', '七天未登录用户-基础信息', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+57 %}, {%$data.pid*100+41 %}, '七天未登录用户-等级分布', '/stat/lossuserlevel?platform={%$data.name%}', '七天未登录用户-等级分布', 'main', '', '', false, '',0);
+	treeObj_d.add({%$data.pid*100+58 %}, {%$data.pid*100+41 %}, '七天未登录用户-爱心分布', '/stat/lossuserlove?platform={%$data.name%}', '七天未登录用户-爱心分布', 'main', '', '', false, '',0);
+	//treeObj_d.add({%$data.pid*100+59 %}, {%$data.pid*100+41 %}, '新手引导', '/stat/guide?platform={%$data.name%}', '新手引导', 'main', '', '', false, '',0);
+    //treeObj_d.add({%$data.pid*100+45 %}, {%$data.pid*100+41 %}, '小时分布数据', '/stat/mainhour?platform={%$data.name%}', '小时分布数据', 'main', '', '', false, '',0);
+	//treeObj_d.add({%$data.pid*100+46 %}, {%$data.pid*100+41 %}, '月度数据', '/stat/mainmonth?platform={%$data.name%}', '月度数据', 'main', '', '', false, '',0);
+	//treeObj_d.add({%$data.pid*100+47 %}, {%$data.pid*100+41 %}, '新手引导', '/stat/tutorial?platform={%$data.name%}', '新手引导', 'main', '', '', false, '',0);
+	//treeObj_d.add({%$data.pid*100+48 %}, {%$data.pid*100+41 %}, '运营充值', '/stat/pay3?platform={%$data.name%}', '运营充值', 'main', '', '', false, '',0);
+	//treeObj_d.add({%$data.pid*100+50 %}, {%$data.pid*100+41 %}, '道具出售', '/stat/sale?platform={%$data.name%}', '道具出售', 'main', '', '', false, '',0);
+	//treeObj_d.add({%$data.pid*100+51 %}, {%$data.pid*100+41 %}, '商城道具', '/stat/propsale?platform={%$data.name%}', '商城道具', 'main', '', '', false, '',0);
+    //treeObj_d.add({%$data.pid*100+52 %}, {%$data.pid*100+41 %}, '发出岛钻', '/stat/sendgold?platform={%$data.name%}', '发出岛钻', 'main', '', '', false, '',0);
+	{% elseif $data.name == 'alchemy_renren' || $data.name == 'alchemy_kaixin'%}
+    treeObj_d.add({%$data.pid*100+42 %}, {%$data.pid*100+41 %}, '主要内容', '/stat/mainalchemy?platform={%$data.name%}', '主要内容', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+43 %}, {%$data.pid*100+41 %}, '留存率', '/stat/retention?platform={%$data.name%}', '留存率', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+44 %}, {%$data.pid*100+41 %}, '活跃用户等级分布', '/stat/activeuserlevel?platform={%$data.name%}', '活跃用户等级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+45 %}, {%$data.pid*100+41 %}, '小时分布数据', '/stat/mainhour?platform={%$data.name%}', '小时分布数据', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+46 %}, {%$data.pid*100+41 %}, '小时数据统计', '/stat/statmainhour?platform={%$data.name%}', '小时统计数据', 'main', '', '', false, '',0);
+    //treeObj_d.add({%$data.pid*100+47 %}, {%$data.pid*100+41 %}, '新手引导', '/stat/tutorial?platform={%$data.name%}', '新手引导', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+49 %}, {%$data.pid*100+41 %}, '客户端加载时间', '/stat/cloadtm?platform={%$data.name%}', '客户端加载时间', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+50 %}, {%$data.pid*100+41 %}, '佣兵-主要内容', '/stat/mercenarymain?platform={%$data.name%}', '佣兵-主要内容', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+51 %}, {%$data.pid*100+41 %}, '佣兵-雇佣-各星级分布', '/stat/mercenaryrp?platform={%$data.name%}', '佣兵-雇佣-各星级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+52 %}, {%$data.pid*100+41 %}, '佣兵-雇佣-经营等级分布', '/stat/mercenaryuserlevel?platform={%$data.name%}', '佣兵-雇佣-经营等级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+53 %}, {%$data.pid*100+41 %}, '佣兵-雇佣-战斗等级分布', '/stat/mercenaryrolelevel?platform={%$data.name%}', '佣兵-雇佣-战斗等级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+54 %}, {%$data.pid*100+41 %}, '佣兵-培养-佣兵等级分布', '/stat/mercenarystrthenrolelevel?platform={%$data.name%}', '佣兵-培养-佣兵等级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+55 %}, {%$data.pid*100+41 %}, '战斗-主要内容', '/stat/fightmain?platform={%$data.name%}', '战斗-主要内容', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+56 %}, {%$data.pid*100+41 %}, '战斗-经营等级分布', '/stat/operatelevel?platform={%$data.name%}', '战斗-经营等级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+57 %}, {%$data.pid*100+41 %}, '战斗-战斗等级分布', '/stat/fightlevel?platform={%$data.name%}', '战斗-战斗等级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+58 %}, {%$data.pid*100+41 %}, '交互', '/stat/mutual?platform={%$data.name%}', '交互', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+59 %}, {%$data.pid*100+41 %}, '修理装备', '/stat/repair?platform={%$data.name%}', '修理装备', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+60 %}, {%$data.pid*100+41 %}, '订单-主要内容', '/stat/ordermain?platform={%$data.name%}', '订单-主要内容', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+61 %}, {%$data.pid*100+41 %}, '道具-使用分布', '/stat/itemuse?platform={%$data.name%}', '道具-使用分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+62 %}, {%$data.pid*100+41 %}, '商店-购买分布', '/stat/shopmain?platform={%$data.name%}', '商店-购买分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+63 %}, {%$data.pid*100+41 %}, '合成-合成物品分布', '/stat/mixmain?platform={%$data.name%}', '合成-合成物品分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+64 %}, {%$data.pid*100+41 %}, '建筑升级-主要内容', '/stat/upgrade?platform={%$data.name%}', '建筑升级主要内容', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+65 %}, {%$data.pid*100+41 %}, '建筑升级-等级分布', '/stat/upgradelevel?platform={%$data.name%}', '建筑升级-等级分布', 'main', '', '', false, '',0);
+    
+    {% else %}
+    treeObj_d.add({%$data.pid*100+42 %}, {%$data.pid*100+41 %}, '主要内容', '/stat/main?platform={%$data.name%}', '主要内容', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+43 %}, {%$data.pid*100+41 %}, '留存率', '/stat/retention?platform={%$data.name%}', '留存率', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+44 %}, {%$data.pid*100+41 %}, '活跃用户等级分布', '/stat/activeuserlevel?platform={%$data.name%}', '活跃用户等级分布', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+45 %}, {%$data.pid*100+41 %}, '小时分布数据', '/stat/mainhour?platform={%$data.name%}', '小时分布数据', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+46 %}, {%$data.pid*100+41 %}, '月度数据', '/stat/mainmonth?platform={%$data.name%}', '月度数据', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+47 %}, {%$data.pid*100+41 %}, '新手引导', '/stat/tutorial?platform={%$data.name%}', '新手引导', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+48 %}, {%$data.pid*100+41 %}, '运营充值', '/stat/pay3?platform={%$data.name%}', '运营充值', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+49 %}, {%$data.pid*100+41 %}, '客户端加载时间', '/stat/cloadtm?platform={%$data.name%}', '客户端加载时间', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+50 %}, {%$data.pid*100+41 %}, '道具出售', '/stat/sale?platform={%$data.name%}', '道具出售', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+51 %}, {%$data.pid*100+41 %}, '商城道具', '/stat/propsale?platform={%$data.name%}', '商城道具', 'main', '', '', false, '',0);
+    treeObj_d.add({%$data.pid*100+52 %}, {%$data.pid*100+41 %}, '发出岛钻', '/stat/sendgold?platform={%$data.name%}', '发出岛钻', 'main', '', '', false, '',0);
+    {% /if %}
+
+	{% if $data.name == 'fb_thailand' %}
+	treeObj_d.add({%$data.pid*100+52 %}, {%$data.pid*100+41 %}, '充值点击', '/stat/payclick?platform={%$data.name%}', '充值点击', 'main', '', '', false, '',0);
+	{% /if %}
+{% /if %}
+
+treeObj_d.add({%$data.pid%}, 0, '{%$data.title%}', '', '{%$data.title%}', 'main', '', '', false, '',-1);
+
+{% /foreach %}
+{% /if %}
+
+$(function()
+{
+    if(treeObj_d.aNodes.length==0) $('#treeDiv').html("<p style='font-size:12px;margin:10px 25px'>没有数据</p>");
+    else treeObj_d.toTree($('#treeDiv'));
+    var did=0;
+    var id=2864;
+    var mainWin = top.window.frames["main"]
+    treeObj_d.selectTo(id,did);
+    var mainUrl='0';
+    if(did !=0 && id>100000)
+    {
+        if(mainUrl==0)
+            top.window.open(treeObj_d.aNodes[id].url,'main');
+        else
+            top.window.open(mainUrl,'main');
+    }
+    setPath(2864);
+});
+
+</script>
+</head><body>
+
+<div style="position: absolute; width: 100%; height: 100%; background-color: rgb(255, 255, 255); overflow: auto;">
+<div style="margin: 2px 0px 0px -10px;" class="otree" id="treeDiv"></div>
+</div>
+</body></html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  style="overflow:hidden;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>乐鱼数码APP管理平台</title>
+<link rel="stylesheet" type="text/css" href="{%$staticUrl%}/style/ozone.css" />
+<link rel="stylesheet" type="text/css" href="{%$staticUrl%}/style/default.css?v=1.0" />
+<link rel="stylesheet" type="text/css" href="{%$staticUrl%}/style/multitab.css" />
+
+<script type="text/javascript" src="{%$staticUrl%}/script/jquery.js"></script>
+<script type="text/javascript" src="{%$staticUrl%}/script/jquery.bgiframe.js"></script>
+<script type="text/javascript" src="{%$staticUrl%}/script/jquery.cookie.js"></script>
+<script type="text/javascript" src="{%$staticUrl%}/script/jqext.js" ></script>
+
+<script type="text/javascript" src="{%$staticUrl%}/script/infocenter/common.js"></script>
+<script type="text/javascript" src="{%$staticUrl%}/script/common.js"></script>
+<script type="text/javascript" src="{%$staticUrl%}/script/index.js"></script>
+<script type="text/javascript" src="{%$staticUrl%}/script/jquery.ui.js"></script>
+<script type="text/javascript" src="{%$staticUrl%}/script/jquery.autocomplete.js"></script>
+<script type="text/javascript">
+$().ready(function(){
+    
+    if ( indexObj )
+    {
+    	indexObj.currentMenuId = 0;
+    	indexObj.treeMenuId=0;
+    	indexObj.currentAppId = 0; 
+    	setTimeout(function(){indexObj.showFunctionMenu()},1200);
+    }
+    $('#main').attr('src','/infocenter/main');
+    $('#tree').attr('src','/infocenter/tree');
+});
+
+</script>
+
+</head>
+<body>
+<div class="wrap">
+	<div id="top_wrap" class="clearfix header">
+
+	    <div id="head_wrap">
+    		<div id="logo" class="logo"></div>
+            <div class="menu_top_wrap">
+            {% if $super %}
+            <a href="/sys" target="main">系统</a>&nbsp;&nbsp;
+            {% /if %}
+            <a href="/account" target="main">帐号</a>&nbsp;&nbsp;
+            <a href="/index/logout">退出</a>
+            </div>
+
+		</div>
+	</div>
+	<div id="content_wrap" class="container">
+		<div id="content_frame_sub">
+			<iframe name="tree" id="tree" src="" scrolling="no" frameborder="0" style="width:100%"></iframe>
+		</div>
+        <div id="switch-bar" class="switch-bar"><a href="#" class="sprite" style="height:100%" ondblclick="indexObj.changeBar();return false;" title="按下左键拖动可调宽度.双击击隐藏侧边栏." ><span>双击展开/折叠侧栏</span></a></div>
+		<div id="content_frame_main">
+
+			<div id="main_hit">
+    			<div class="sprite bread" id="cont_general_op_path"></div>
+    			<div class="menu_op">
+    			</div>
+    	    </div>
+
+			<iframe name="main" id="main" src="" scrolling="auto" frameborder="0"></iframe>
+		</div>
+	</div>
+</div>
+</body>
+</html>

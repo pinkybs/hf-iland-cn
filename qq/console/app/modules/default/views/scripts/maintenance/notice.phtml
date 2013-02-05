@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>公告管理</title>
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/notice.css">
+<script src="{%$staticUrl%}/script/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+<div>
+<div><a href="javascript:void(0);" onclick="getNotice();">显示当前公告</a></div>
+<div id="current_notice_area"></div>
+</div>
+<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+<script type="text/javascript">
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d');
+}
+
+$.ajaxSetup({cache:false});
+
+function getNotice()
+{
+	var dt = {type:2};
+	$.get('/api/getnotice', dt, function(data) {
+		if (data.errno == 0) {
+			var html = '<div class="gonggao"><div class="gonggao-bt"><ul>';
+			var notice = data.notice;
+			var picNotice = notice.pic;
+			for(var i = 0; i < picNotice.length; i++) {
+				html += '<li><a href="' + picNotice[i].link + '"><img src="' + picNotice[i].title + '" alt="活动" width="126" height="24" border="0" /></a></li>';
+			}
+			html += '</ul></div><div class="gonggao-list"><ul>';
+			var mainNotice = notice.main;
+			var title = '';
+			for(var i = 0; i < mainNotice.length; i++) {
+				html += '<li>';
+				title = '[' + timeFormat(mainNotice[i].create_time) + ']  ' + mainNotice[i].title;
+				if (mainNotice[i].link != '') {
+					html += '<a href="' + mainNotice[i].link + '" target="_blank">' + title + '</a>';
+				} else {
+					html += title;
+				}
+				html += '</li>';
+			}
+			html += '</ul></div><div class="gonggao-list2"><ul>';
+			var subNotice = notice.sub;
+			for(var i = 0; i < subNotice.length; i++) {
+				html += '<li>';
+				title = '[' + subNotice[i].title + ']';
+				if (mainNotice[i].link != '') {
+					html += '<a href="' + mainNotice[i].link + '" target="_blank">' + title + '</a>';
+				} else {
+					html += title;
+				}
+				html += '</li>';
+			}
+			
+			html += '</ul></div></div>';
+			$('#current_notice_area').html(html);
+			$('#current_notice_area').show();
+		}
+	}, "json");
+}
+
+</script>
+</body>
+</html>

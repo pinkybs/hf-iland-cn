@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>收集后台</title>
+<script type="text/javascript" src="{% $staticUrl %}/js/jquery-1.4.3.min.js"></script>
+<style type="text/css">
+.basic-input {
+	border: 1px solid #C9C9C9;
+	border-bottom-left-radius: 3px 3px;
+	border-bottom-right-radius: 3px 3px;
+	border-top-left-radius: 3px 3px;
+	border-top-right-radius: 3px 3px;
+	font-size: 14px;
+	height: 15px;
+	padding: 5px;
+	width: 200px;
+}
+.detail {
+	width:80%;
+}
+</style>
+</head>
+
+<div class="top-nav">
+	<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% $hostUrl %}/operate/index"><b>返回首页</b></a>
+	<br />
+	<br />
+<div class="bd">
+	<div class="top-nav-info"></div>
+    <div class="top-nav-items"></div>
+</div>
+</div>
+<div id="wrapper">
+	<div id="content">
+		<div class="grid-8-2 clearfix">
+	    	<div class="article">
+				<form name="frm" method="post" action="{% $hostUrl %}/operate/controlswitch" >
+				 <table style="margin-bottom:20px;">
+			        <tr>
+			        <td>用户uid：<input type="text" name="uids" value="{% $switchuid %}" /></td>
+			        </tr>
+			     </table>
+			    <input type="hidden" id="switch" name="type" value="">
+				<input type="submit" onclick="document.getElementById('switch').value='close';" value="关闭" />
+				<input type="submit" onclick="document.getElementById('switch').value='open';" value="全部开启" />
+			    <span class="pl">&nbsp;&nbsp;* CID 不可重复，如果添加多个用户，用户id之间用逗号(,)隔开</span>
+		       	</form>
+		       	<div style="border-bottom: 1px dashed #D4D4D4;margin:20px 0;"></div>
+		       	<form name="frm" method="post" action="{% $hostUrl %}/operate/clearcollect" >
+				<input type="submit"  value="清除兑换记录" />
+			    <span class="pl">清除上次活动玩家的领取记录</span>
+		       	</form>
+		       	<div style="border-bottom: 1px dashed #D4D4D4;margin:20px 0;"></div>
+				<form name="frm" method="post" action="{% $hostUrl %}/operate/collectlistdo" >
+			        <table>
+			         <tr>
+			        <th>开始时间</th>
+			        <th>结束时间</th>
+			        </tr>
+			        <tr>
+			        <td><input type="text" name="start" value="{% $time.start %}" /></td>
+			        <td><input type="text" name="end" value="{% $time.end %}" /></td>
+			        </tr>
+			        </table>
+			        <table class="detail" >
+			        <tbody>
+			        <tr>
+			        <th width="25%">物品名字&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+			        <th width="25%">CID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+			        <th width="50%">Tips提示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+			        </tr>
+			        <tr>
+			        	<td><input type="text" name="names[]" value="{% $list.0.name %}" /></td>
+			        	<td><input type="text" name="cids[]" value="{% $list.0.cid %}" size="32px;" /></td>
+			        	<td><input type="text" name="tips[]" style="width:400px" value="{% $list.0.tip %}" /></td>
+			        </tr>
+			        <tr>
+			        	<td><input type="text" name="names[]" value="{% $list.1.name %}" /></td>
+			        	<td ><input type="text" name="cids[]" value="{% $list.1.cid %}" size="32px;" /></td>
+			        	<td><input type="text" name="tips[]" style="width:400px" value="{% $list.1.tip %}" /></td>
+			        </tr>
+			        <tr>
+			        	<td><input type="text" name="names[]" value="{% $list.2.name %}" /></td>
+			        	<td><input type="text" name="cids[]" value="{% $list.2.cid %}" size="32px;" /></td>
+			        	<td><input type="text" name="tips[]" style="width:400px" value="{% $list.2.tip %}" /></td>
+			        </tr>
+			        <tr>
+			        	<td><input type="text" name="names[]" value="{% $list.3.name %}" /></td>
+			        	<td><input type="text" name="cids[]" value="{% $list.3.cid %}" size="32px;" /></td>
+			        	<td><input type="text" name="tips[]" style="width:400px" value="{% $list.3.tip %}" /></td>
+			        </tr>
+			        <tr>
+			        	<td><input type="text" name="names[]" value="{% $list.4.name %}" /></td>
+			        	<td><input type="text" name="cids[]" value="{% $list.4.cid %}" size="32px;" /></td>
+			        	<td><input type="text" name="tips[]" style="width:400px" value="{% $list.4.tip %}" /></td>
+			        </tr>
+			        </tbody>
+			        </table>
+			        <br />
+			        <table class="detail" >
+			        <tbody>
+			        <tr>
+			        <th style="float:left;">奖励物品</th>
+			        </tr>
+			        <tr>
+			        	<td><b>CID：</b><input type="text" name="jiangli_id" value="{% $jiangli_id %}" /></td>
+			        </tr>
+			        </tbody>
+			        </table>
+			         <table>
+			         <tr>
+			        <th>提示：</th>
+			        <td><input type="text" name="tishi" value="{% $message.tishi %}" size="100"/></td>
+			        </tr>
+			        <tr>
+			         <th>备注：</th>
+			        <td><input type="text" name="zhu" value="{% $message.zhu %}" size="150"/></td>
+			        </tr>
+			        </table>
+			        <span class="pl">* CID不可重复,如果添加多个用户,或者物品ID，ID之间用英文逗号(,)隔开</span>
+			        &nbsp;&nbsp;&nbsp;<input type="submit" size="5" value="更新" />
+		       	</form>
+	    	</div>
+	    </div>
+	</div>
+	<div id="footer"></div>
+</div>
+</body>
+</html>

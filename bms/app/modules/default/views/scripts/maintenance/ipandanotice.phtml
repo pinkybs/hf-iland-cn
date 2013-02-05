@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>公告管理</title>
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/ipandanotice.css?v=1.0">
+<script src="{%$staticUrl%}/script/jquery.js" type="text/javascript"></script>
+<style type="">
+#notice_edit_area table {width:800px;}
+.id {width:60px; text-align:center;}
+.time {width:100px; text-align:center;}
+.title {width:300px; text-align:center;}
+.link {width:300px; text-align:center;}
+.priority {width:40px; text-align:center;}
+
+</style>
+</head>
+<body>
+<div>
+
+<div id="current_notice_area">加载正服公告数据<img src="{%$staticUrl%}/image/loading.gif" title="loading" /></div>
+<div style="margin:10px 5px 5px 15px;">
+<a href="javascript:void(0);" onclick="getNotice();">刷新[重新加载]</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="javascript:void(0);" onclick="refreshNotice();" style="color:red;">立即生效[清除缓存]</a>
+</div>
+<div id="notice_edit_area" style="margin:10px 5px 5px 15px;">
+<table>
+<tr><th width="80">编号</th><th width="100">更新时间</th><th width="300">标题</th><th width="300">连接地址</th><th width="40">权重</th><th width="100">操作</th></tr>
+<tr>
+	<td><span id="id_0" name="id" class="id"></span></td>
+	<td><span id="time_0" class="time"></span></td>
+	<td><input id="title_0" name="title" class="title" value="" /></td>
+	<td><input id="link_0" name="link" class="link" value="" /></td>
+	<td><input id="priority_0" name="priority" class="priority" value="" /></td>
+	<td><input type="button" onclick="updateNotice(0)" value="更新" /></td>
+</tr>
+<tr>
+	<td><span id="id_1" name="id" class="id"></span></td>
+	<td><span id="time_1" class="time"></span></td>
+	<td><input id="title_1" name="title" class="title" value="" /></td>
+	<td><input id="link_1" name="link" class="link" value="" /></td>
+	<td><input id="priority_1" name="priority" class="priority" value="" /></td>
+	<td><input type="button" onclick="updateNotice(1)" value="更新" /></td>
+</tr>
+<tr>
+	<td><span id="id_2" name="id" class="id" ></span></td>
+	<td><span id="time_2" class="time"></span></td>
+	<td><input id="title_2" name="title" class="title" value="" /></td>
+	<td><input id="link_2" name="link" class="link" class="link" value="" /></td>
+	<td><input id="priority_2" name="priority" class="priority" value="" /></td>
+	<td><input type="button"  onclick="updateNotice(2)" value="更新" /></td>
+</tr>
+<tr>
+	<td><span id="id_3" name="id" class="id"></span></td>
+	<td><span id="time_3" class="time"></span></td>
+	<td><input id="title_3" name="title" class="title" value="" /></td>
+	<td><input id="link_3" name="link" class="link" class="link" value="" /></td>
+	<td><input id="priority_3" name="priority" class="priority" value="" /></td>
+	<td><input type="button"  onclick="updateNotice(3)" value="更新" /></td>
+</tr>
+</table>
+</div>
+<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+<script type="text/javascript">
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d');
+}
+
+$.ajaxSetup({cache:false});
+
+function getNotice()
+{
+	$('#current_notice_area').html('加载正服公告数据<img src="{%$staticUrl%}/image/loading.gif" title="loading" />');
+	var dt = {type:2};
+	$.get('/maintenanceapi/getnotice?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = '<div class="guang"><div class="guang_b" style="clear:both;padding-top:35px;"><div style="clear:both;"></div>';
+			var notice = data.notice;
+			var mainNotice = notice.main;
+			var title = '';
+			for(var i = 0; i < mainNotice.length; i++) {
+				html += '<div class="zleft guang_z">';
+				title = '[' + timeFormat(mainNotice[i].create_time) + ']  ' + mainNotice[i].title;
+				if (mainNotice[i].link != '') {
+					html += '<a href="' + mainNotice[i].link + '" target="_blank">' + title + '</a>';
+				} else {
+					html += title;
+				}
+				html += '</div>';
+			}
+			
+			html += '</div>';
+			$('#current_notice_area').html(html);
+			$('#current_notice_area').show();
+			
+			showEdit(mainNotice);
+		}
+	}, "json");
+}
+
+function showEdit(notice)
+{
+	var i = 0;
+	for(i = 0; i < 4; i++) {
+		$('#id_' + i).html('');
+		$('#time_' + i).html('');
+		$('#title_' + i).html('');
+		$('#link_' + i).html('');
+		$('#priority_' + i).html('');
+	}
+	for(var i = 0; i < notice.length; i++) {
+		$('#id_' + i).html(notice[i].id);
+		$('#time_' + i).html(timeFormat(notice[i].create_time));
+		$('#title_' + i).val(notice[i].title);
+		$('#link_' + i).val(notice[i].link);
+		$('#priority_' + i).val(notice[i].priority);
+	}
+}
+
+function refreshNotice()
+{
+	var dt = {type:2};
+	$.get('/maintenanceapi/refreshnotice?platform={%$platform%}', dt, function(data) {
+		if(data.errno == 0){
+			alert('成功');
+		}else{
+			alert('请重试');
+		}
+		
+	}, "json");
+}
+
+
+function updateNotice(id)
+{
+	var nid = $("#id_"+id).text();
+	var title = $("#title_"+id).val();
+	var link = $("#link_"+id).val();
+	var priority = $("#priority_"+id).val();
+	var dt = {id:nid, title:title, link:link, priority:priority};
+	$.get('/maintenanceapi/updatenotice?platform={%$platform%}', dt, function(data) {
+		if(data.errno == 0){
+			alert('更新成功，十五分钟内公告会生效');
+		} else{
+			alert('请重试');
+		}
+	}, "json");
+}
+getNotice();
+
+</script>
+</body>
+</html>

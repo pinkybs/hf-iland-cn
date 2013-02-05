@@ -1,0 +1,46 @@
+
+<div id="slider">
+</div>
+
+<div class="title">
+	<div class="menu">
+        <ul style="padding-left:170px;width:700px;">
+        	<li style="width:76px;"><a href="http://game.weibo.com/{%$smarty.const.APP_NAME%}/" target="_top"><img src="{%$staticUrl%}/apps/island/images/menu/v2/home.gif" title="我的小岛" alt="我的小岛" /></a></li>
+        	<li style="width:88px;"><a id="mnuInvite" href="javascript:void(0);"><img src="{%$staticUrl%}/apps/island/images/menu/v2/invite.gif" title="邀请好友" alt="邀请好友" /></a></li>
+        	<li style="width:76px;"><a id="mnuGift" href="javascript:void(0);"><img src="{%$staticUrl%}/apps/island/images/menu/v2/gift.gif" title="赠送礼物" alt="赠送礼物" /></a></li>
+        	<li style="width:82px;padding-top:6px;"><a href="{%$hostUrl%}/pay/top" target="_blank"><img src="{%$staticUrl%}/apps/island/images/menu/v2/pay_20111208.gif" title="兑换宝石" alt="兑换宝石" /></a></li>
+        	<li style="width:68px;"><a href="http://q.weibo.com/472308" target="_blank"><img src="{%$staticUrl%}/apps/island/images/menu/v2/forum.gif" title="玩家论坛" alt="玩家论坛" /></a></li>
+        	<li style="width:68px;"><a href="{%$hostUrl%}/help/top" target="_blank"><img src="{%$staticUrl%}/apps/island/images/menu/v2/help.gif" title="帮助" alt="帮助" /></a></li>
+        </ul>
+	</div>
+</div>
+
+{% if $showNotice == true %}
+  <div class="guang">
+	  <div class="guang_b" style="clear:both;">
+	  	<div id="fanbutton" style="float:right;padding-top:5px;width:50px; height:20px;"><a id="mnuFan" href="javascript:void(0);">+加关注</a></div>
+	  </div>
+	  <div style="clear:both;"></div>
+  {% foreach from=$mainNotice item=data %}
+	  <div class="zleft guang_z">{%if $data.link%}<a href="{%$data.link%}" target="_blank">[{%$data.create_time|date_format:"%Y-%m-%d"%}]  {%$data.title%}</a>{%else%}[{%$data.create_time|date_format:"%Y-%m-%d"%}]  {%$data.title%}{%/if%}</div>
+	 {% /foreach %}
+</div>
+{% /if %}
+
+<div id="fanbox" style="clear: both; position: absolute; left: 180px; top: 100px; display: none;">
+	<div style="color:blue;position: absolute; left: 320px; top: 7px;"><a id="mnuFanCls" href="javascript:void(0);">关闭</a></div>
+	<iframe src="http://game.weibo.com/home/widget/fanBox?titleTxt=%E5%8A%A0%E5%85%B3%E6%B3%A8&isTitle=0&isPic=1&isName=1&fansRow=2&width=350px&height=310px&weiboId=2155826421" width="350px" height="310px" frameborder="no"></iframe>
+</div>
+<div id="selFriend" style="width:710px; height:670px;position:absolute;left:27px;top:150px;display:none;">
+    <div style="width:710px; height:150px; background-image:url({%$staticUrl%}/apps/island/images/invite/yaoqing01-n.gif);">
+    <a id="mnuInviteCls" href="javascript:void(0);"><div style="width:50px; height:50px; display:block; float:right;"></div></a>
+    </div>
+    <div id="divWyxFrame" style="padding-left:22px;width:710px; height:470px; background-image:url({%$staticUrl%}/apps/island/images/invite/yaoqing02-n.gif); background-repeat:repeat-y;">
+    </div>
+    <div style="width:710px; height:50px;"><img src="{%$staticUrl%}/apps/island/images/invite/yaoqing03-n.gif" /></div>
+</div>
+
+<div id="giftBox" style="width:750px; height:1000px;position:absolute;left:5px;top:150px;display:none;">
+    <div style="color:blue;position: absolute; left:720px;top:-15px;"><a id="mnuGiftCls" href="javascript:void(0);"><img src="{%$staticUrl%}/apps/island/images/common/btnClose.png" /></a></div>
+    <div id="divGiftFrame" style=""></div>
+</div>

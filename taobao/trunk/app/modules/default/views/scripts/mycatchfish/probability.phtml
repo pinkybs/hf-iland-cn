@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>捕鱼后台</title>
+</head>
+<body>
+	<div>
+	<table align=center>
+		<tr>
+			<td><a href="{%$hostUrl%}/mycatchfish/fishinfo">修改鱼信息</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/probability">修改鱼捕获概率</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/relicplant">修改遗迹建筑</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/stat">查看统计</a>&nbsp;&nbsp;&nbsp;</td>
+		</tr>
+	</table>
+	</div>
+	<br><br>
+	<div>
+		<form action="{%$hostUrl%}/mycatchfish/probability" method="get">
+		<table align=center>
+			<tr>
+				<td>请输入海岛ID:</td>
+				<td><input type="text" name="islandid" value="{%$islandid%}"></td>
+				<td><input type="submit" name="search" value="查询"></td>
+			</tr>
+		</table>
+		<input type="hidden" name="act" value="search">
+		</form>
+		<table align=center>
+			<tr>
+				<td height=50>&nbsp;<font color=red><b>{%$message%}</b></font></td>
+			</tr>
+		</table>	
+		<form action="{%$hostUrl%}/mycatchfish/probability" method="post" target="tgIframe">		
+		  <table border=1 width=70% align=center>
+		  <tr>
+		  	<td width=15% align=center><b>鱼ID(名称)</b></td>
+			<td width=10% align=center><b>鱼炮类型</b></td>
+			<td width=10% align=center><b>概率区域一</b></td>
+			<td width=10% align=center><b>概率区域二</b></td>
+			<td width=10% align=center><b>概率区域三</b></td>
+			<td width=10% align=center><b>概率熟练度</b></td>
+		  </tr>
+		  {% if $fishes %}
+		  {% foreach from=$fishes item=data %}
+		  <tr>
+		  	<td>[<font color=red>{%$data.fishid%}</font>]{%$data.name%}<input type="hidden" name="fishids[]" value="{%$data.fishid%}"><input type="hidden" name="islandids[]" value="{%$data.islandid%}"><input type="hidden" name="typeids[]" value="{%$data.type%}"></td>
+		  	
+			<td>{% if $data.type == 1%} <font color=red>大鱼炮</font> {%else%} <font color=green>小鱼炮</font> {%/if%}</td>
+			<td><input type="text" name="probability1[]" value="{%$data.probability1%}" style="width:100%"></td>
+			<td><input type="text" name="probability2[]" value="{%$data.probability2%}" style="width:100%"></td>
+			<td><input type="text" name="probability3[]" value="{%$data.probability3%}" style="width:100%"></td>
+			<td><input type="text" name="probability4[]" value="{%$data.probability4%}" style="width:100%"></td>
+		  </tr>
+		  {% /foreach %}
+		  <tr><td colspan=7 align=center height=80><input type="submit" name="update" value="修改并更新缓存"></td></tr>
+		  {% /if %}
+		  </table>
+		  <input type="hidden" name="act" value="update">
+		  <input type="hidden" name="islandid" value="{%$data.islandid%}">
+		  </form>
+	</div>
+</body>
+<iframe name="tgIframe" id="tgIframe" style="display:none;width:0;height:0;"></iframe>
+</html>

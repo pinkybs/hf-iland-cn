@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>系统发放及补偿-运营</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+div,form,dl,dt,dd,img,h1,h2,h3,h4,h5,h6,ul,ol,li,p,span,table,th,td,a{margin:0;padding:0;border:0}
+img{border:none;vertical-align:middle}
+body{font-family:"宋体",Verdana,Arial,Helvetica,sans-serif;font-size:12px}
+button{border:none;cursor:pointer;background:none;font-size:12px;text-align:center}
+
+#msgboxDiv {display:none;position:absolute;}
+
+-->
+</style>
+</head>
+<body>
+<div>
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/jquery.dragndrop.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<div id="loadItemDiv"><a href="javascript:void(0);" onclick="getItemList(0);">获取物品列表</a></div>
+	
+	<div id="item_info_area" style="display:none;">
+	<table style="width:1000px;">
+	<tr><th>门牌号：</th>
+	<td><textarea id="uid" name="uids" style="width:540px;height:100px;"></textarea></td></tr>
+	<tr style="height:30px;">
+	<th>金币：</th>
+	<td><input  id="coin" type="text" name="coin" value="" size="30" ></input></td>
+	</tr>
+	<tr style="height:30px;">
+	<th>宝石：</th>
+	<td><input id="gold" type="text" name="gold" value="" size="30" ></input></td>
+	</tr>
+	<tr style="height:30px;">
+	<th>海星：</th>
+	<td><input id="starfish" type="text" name="starfish" value="" size="30" ></input></td>
+	</tr>
+	<tr>
+	<th rowspan="2">物品：</th>
+	<td>
+		<select id="slt_type" onchange="selectType(this.value)">
+			<option value="-1">请选择类型</option >&nbsp;&nbsp;
+			<option value="1">背景</option>&nbsp;&nbsp;
+			<option value="2">装饰物</option>&nbsp;&nbsp;
+			<option value="3">设施</option>&nbsp;&nbsp;
+			<option value="4">道具卡</option>&nbsp;&nbsp;
+		</select>
+	</td>
+	</tr>
+	<tr>
+	<td><textarea id="txtSendItemList" style="width:540px;height:150px;"></textarea></td>
+	</tr>
+	<tr style="height:30px;">
+	<th>feed：</th>
+	<td><textarea id="feed" name="feed" style="width:540px;height:60px;"></textarea></td>
+	</tr>
+	</table>
+	<input type="button" value="发放" onclick="send();" id="button" style="display:none;margin:20px 300px;"/>
+	</div>
+	<div style="clear:both;"></div>
+	<div style="width:417px;position:absolute;top:230px;left:100px;display:none;" class="layer_global" id="msgboxDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle"></h3><button title="关闭" id="closeQuery" onclick="closeQuery();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="msgboxContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:230px;left:280px;display:none;" class="layer_global" id="backgroundlistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择背景和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery1();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="backgroundlistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:230px;left:280px;display:none;" class="layer_global" id="buildinglistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择装饰物和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery2();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="buildinglistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:230px;left:280px;display:none;" class="layer_global" id="plantlistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择设施和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery3();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="plantlistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:230px;left:280px;display:none;" class="layer_global" id="cardlistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择道具卡和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery4();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="cardlistContent"></span></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+var ITEM_LIST = null;
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d H:i:s');
+}
+
+function msgbox(title, msg, x, y)
+{
+	if (!x) x = 50;
+	if (!y) y = 100;
+	$('#msgboxDiv').css({left: x, top: y});
+	$('#msgboxTitle').html(title);
+	$('#msgboxContent').html(msg);
+	$('#msgboxDiv').show();
+}
+
+function closeQuery()
+{
+	$('#msgboxDiv').hide();
+}
+
+function closeQuery1()
+{
+	$('#backgroundlistDiv').hide();
+}
+function closeQuery2()
+{
+	$('#buildinglistDiv').hide();
+}
+function closeQuery3()
+{
+	$('#plantlistDiv').hide();
+}
+function closeQuery4()
+{
+	$('#cardlistDiv').hide();
+}
+
+function addItem(selectId, numId)
+{
+	var id = $('#' + selectId).val();
+	if (id == '-1') {
+		alert('请选择物品！');
+		return false;
+	}
+	
+	var num = $('#' + numId).val();
+	if (num == '') {
+		alert('请填写数量！');
+		return false;
+	}
+	
+	var checkText = $('#' + selectId).find("option:selected").text();
+	var data = $('#txtSendItemList').val();
+	var appendData = checkText + ':' + id + '*' + num + "\r\n";
+	$('#txtSendItemList').val(data + appendData);
+}
+
+$.ajaxSetup({cache:false});
+
+function getItemList(type)
+{
+	var dt = {type:type};
+	$.get('/maintenanceapi/getitemlist?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			ITEM_LIST = data;
+			var html = '';
+			if (data.backgroundlist) {
+				html = '<select id="slt_background"><option value="-1">请选择</option>';
+				for(var i in data.backgroundlist) {
+					html += '<option value="' + data.backgroundlist[i].bgid + '"';
+					if (data.backgroundlist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.backgroundlist[i].name + '[' + data.backgroundlist[i].bgid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="bg_num">&nbsp;&nbsp;<input type="button" id="btn_bg_ok" value="确定" onclick="addItem(\'slt_background\', \'bg_num\');" />';
+				$('#backgroundlistContent').html(html);
+			}
+			
+			if (data.buildinglist) {
+				html = '<select id="slt_building"><option value="-1">请选择</option>';
+				for(var i in data.buildinglist) {
+					html += '<option value="' + data.buildinglist[i].cid + '"';
+					if (data.buildinglist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.buildinglist[i].name + '[' + data.buildinglist[i].cid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="building_num">&nbsp;&nbsp;<input type="button" id="btn_building_ok" value="确定" onclick="addItem(\'slt_building\', \'building_num\');" />';
+				$('#buildinglistContent').html(html);
+			}
+			
+			if (data.plantlist) {
+				html = '<select id="slt_plant"><option value="-1">请选择</option>';
+				for(var i in data.plantlist) {
+					html += '<option value="' + data.plantlist[i].cid + '"';
+					if (data.plantlist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.plantlist[i].name + '[' + data.plantlist[i].cid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="plant_num">&nbsp;&nbsp;<input type="button" id="btn_plant_ok" value="确定" onclick="addItem(\'slt_plant\', \'plant_num\');" />';
+				$('#plantlistContent').html(html);
+			}
+			
+			if (data.cardlist) {
+				html = '<select id="slt_card"><option value="-1">请选择</option>';
+				for(var i in data.cardlist) {
+					html += '<option value="' + data.cardlist[i].cid + '"';
+					if (data.cardlist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.cardlist[i].name + '[' + data.cardlist[i].cid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="card_num">&nbsp;&nbsp;<input type="button" id="btn_card_ok" value="确定" onclick="addItem(\'slt_card\', \'card_num\');" />';
+				$('#cardlistContent').html(html);
+			}
+			
+			$('#item_info_area').show();
+			$('#button').show();
+			$('#loadItemDiv').hide();
+		} else {
+			msgbox('错误', data.errmsg, 50, 100);
+		}
+	}, "json");
+}
+
+function selectType(value)
+{
+	switch (value) {
+		case '1':
+			$('#backgroundlistDiv').show();
+			break;
+		case '2':
+			$('#buildinglistDiv').show();
+			break;
+		case '3':
+			$('#plantlistDiv').show();
+			break;
+		case '4':
+			$('#cardlistDiv').show();
+			break;
+	}
+}
+
+function send()
+{
+	var uid = $("#uid").val();
+	var feed = $("#feed").val();
+	var gold = $("#gold").val();
+	var coin = $("#coin").val();
+	var item = $("#txtSendItemList").val();
+	var starfish = $("#starfish").val();
+	var dt = {uid:uid, feed:feed, gold:gold, coin:coin, item:item, starfish:starfish};
+	$.get('/maintenanceapi/senditem?platform={%$platform%}', dt, function(data) {
+		if(data.num > 0){
+			alert('发放成功，数量为' + data.num);
+		}else{
+			alert('请检查');
+			}
+		
+		}, "json");
+}
+
+/*
+$().ready(function() {
+	$('.layer_global').Drags({
+		handler: '.layer_global_title'
+	});
+});*/
+
+</script>
+</body>
+</html>

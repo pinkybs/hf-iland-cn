@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>收入每日统计详情</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 100%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;}
+td{padding:2px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<div id="searchTab" class="div7">
+		<label style="padding-left: 15px;">统计日期:<input type="text" value="{%$today%}" class="DatePicker" name="begtime" id="stattime"></label>
+		<input type="button" name="btnPre" id="btnPre" onclick="javascript:loadPre();" value=" 前一天 " />
+		<input type="button" name="btnNext" id="btnNext" onclick="javascript:loadNext();" value=" 后一天 " />
+  	</div>
+	<div id="data_area" style="margin:10px;"></div>
+
+
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function getContent()
+{
+	var day = $("#stattime").val();
+	var dt = {day:day};
+	$.get('/statapi/pay?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th rowspan="2">日期</th><th rowspan="2">时间段</th><th rowspan="2">总收入</th><th colspan="7">校友</th><th colspan="7">Qzone平台</th></tr>'
+					 + '<tr><th>岛钻币<br/>(普通)</th><th>交易次数<br/>(普通)</th><th>岛钻币<br/>(黄钻)</th><th>交易次数<br/>(黄钻)</th><th>交易总次数</th><th>交易成功次数</th><th>交易失败次数</th>'
+					 + '<th>岛钻币<br/>(普通)</th><th>交易次数<br/>(普通)</th><th>岛钻币<br/>(黄钻)</th><th>交易次数<br/>(黄钻)</th><th>交易总次数</th><th>交易成功次数</th><th>交易失败次数</th></tr>';
+
+			var content = data.data;
+			if (content) {
+				var tl = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+				var tm,d,h,total;
+				for(var i in content) {
+					tm = new Date(content[i].hour_time * 1000);
+					d = tm.format('Y-m-d');
+					h = tm.getHours();
+					total = parseInt(content[i].normal_price_gold_count_0) + parseInt(content[i].yd_price_gold_count_0) + parseInt(content[i].normal_price_gold_count_1) + parseInt(content[i].yd_price_gold_count_1);
+					tl[0] += total;
+					tl[1] += parseInt(content[i].normal_price_gold_count_0);
+					tl[2] += parseInt(content[i].normal_price_trans_count_0);
+					tl[3] += parseInt(content[i].yd_price_gold_count_0);
+					tl[4] += parseInt(content[i].yd_price_trans_count_0);
+					tl[5] += parseInt(content[i].pay_trans_count_0);
+					tl[6] += parseInt(content[i].confirm_trans_count_0);
+					tl[7] += parseInt(content[i].cancel_trans_count_0);
+					tl[8] += parseInt(content[i].normal_price_gold_count_1);
+					tl[9] += parseInt(content[i].normal_price_trans_count_1);
+					tl[10] += parseInt(content[i].yd_price_gold_count_1);
+					tl[11] += parseInt(content[i].yd_price_trans_count_1);
+					tl[12] += parseInt(content[i].pay_trans_count_1);
+					tl[13] += parseInt(content[i].confirm_trans_count_1);
+					tl[14] += parseInt(content[i].cancel_trans_count_1);
+					
+	    			html += '<tr><td>' + d + '</td><td>' + h + ':00-' + (h+1) + ':00</td>'
+	    				  + '<td>' + (total/10) + '</td>'
+	    				  + '<td>' + content[i].normal_price_gold_count_0 + '</td>'
+	    				  + '<td>' + content[i].normal_price_trans_count_0 + '</td>'
+	    				  + '<td>' + content[i].yd_price_gold_count_0 + '</td>'
+	    				  + '<td>' + content[i].yd_price_trans_count_0 + '</td>'
+	    				  + '<td>' + content[i].pay_trans_count_0 + '</td>'
+	    				  + '<td>' + content[i].confirm_trans_count_0 + '</td>'
+	    				  + '<td>' + content[i].cancel_trans_count_0 + '</td>'
+	    				  + '<td>' + content[i].normal_price_gold_count_1 + '</td>'
+	    				  + '<td>' + content[i].normal_price_trans_count_1 + '</td>'
+	    				  + '<td>' + content[i].yd_price_gold_count_1 + '</td>'
+	    				  + '<td>' + content[i].yd_price_trans_count_1 + '</td>'
+	    				  + '<td>' + content[i].pay_trans_count_1 + '</td>'
+	    				  + '<td>' + content[i].confirm_trans_count_1 + '</td>'
+	    				  + '<td>' + content[i].cancel_trans_count_1 + '</td>'
+	    				  + '</tr>';
+				}
+				
+	    		html += '<tr class="total"><td>' + day + '</td><td>合计</td>'
+	    				  + '<td>' + (tl[0]/10) + '</td>'
+	    				  + '<td>' + tl[1] + '</td>'
+	    				  + '<td>' + tl[2] + '</td>'
+	    				  + '<td>' + tl[3] + '</td>'
+	    				  + '<td>' + tl[4] + '</td>'
+	    				  + '<td>' + tl[5] + '</td>'
+	    				  + '<td>' + tl[6] + '</td>'
+	    				  + '<td>' + tl[7] + '</td>'
+	    				  + '<td>' + tl[8] + '</td>'
+	    				  + '<td>' + tl[9] + '</td>'
+	    				  + '<td>' + tl[10] + '</td>'
+	    				  + '<td>' + tl[11] + '</td>'
+	    				  + '<td>' + tl[12] + '</td>'
+	    				  + '<td>' + tl[13] + '</td>'
+	    				  + '<td>' + tl[14] + '</td>'
+	    				  + '</tr>';
+			}
+
+			html += '</table>';
+			$('#data_area').html(html);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+getContent();
+
+$("#stattime").change(function (){
+	getContent();
+});
+
+function loadPre()
+{
+	var stattime = $("#stattime").val();
+	var d = new Date(stattime.replace(/-/g, '/'));
+	d.setDate(d.getDate()-1);
+	$("#stattime").val(d.format('Y-m-d'));
+	
+	getContent();
+}
+
+function loadNext()
+{
+	var stattime = $("#stattime").val();
+	var d = new Date(stattime.replace(/-/g, '/'));
+	d.setDate(d.getDate()+1);
+	$("#stattime").val(d.format('Y-m-d'));
+	
+	getContent();
+}
+
+</script>
+</body>
+</html>

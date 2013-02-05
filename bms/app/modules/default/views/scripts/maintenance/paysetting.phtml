@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>充值设置管理</title>
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/notice.css?v=1.0">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/script/calendar/jquery.datepick.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/script/calendar/jquery.timepicker.css">
+<script src="{%$staticUrl%}/script/jquery-1.7.min.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/script/jquery.json-2.3.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+<script src="{%$staticUrl%}/script/calendar/jquery.timepicker.js?v=20110107" type="text/javascript"></script>
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+.chongzhi {
+    float: left;
+    height: 210px;
+    margin-bottom: 10px;
+    margin-left: 100px;
+    width: 225px;
+}
+.chongzhi-ed {
+    height: 81px;
+    width: 225px;
+}
+.chongzhi-bg {
+    background-repeat: no-repeat;
+    height: 90px;
+    padding: 2px 0 0 10px;
+    width: 225px;
+}
+.chongzhi-item {
+    float: left;
+    height: 88px;
+    list-style-image: none;
+    list-style-type: none;
+    position: relative;
+    width: 53px;
+}
+.chongzhi-bt {
+    clear: both;
+    height: 40px;
+    text-align: center;
+    width: 225px;
+    padding-top: 10px;
+}
+.xian {
+    left: 36px;
+    position: absolute;
+    top: 58px;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 100%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;}
+td{padding:2px;}
+
+.id {width:60px; text-align:center;}
+.time {width:100px; text-align:center;}
+.section {width:1100px; text-align:center;}
+.section td{text-align:left;}
+.num {width:50px; text-align:center;}
+.txt {width:120px; text-align:center;}
+.end_time_d {width:80px; text-align:left;}
+.end_time_t {width:60px; text-align:left;}
+.note {width:250px; height:160px;}
+.mark {width:200px; height:60px;}
+.next_id {width:40px; text-align:center;}
+-->
+</style>
+</head>
+<body>
+<div>
+
+<div id="current_paysetting_area" style="clear:both;padding-top:0px;height:600px;width:750px;">加载正服充值设置数据<img src="{%$staticUrl%}/image/loading.gif" title="loading" /></div>
+<div style="margin:10px 5px 5px 15px;"><a href="javascript:void(0);" onclick="getPaySetting();">刷新[重新加载]</a></div>
+<div id="paysetting_edit_area" style="margin:10px 5px 5px 15px;"></div>
+<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+<script type="text/javascript">
+
+var static_host = '';
+var glob_info = null;
+
+var SECTION_NUM = {%$sectionNum%};
+var SECTION_ITEM_NUM = {%$sectionItemNum%};
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d H:i:s');
+}
+
+function timeFormatDay(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d');
+}
+
+function timeFormatTime(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('H:i:s');
+}
+
+$.ajaxSetup({cache:false});
+
+function getPaySetting()
+{
+	$('#current_paysetting_area').html('加载正服充值设置数据<img src="{%$staticUrl%}/image/loading.gif" title="loading" />');
+	var dt = {};
+	$.get('/maintenanceapi/getpaysetting?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var info = data.info;
+			glob_info = info;
+			var active_id = data.active_id;
+			static_host = data.static_host;
+			showCurrentPay(info[active_id]);
+			showEdit(info);
+		}
+	}, "json");
+}
+
+function showCurrentPay(info)
+{
+	var html = [];
+	var i = 1;
+	var j = 0;
+	var section = info['section'];
+	var itemPicName = '';
+	for(i = 1; i <= SECTION_ITEM_NUM; i++) {
+		if (section[i].open == 1) {
+			html.push('<div class="chongzhi">');
+			html.push('<div class="chongzhi-ed"><img src="', static_host, '/ipanda/image/pay/', section[i].gold.img, '" title="', section[i].gold.title, '" /></div>');
+			html.push('<div class="chongzhi-bg" style="background-image: url(', static_host, '/ipanda/image/pay/include/bg.gif);">');
+			var include = section[i].include;
+			for(j = 0; j < 4; j++) {
+				html.push('<div class="chongzhi-item">');
+				if (include[j].limit == 1) {
+					html.push('<div class="xian"><img src="', static_host, '/ipanda/image/pay/timelimit.gif" /></div>');
+				}
+				if (include[j].cid > 0 && include[j].num > 0) {
+					if (include[j].num == 1) {
+						itemPicName = include[j].cid + '.png';
+					} else {
+						itemPicName = include[j].cid + '-' + include[j].num + '.png';
+					}
+					html.push('<img src="', static_host, '/ipanda/image/pay/include/item/', itemPicName, '" />');
+				}
+				html.push('</div>');
+			}
+			html.push('</div>');
+			html.push('<div class="chongzhi-bt"><input type="image" src="', static_host, '/ipanda/image/pay/', section[i].btn.img, '" name="btnOrder', i, '" id="btnOrder', i, '" value="充值" class="orderbtn" /></div>');
+			html.push('</div>');
+		}
+	}
+	html.push('</div>');
+	html.push('<div class="clear"></div>');
+	html.push('<div class="xianshi" style="width:720px; clear:both; margin-left:40px;">');
+	html.push(info.note);
+	html.push('</div>');
+	$('#current_paysetting_area').html(html.join(''));
+	//$('#current_paysetting_area').show();
+}
+
+function renderSection(id)
+{
+	var html = [];
+	html.push('<div style="overflow-x:auto;width:1100px">');
+	html.push('<table style="width:2100px;"><tr><th width="80">编号</th><th width="1100">内容</th><th width="250">提示信息</th><th width="260">到期时间</th><th width="60">到期跳转至编号</th><th width="170">更新时间</th><th width="140">操作</th></tr>');
+	html.push('<tr>');
+	html.push('<td style="text-align:center;"><span id="id_', id, '" name="id_', id, '" class="id">', id, '</span></td>');
+	html.push('<td>');
+	html.push('<table class="section">');
+	html.push('<tr><th>ID</th><th>价格</th><th>宝石数</th><th>宝石图片名称</th><th>宝石图片说明</th><th>按钮图片名称</th><th colspan="4">附送物品</th><th>描述</th></tr>');
+	for(var j = 1; j <= SECTION_ITEM_NUM; j++) {
+		html.push('<tr>');
+		html.push('<td style="width:30px;"><span id="section_', id, '_id_', j, '">', j, '</span>');
+		if (j <= 4) {
+			html.push('<input type="checkbox" id="section_', id, '_extend_', j, '" checked="true" />');
+		} else {
+			html.push('<input type="checkbox" id="section_', id, '_extend_', j, '" onclick="extendClick(', id, ',', j, ');" />');
+		}
+		html.push('</td>');
+		html.push('<td><input id="section_', id, '_amount_', j, '" value="" class="num" /></td>');
+		html.push('<td><input id="section_', id, '_gold_num_', j, '" value="" class="num" /></td>');
+		html.push('<td><input id="section_', id, '_gold_img_', j, '" value="" class="txt" /></td>');
+		html.push('<td><input id="section_', id, '_gold_title_', j, '" value="" class="txt" /></td>');
+		html.push('<td><input id="section_', id, '_btn_img_', j, '" value="" class="txt" /></td>');
+		for(var k = 1; k <= 4; k++) {
+			html.push('<td><div id="section_', id, '_div', k, '_', j, '">CID <input id="section_', id, '_include_item', k, '_cid_', j, '" value="" class="num" /><br/>数量<input id="section_', id, '_include_item', k, '_num_', j, '" value="" class="num" /><br/>时限<input type="checkbox" id="section_', id, '_include_item', k, '_timelimit_', j, '" /></div></td>');
+		}
+		html.push('<td><textarea id="section_', id, '_mark_', j, '" class="mark" /></textarea></td>');
+		html.push('</tr>');
+	}
+	html.push('</table>');
+	html.push('</td>');
+	html.push('<td><textarea id="note_', id, '" class="note"></textarea></td>');
+	html.push('<td><input id="end_time_d', id, '" class="DatePicker end_time_d" value="" />&nbsp;<input id="end_time_t', id, '" class="TimePicker end_time_t" value="" /></td>');
+	html.push('<td><input id="next_id_', id, '" class="next_id" value="" /></td>');
+	html.push('<td><span id="time_', id, '" class="time"></span></td>');
+	html.push('<td><input type="button" onclick="preview(', id, ')" value="预览" />&nbsp;<input type="button" onclick="updatePaySetting(', id, ')" value="更新" /></td>');
+	html.push('</td></tr>');
+	html.push('</table>');
+	html.push('</div>');
+
+	return html.join('');
+}
+
+function renderEmptyTale()
+{
+	var html = [];
+	for(var i = 1; i < SECTION_NUM; i++) {
+		html.push(renderSection(i));
+		html.push('<br/>');
+	}
+	html.push(renderSection(0));
+	$('#paysetting_edit_area').html(html.join(''));
+
+	//
+	$(".DatePicker").datepick();
+	$(".TimePicker").timepicker({ 'timeFormat': 'H:i:s' });
+}
+
+function extendClick(i, j)
+{
+	var open = $('#section_' + i + '_extend_' + j).attr('checked') ? true : false;
+	extendShow(open, i, j);
+}
+
+function extendShow(open, i, j)
+{
+	if (!open) {
+		$('#section_' + i + '_amount_' + j).hide();
+		$('#section_' + i + '_gold_num_' + j).hide();
+		$('#section_' + i + '_gold_img_' + j).hide();
+		$('#section_' + i + '_gold_title_' + j).hide();
+		$('#section_' + i + '_btn_img_' + j).hide();
+		$('#section_' + i + '_div1_' + j).hide();
+		$('#section_' + i + '_div2_' + j).hide();
+		$('#section_' + i + '_div3_' + j).hide();
+		$('#section_' + i + '_div4_' + j).hide();
+		$('#section_' + i + '_mark_' + j).hide();
+	} else {
+		$('#section_' + i + '_amount_' + j).show();
+		$('#section_' + i + '_gold_num_' + j).show();
+		$('#section_' + i + '_gold_img_' + j).show();
+		$('#section_' + i + '_gold_title_' + j).show();
+		$('#section_' + i + '_btn_img_' + j).show();
+		$('#section_' + i + '_div1_' + j).show();
+		$('#section_' + i + '_div2_' + j).show();
+		$('#section_' + i + '_div3_' + j).show();
+		$('#section_' + i + '_div4_' + j).show();
+		$('#section_' + i + '_mark_' + j).show();
+	}
+}
+
+function showEdit(info)
+{
+	renderEmptyTale();
+	
+	for(var i = 0; i < SECTION_NUM; i++) {
+		$('#time_' + i).html(timeFormat(info[i].update_time));
+		for(var j = 1; j <= SECTION_ITEM_NUM; j++) {
+			if (info[i].section[j]) {
+				$('#section_' + i + '_id_' + j).val(info[i].section[j].id);
+				if (info[i].section[j].open == 1) {
+					$('#section_' + i + '_extend_' + j).attr('checked', 'true');
+					$('#section_' + i + '_amount_' + j).val(info[i].section[j].amount);
+					$('#section_' + i + '_gold_num_' + j).val(info[i].section[j].gold.num);
+					$('#section_' + i + '_gold_img_' + j).val(info[i].section[j].gold.img);
+					$('#section_' + i + '_gold_title_' + j).val(info[i].section[j].gold.title);
+					$('#section_' + i + '_btn_img_' + j).val(info[i].section[j].btn.img);
+					for(var k = 0; k < 4; k++) {
+						$('#section_' + i + '_include_item' + (k+1) + '_cid_' + j).val(info[i].section[j].include[k].cid);
+						$('#section_' + i + '_include_item' + (k+1) + '_num_' + j).val(info[i].section[j].include[k].num);
+						if (info[i].section[j].include[k].limit > 0) {
+							$('#section_' + i + '_include_item' + (k+1) + '_timelimit_' + j).attr('checked', 'true');
+						}	
+					}
+					$('#section_' + i + '_mark_' + j).val(info[i].section[j].mask);
+				} else {
+					extendShow(false, i, j);
+				}
+			}
+		}
+		if (info[i].end_time > 0) {
+			$('#end_time_d' + i).val(timeFormatDay(info[i].end_time));
+			$('#end_time_t' + i).val(timeFormatTime(info[i].end_time));
+		}
+		$('#note_' + i).val(info[i].note);
+		$('#next_id_' + i).val(info[i].next_id);
+		if (i > 0) {
+			if (info[i].active > 0) {
+				$('#id_' + i).html('' + i + '<font color="red">(激活)</font>');
+			} else {
+				$('#id_' + i).html(i);
+			}
+		} else {
+			$('#id_' + i).html('' + i + '<font color="red">[缺省]</font>');
+		}
+	}
+}
+
+function updatePaySetting(id)
+{
+	var sectionObj = {};
+	for(j = 1; j <= SECTION_ITEM_NUM; j++) {
+		var t = {};
+		t.id = j;
+		t.open = $('#section_' + id + '_extend_' + j).attr('checked') ? 1 : 0;
+		if (t.open == 1) {
+			t.amount = parseInt($('#section_' + id + '_amount_' + j).val());
+			var gold = {};
+			gold.num = parseInt($('#section_' + id + '_gold_num_' + j).val());
+			gold.img = $('#section_' + id + '_gold_img_' + j).val();
+			gold.title = $('#section_' + id + '_gold_title_' + j).val();
+			t.gold = gold;
+			
+			var btn = {};
+			btn.img = $('#section_' + id + '_btn_img_' + j).val();
+			t.btn = btn;
+			
+			var include = [];
+			for(var k = 0; k < 4; k++) {
+				var item = {};
+				item.cid = parseInt($('#section_' + id + '_include_item' + (k+1) + '_cid_' + j).val());
+				item.num = parseInt($('#section_' + id + '_include_item' + (k+1) + '_num_' + j).val());
+				item.limit = $('#section_' + id + '_include_item' + (k+1) + '_timelimit_' + j).attr('checked') ? 1 : 0;
+				include.push(item);
+			}
+			t.include = include;
+
+			t.mask = $('#section_' + id + '_mark_' + j).val();
+		}
+		sectionObj["" + j] = t;
+	}
+	var section = $.toJSON(sectionObj);
+	//alert(section);
+	var end_time_d = $('#end_time_d' + id).val();
+	var end_time_t = $('#end_time_t' + id).val();
+	var end_time = 0;
+	if (end_time_d != '') {
+		if (end_time_t == '') {
+			end_time_t = '00:00:00';
+		}
+		var end_time_str = (end_time_d + ' ' + end_time_t).replace(/-/g, '/');
+		end_time = Date.parse(end_time_str)/1000;
+	}
+	var note = $('#note_' + id).val();
+	var next_id = $('#next_id_' + id).val();
+	
+	var dt = {id:id, section:section, end_time:end_time, note:note, next_id:next_id};
+	$.get('/maintenanceapi/updatepaysetting?platform={%$platform%}', dt, function(data) {
+		if (data.result == 1){
+			alert('更新成功');
+		}else{
+			alert('请重试');
+		}
+	}, "json");
+}
+
+function preview(id)
+{
+	var info = glob_info[id];
+	for(var j = 1; j <= 4; j++) {
+		info.section[j].gold.num = parseInt($('#section_' + id + '_gold_num_' + j).val());
+		info.section[j].gold.img = $('#section_' + id + '_gold_img_' + j).val();
+		info.section[j].gold.title = $('#section_' + id + '_gold_title_' + j).val();
+		info.section[j].btn.img = $('#section_' + id + '_btn_img_' + j).val();
+
+		for(var k = 0; k < 4; k++) {
+			info.section[j].include[k].cid = parseInt($('#section_' + id + '_include_item' + (k+1) + '_cid_' + j).val());
+			info.section[j].include[k].num = parseInt($('#section_' + id + '_include_item' + (k+1) + '_num_' + j).val());
+			info.section[j].include[k].limit = $('#section_' + id + '_include_item' + (k+1) + '_timelimit_' + j).attr('checked') ? 1 : 0;
+		}
+	}
+
+	info.end_time = $('#end_time_' + id).val();
+	info.note = $('#note_' + id).val();
+	info.next_id = $('#next_id_' + id).val();
+
+	showCurrentPay(info);
+}
+
+getPaySetting();
+
+</script>
+</body>
+</html>

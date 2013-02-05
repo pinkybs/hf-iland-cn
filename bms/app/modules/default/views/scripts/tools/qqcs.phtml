@@ -1,0 +1,427 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>工具首页</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+.kfgj{ width:960px; height:auto;}
+.title{	width:880px; height:50px; font-size:24px;color:#FFFFFF;line-height:50px;background-color: #B1CBE2;font-weight:bold; padding-left: 20px;}/*大标题*/
+.title-02{ font-size:18px; color:#B1CBE2; line-height:50px; }
+.cn-01{ width:850px; height:60px; padding-left: 50px; padding-top:20px; line-height:50px;}
+.cn-02{	width:850px; padding-left: 50px; height:180px;   line-height:25px;}
+.cn-03{	width:850px; padding-left: 50px; height:auto;line-height:25px;}
+
+.userinfo-table{width:960px;background-color:#B1CBE2;}
+.userinfo-table caption{font-weight:bold;font-size:14px;}
+.userinfo-table th{width:120px;background-color:#D5E7F3;color:#333;text-align:center;font-weight:bold;border:1px;}
+.userinfo-table td{height:130px;text-align:center;font-weight:normal;background-color:#FFFFFF}
+
+.usercardinfo-table{width:800px;background-color:#B1CBE2;}
+.usercardinfo-table caption{font-weight:bold;font-size:14px;}
+.usercardinfo-table th{background-color:#D5E7F3;color:#333;text-align:center;font-weight:bold;border:1px;}
+.usercardinfo-table .id{width:120px;}
+.usercardinfo-table .name{width:160px;}
+.usercardinfo-table .intro{width:400px;}
+.usercardinfo-table .count{width:120px;}
+.usercardinfo-table td{height:25px;text-align:left;padding-left:10px;font-weight:normal;background-color:#FFFFFF}
+
+.invitelog-table{width:800px;background-color:#B1CBE2;}
+.invitelog-table caption{font-weight:bold;font-size:14px;}
+.invitelog-table th{background-color:#D5E7F3;color:#333;text-align:center;font-weight:bold;border:1px;}
+.invitelog-table .count{width:150px;}
+.invitelog-table .time{width:200px;}
+.invitelog-table .fid{width:450px;}
+.invitelog-table td{height:25px;text-align:left;padding-left:10px;font-weight:normal;background-color:#FFFFFF}
+
+.coinlog-table{width:800px;background-color:#B1CBE2;}
+.coinlog-table caption{font-weight:bold;font-size:14px;}
+.coinlog-table th{background-color:#D5E7F3;color:#333;text-align:center;font-weight:bold;border:1px;}
+.coinlog-table .time{width:150px;}
+.coinlog-table .cost{width:150px;}
+.coinlog-table .summary{width:500px;}
+.coinlog-table td{height:25px;text-align:left;padding-left:10px;font-weight:normal;background-color:#FFFFFF}
+
+.leveluplog-table{width:800px;background-color:#B1CBE2;}
+.leveluplog-table caption{font-weight:bold;font-size:14px;}
+.leveluplog-table th{background-color:#D5E7F3;color:#333;text-align:center;font-weight:bold;border:1px;}
+.leveluplog-table .from-level{width:150px;}
+.leveluplog-table .to-level{width:150px;}
+.leveluplog-table .time{width:500px;}
+.leveluplog-table td{height:25px;text-align:left;padding-left:10px;font-weight:normal;background-color:#FFFFFF}
+
+.notice-table{width:900px;background-color:#B1CBE2;}
+.notice-table caption{font-weight:bold;font-size:14px;}
+.notice-table th{background-color:#D5E7F3;color:#333;text-align:center;font-weight:bold;border:1px;}
+.notice-table .id{width:50px;}
+.notice-table .titl{width:275px;}
+.notice-table .link{width:250px;}
+.notice-table .position{width:50px;}
+.notice-table .opened{width:50px;}
+.notice-table .time{width:125px;}
+.notice-table td{height:25px;text-align:left;padding-left:10px;font-weight:normal;background-color:#FFFFFF}
+
+.userpraise-table{width:800px;background-color:#B1CBE2;}
+.userpraise-table caption{font-weight:bold;font-size:14px;}
+.userpraise-table th{background-color:#D5E7F3;color:#333;text-align:center;font-weight:bold;border:1px;}
+.userpraise-table .cal{width:150px;}
+.userpraise-table .cur{width:150px;}
+.userpraise-table .info{width:500px;}
+.userpraise-table td{height:25px;text-align:left;padding-left:10px;font-weight:normal;background-color:#FFFFFF}
+
+div,form,dl,dt,dd,img,h1,h2,h3,h4,h5,h6,ul,ol,li,p,span,table,th,td,a{margin:0;padding:0;border:0}
+img{border:none;vertical-align:middle}
+body{font-family:"宋体",Verdana,Arial,Helvetica,sans-serif;font-size:12px}
+button{border:none;cursor:pointer;background:none;font-size:12px;text-align:center}
+
+#msgboxDiv {display:none;position:absolute;}
+
+-->
+</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+
+	<div class="cn-01">
+		<label class="column" for="uid">查询用户小岛门牌号：</label>
+		<input type="text" class="text" style="ime-mode: disabled;" tabindex="1" name="uid" id="uid">
+		<input type="checkbox" name="chkQzone" id="chkQzone" />是Qzone平台
+		<input type="submit" tabindex="4" name="btsubmit" id="btsubmit" value="查 询" onclick="getUserInfo();">
+	</div>
+
+	<div id="userinfo_area" class="cn-02"></div>
+
+	<div id="item_info_area" style="display:none;">
+		<div class="cn-01">
+			<label>选择要查询的项目：</label>
+			<select id="sltItem" name="sltItem">
+			    <option value="1">道具卡信息</option>
+			    <option value="2">邀请好友记录</option>
+			    <option value="3">金币消耗记录</option>
+			    <option value="4">升级记录</option>
+			    <option value="5">小岛装饰度</option>
+			    <option value="6">宝石消耗记录</option>
+			</select>
+			<input type="submit" value="查  询" id="btnItemSelect" name="btnItemSelect" onclick="showItem();">
+		</div>
+
+		<div id="user_data_area" style="display:none;padding-top:10px;"></div>
+	</div>
+
+	<div style="width: 417px; display: none;" class="layer_global" id="msgboxDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle"></h3><button title="关闭" id="closeQuery" onclick="closeQuery();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="msgboxContent"></span></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<script type="text/javascript">
+var cache_uid = 0;
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d H:i:s');
+}
+
+function msgbox(title, msg, x, y)
+{
+	if (!x) x = 50;
+	if (!y) y = 100;
+	$('#msgboxDiv').css({left: x, top: y});
+	$('#msgboxTitle').html(title);
+	$('#msgboxContent').html(msg);
+	$('#msgboxDiv').show();
+}
+
+function closeQuery()
+{
+	$('#msgboxDiv').hide();
+}
+
+$.ajaxSetup({cache:false});
+
+function getUserInfo()
+{
+	closeQuery();
+	var uid = $('#uid').val();
+	if (uid == '') {
+		msgbox('错误', '请输入小岛门牌号', 50, 100);
+		return;
+	}
+	var isqzone = $('#chkQzone').attr("checked") ? 1:0;
+	var dt = {uid:uid, isqzone:isqzone};
+	$.get('/api/getqquserinfo?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			cache_uid = data.uid;
+			var html = ['<table cellspacing="1" class="userinfo-table"><caption>用户信息</caption><tr><th>头像</th><th>UID</th><th>呢称</th><th>等级</th><th>经验</th><th>金币</th><th>状态</th><th>平台</th><th></th></tr>'];
+			html.push('<tr><td><img src="', data.face, '"/></td><td>', data.uid, '</td><td>', data.nickname, '</td><td>', data.level, '</td><td>', data.exp, '</td><td>', data.coin, '</td>');
+			if (data.status == 0) {
+				html.push('<td id="user_status"><span style="color:green;">正常</span>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="blockUser(', data.uid, ')" style="color:red;font-weight:bold;">封号</a></td>');
+			} else {
+				html.push('<td id="user_status"><span style="color:red;">不正常[', data.status, ']</span>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="unblockUser(', data.uid, ')" style="color:green;font-weight:bold;">恢复</a></td>');
+			}
+			html.push('<td>');
+			if (isqzone) {
+				html.push('<img src="{%$staticUrl%}/image/favicon-qzone.ico" style="boder:none;"/>空间');
+			} else {
+				html.push('<img src="{%$staticUrl%}/image/favicon-pengyou.ico" style="boder:none;"/>朋友');
+			}
+			html.push('</td><td><a href="', data.watch, '" target="_blank">查看小岛</a></td>', '</tr></table>');
+
+			$('#userinfo_area').html(html.join(''));
+			$('#user_data_area').hide();
+			$('#user_data_area').html('');
+			$('#item_info_area').show();
+		} else {
+			$('#userinfo_area').html('');
+			$('#item_info_area').hide();
+			msgbox('错误', data.errmsg, 50, 100);
+		}
+	}, "json");
+}
+
+function getUserCardInfo()
+{
+	//var uid = $('#uid').val();
+	var uid = cache_uid;
+	var dt = {uid:uid};
+	$.get('/api/getusercardinfo?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = ['<div class="cn-03"><table border="0" cellspacing="1" class="usercardinfo-table"><caption>道具卡信息</caption><tr><th class="id">ID</th><th class="name">名称</th><th class="intro">介绍</th><th class="count">数量</th></tr>'];
+			var cards = data.cards;
+			if (cards.length == 0) {
+				html.push('<tr><td colspan="2" style="text-align:center;">没有记录</td></tr>');
+			} else {
+				for(var i in cards) {
+					html.push('<tr><td>', cards[i].cid, '</td><td>', cards[i].name, '</td><td>', cards[i].introduce, '</td><td>', cards[i].count, '</td></tr>');
+				}
+			}
+			html.push('</table></div>');
+			$('#user_data_area').html(html.join(''));
+			$('#user_data_area').show();
+		} else {
+			msgbox('错误', data.errmsg, 50, 350);
+		}
+	}, "json");
+}
+
+function getInviteLog()
+{
+	//var uid = $('#uid').val();
+	var uid = cache_uid;
+	var dt = {uid:uid};
+	$.get('/api/getinvitelog?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = ['<div class="cn-03"><table border="0" cellspacing="1" class="invitelog-table"><caption>邀请朋友记录</caption><tr><th class="count">个数</th><th class="time">时间</th><th class="fid">邀请好友ID</th></tr>'];
+			var logs = data.logs;
+			var count = logs.length;
+			if (count == 0) {
+				html.push('<tr><td colspan="3" style="text-align:center;">没有记录</td></tr>');
+			} else {
+				html.push('<tr><td rowspan="', count, '" style="text-align:center;padding-left:0px;">', count, '</td><td>', timeFormat(logs[0].time), '</td><td>', logs[0].fid, '</td></tr>');
+				for(var i = 1; i < count; i++) {
+					html.push('<tr><td>', timeFormat(logs[i].time), '</td><td>', logs[i].fid, '</td></tr>');
+				}
+			}
+			html.push('</table></div>');
+			$('#user_data_area').html(html.join(''));
+			$('#user_data_area').show();
+		} else {
+			msgbox('错误', data.errmsg, 50, 350);
+		}
+	}, "json");
+}
+
+function getCoinLog()
+{
+	//var uid = $('#uid').val();
+	var uid = cache_uid;
+	var dt = {uid:uid};
+	$.get('/api/getcoinlog?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = ['<div class="cn-03"><table border="0" cellspacing="1" class="coinlog-table"><caption>金币消耗记录</caption><tr><th class="time">时间</th><th class="cost">消耗金币</th><th class="summary">用途</th></tr>'];
+			var logs = data.logs;
+			if (logs.length == 0) {
+				html.push('<tr><td colspan="3" style="text-align:center;">没有记录</td></tr>');
+			} else {
+				for(var i in logs) {
+					html.push('<tr><td>', timeFormat(logs[i].create_time), '</td><td>', logs[i].cost, '</td><td>', logs[i].summary, '</td></tr>');
+				}
+			}
+			html.push('</table></div>');
+			$('#user_data_area').html(html.join(''));
+			$('#user_data_area').show();
+		} else {
+			msgbox('错误', data.errmsg, 50, 350);
+		}
+	}, "json");
+}
+
+function getGoldLog()
+{
+	//var uid = $('#uid').val();
+	var uid = cache_uid;
+	var dt = {uid:uid};
+	$.get('/api/getgoldlog?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = ['<div class="cn-03"><table border="0" cellspacing="1" class="coinlog-table"><caption>宝石消耗记录</caption><tr><th class="time">时间</th><th class="cost">消耗宝石</th><th class="summary">用途</th></tr>'];
+			var logs = data.logs;
+			if (logs.length == 0) {
+				html.push('<tr><td colspan="3" style="text-align:center;">没有记录</td></tr>');
+			} else {
+				for(var i in logs) {
+					html.push('<tr><td>', timeFormat(logs[i].create_time), '</td><td>', logs[i].cost, '</td><td>', logs[i].summary, '</td></tr>');
+				}
+			}
+			html.push('</table></div>');
+			$('#user_data_area').html(html.join(''));
+			$('#user_data_area').show();
+		} else {
+			msgbox('错误', data.errmsg, 50, 350);
+		}
+	}, "json");
+}
+
+function getLevelUpLog()
+{
+	//var uid = $('#uid').val();
+	var uid = cache_uid;
+	var dt = {uid:uid};
+	$.get('/api/getleveluplog?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = ['<div class="cn-03"><table border="0" cellspacing="1" class="leveluplog-table"><caption>升级记录</caption><tr><th class="from-level">升级前等级</th><th class="to-level">升级后等级</th><th class="time">时间</th></tr>'];
+			var logs = data.logs;
+			if (logs.length == 0) {
+				html.push('<tr><td colspan="3" style="text-align:center;">没有记录</td></tr>');
+			} else {
+				for(var i in logs) {
+					html.push('<tr><td>', logs[i].from_level, '</td><td>', logs[i].to_level, '</td><td>', timeFormat(logs[i].create_time), '</td></tr>');
+				}
+			}
+			html.push('</table></div>');
+			$('#user_data_area').html(html.join(''));
+			$('#user_data_area').show();
+		} else {
+			msgbox('错误', data.errmsg, 50, 350);
+		}
+	}, "json");
+}
+
+function getUserPraise()
+{
+	//var uid = $('#uid').val();
+	var uid = cache_uid;
+	var dt = {uid:uid};
+	$.get('/api/getpraise?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = ['<div class="cn-03"><table border="0" cellspacing="1" class="userpraise-table"><caption>小岛装饰度</caption><tr><th class="cal">实际装饰度</th><th class="cur">当前装饰度</th><th class="info">情况</th></tr>'];
+			html.push('<tr><td>', data.cal_praise, '</td>', '<td>', data.user_praise, '</td>');
+
+			if (data.cal_praise == data.user_praise) {
+				html.push('<td id="user_praise_info"><span style="color:green;font-weight:bold;">正常</span></td>');
+			} else {
+				html.push('<td id="user_praise_info"><span style="color:bold;font-weight:bold;">异常</span>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="fixPraise(', uid, ')" style="color:green;font-weight:bold;">修复</a></td>');
+			}
+			html.push('</tr></table></div>');
+			$('#user_data_area').html(html.join(''));
+			$('#user_data_area').show();
+		} else {
+			msgbox('错误', data.errmsg, 50, 350);
+		}
+	}, "json");
+}
+
+function fixPraise(uid)
+{
+	var dt = {uid:uid};
+	$.get('/api/fixpraise?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			if (data.fixed == 1) {
+				msgbox('操作成功', '该用户装饰度已经修复', 250, 350);
+				var html = '<span style="color:green;font-weight:bold;">正常</span>';
+				$('#user_praise_info').html(html);
+			} else {
+				msgbox('错误', '该用户装饰度正常或者修复失败', 250, 350);
+			}
+		} else {
+			msgbox('错误', data.errmsg, 250, 350);
+		}
+	}, "json");
+}
+
+function blockUser(uid)
+{
+	var dt = {uid:uid};
+	$.get('/api/blockuser?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			msgbox('操作成功', '该用户已经被封禁', 250, 150);
+			var html = '<span style="color:red;">不正常[1]</span>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="unblockUser(' + uid + ')" style="color:green;font-weight:bold;">恢复</a>';
+			$('#user_status').html(html);
+		} else {
+			msgbox('错误', data.errmsg, 250, 150);
+		}
+	}, "json");
+}
+
+function unblockUser(uid)
+{
+	var dt = {uid:uid};
+	$.get('/api/unblockuser?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			msgbox('操作成功', '该用户已经恢复正常', 250, 150);
+			var html = '<span style="color:green;">正常</span>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="blockUser(' + uid + ')" style="color:red;font-weight:bold;">封号</a>';
+			$('#user_status').html(html);
+		} else {
+			msgbox('错误', data.errmsg, 250, 150);
+		}
+	}, "json");
+}
+
+function showItem()
+{
+	closeQuery();
+	var item = $('#sltItem').val();
+	switch (item) {
+		case '1':
+			getUserCardInfo();
+			break;
+		case '2':
+			getInviteLog();
+			break;
+		case '3':
+			getCoinLog();
+			break;
+		case '4':
+			getLevelUpLog();
+			break;
+		case '5':
+			getUserPraise();
+			break;
+		case '6':
+			getGoldLog();
+			break;
+	}
+}
+
+</script>
+</body>
+</html>

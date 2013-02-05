@@ -1,0 +1,207 @@
+<div style="width:750px;">
+<div id="footer" style="text-align:right;font-size:12px;">小岛门牌号: {%$platformUid%} ({%$uid%}){% if $hfDev == 1 %}<span id="userinfo" style="color:red;"></span>{% /if %}</div>
+<iframe width="750px" height="100px" frameborder="0" scrolling="no" src="{%$staticUrl%}/html/b/index.html?v=2011021801"></iframe>
+<!-- <div style="background-color: #005EAC;color:#FFFFFF; font-weight: bold; padding: 5px; margin: 2px 0pt;">岛主们，邀请好友得非卖好礼哦~~~!</div>
+<div><iframe scrolling="no" frameborder="0" src="http://www.connect.renren.com/widget/liveWidget?api_key=ac058bfe285946798a4947f1c2ebf00b&xid=default&desp=%E5%A4%A7%E5%AE%B6%E6%9D%A5%E8%AE%A8%E8%AE%BA" width="748" height="390" ></iframe></div> -->
+</div>
+    <script src="http://static.connect.renren.com/js/v1.0/FeatureLoader.jsp" type="text/javascript" ></script>
+	<script type="text/javascript">
+    	XN_RequireFeatures(["EXNML"], function()
+    	{
+    	   XN.Main.init("{%$smarty.const.APP_KEY%}", "{%$hostUrl%}/rr_xd_receiver.html");
+    	});
+
+    	var APP_DOMAIN = '{%$domain%}';
+	</script>
+    <script src="{%$staticUrl%}/js/json.js?v=1.1" type="text/javascript"></script>
+    <script src="{%$staticUrl%}/apps/island/js/nav.js?v=1.8" type="text/javascript"></script>
+    <script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        try {
+        	var pageTracker = _gat._getTracker("UA-15485832-1");
+        	pageTracker._setVar('{%$uid%}');
+        	pageTracker._trackPageview();
+        } catch(err) {}
+
+        function trackPage(page)
+        {
+        	/*
+        	if (pageTracker) {
+        		pageTracker._trackPageview(page);
+        	}*/
+        }
+
+        var VIEWER_ID = {%$uid%};
+    	var OWNER_ID = VIEWER_ID;
+        function showuser(uid, name, face)
+    	{
+
+    		OWNER_ID = uid;
+    		var userinfo = document.getElementById('userinfo');
+    		if (userinfo) {
+    			if (OWNER_ID != VIEWER_ID) {
+    				userinfo.innerHTML = ' [当前好友门牌号：' + OWNER_ID + ']';
+    			} else {
+    				userinfo.innerHTML = '';
+    			}
+    		}
+    	}
+
+    	function goGift()
+    	{
+    		var domain = getDomain();
+			var goURL = 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/gift/top?tid=2';
+			window.top.location = goURL;
+    	}
+
+    	function returnGift()
+    	{
+    		var domain = getDomain();
+			var goURL = 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/gift/top?tid=2';
+			window.top.location = goURL;
+    	}
+   	 function hideLoading()
+     {
+    		document.getElementById('loadingdiv').style.display="none";
+     }
+
+    	function shareHappy()
+    	{
+    		//var title = '在【快乐岛主】中获得了10宝石、10000金币哦~';
+    		var title = '';
+			//var body = '在快乐岛主砸开了一个金蛋，免费获得了新年礼物和宝石，人人都有哦，你也去砸一个吧！';
+			var body = '在快乐岛主参加了开红包活动，免费获得了新年礼物，人人都有哦，你也参加吧！';
+			var feedSettings = {
+				'template_bundle_id': 1,
+		        'template_data' : {
+		        	'images': [{'src': 'http://static.hapyfish.com/renren/apps/island/images/feed/hongbao.jpg', 'href': 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/'}],
+		            'title': title,
+		            'body' : body
+		        },
+		        'callback': function(ok){console.log('callback!');},
+		        'body_general' : '',
+		        'user_message_prompt' : '',
+		        //'user_message' : '新年礼物哦，砸金蛋、得大礼 你还在等什么呢?'
+		        'user_message' : '新年礼物哦，开红包、得大礼 你还在等什么呢?'
+			};
+			XN.Connect.showFeedDialog(feedSettings);
+    	}
+
+		function shareCollect()
+		{
+			var title = '在快乐岛主中，完成了收集任务获得珍藏版建筑。快去看看吧';
+			var body = '左看看，右找找，让我们一起寻找快乐岛主中的秘密吧！';
+			var feedSettings = {
+				'template_bundle_id': 1,
+		        'template_data' : {
+		        	'images': [{'src': 'http://static.hapyfish.com/renren/apps/island/images/feed/shouji.jpg', 'href': 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/'}],
+		            'title': title,
+		            'body' : body
+		        },
+		        'callback': function(ok){console.log('callback!');},
+		        'body_general' : '',
+		        'user_message_prompt' : '',
+		        'user_message' : '玩岛主，做任务，即可 获得限量版建筑'
+			};
+			XN.Connect.showFeedDialog(feedSettings);
+		}
+
+    	function requestGift()
+    	{
+    		var title = '在【快乐岛主】中没有圣诞袜子了哦，赶快去送他一个';
+			var body = '打开了一个惊喜圣诞袜，获得了好多礼物哦，大家快来打开属于自己的圣诞袜哦';
+			var feedSettings = {
+				'template_bundle_id': 3,
+		        'template_data' : {
+		        	'images': [{'src': 'http://static.hapyfish.com/renren/apps/island/images/feed/request_gift.jpg', 'href': 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/'}],
+		            'title': title,
+		            'body' : body
+		        },
+		        'callback': function(ok){console.log('here in feed callback!!');},
+		        'body_general' : '',
+		        'user_message_prompt' : '',
+		        'user_message' : '呜呜，我还没有收到圣诞礼物，谁来送我哦 ~'
+			};
+			//alert('reqgift');
+			XN.Connect.showFeedDialog(feedSettings);
+    	}
+
+    	function sendTeamBuyFeed()
+        {
+    		var title = '参加了【快乐岛主】大团购活动，齐心协力捡便宜啦！';
+			var body = '你还在犹豫什么呢？快点进入游戏参活动吧！';
+			var feedSettings = {
+				'template_bundle_id': 1,
+		        'template_data' : {
+		        	'images': [{'src': 'http://static.hapyfish.com/renren/apps/island/images/feed/teambuy.jpg', 'href': 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/'}],
+		            'title': title,
+		            'body' : body
+		        },
+		        'callback': function(ok){console.log('here in feed callback!!');},
+		        'body_general' : '',
+		        'user_message_prompt' : '',
+		        'user_message' : '快乐岛主大团购限时优惠啦！你有参加么？有木有！有木有！限量道具等你拿，快点来参加吧！'
+			};
+			XN.Connect.showFeedDialog(feedSettings);
+        }
+
+    	function sendTaojishiFeed()
+        {
+    		var title = '在快乐岛主淘集市中淘啊~淘啊~终于淘到宝贝啦！';
+			var body = '各种道具、宝石金币等你来发现！还在等什么呢？赶快来参加啦！';
+			var feedSettings = {
+				'template_bundle_id': 1,
+		        'template_data' : {
+		        	'images': [{'src': 'http://static.hapyfish.com/renren/apps/island/images/feed/taojishifeed.jpg', 'href': 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/'}],
+		            'title': title,
+		            'body' : body
+		        },
+		        'callback': function(ok){console.log('here in feed callback!!');},
+		        'body_general' : '',
+		        'user_message_prompt' : '',
+		        'user_message' : '你有参加么？有木有！有木有！限量道具等你拿，快点来参加吧！'
+			};
+			XN.Connect.showFeedDialog(feedSettings);
+        }
+
+    	function sendStromFeed()
+        {
+    		var title = '的小岛上突然来临“风暴”啦！朋友们快来帮帮我！';
+			var body = '朋友们快来帮帮我！讨厌的“风暴”又来了，大家快点来赶走它吧！';
+			var feedSettings = {
+				'template_bundle_id': 1,
+		        'template_data' : {
+		        	'images': [{'src': 'http://static.hapyfish.com/renren/apps/island/images/feed/flashstrom.jpg', 'href': 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/'}],
+		            'title': title,
+		            'body' : body
+		        },
+		        'callback': function(ok){console.log('here in feed callback!!');},
+		        'body_general' : '',
+		        'user_message_prompt' : '',
+		        'user_message' : '快来帮帮我！'
+			};
+			XN.Connect.showFeedDialog(feedSettings);
+        }
+
+    	function sendFeed(feed)
+    	{
+    		var title = '赶快一起来吧！';
+			var body = '在快乐岛主中领取了限时“惊喜大礼包”价值10RMB，升级更快，更给力“领先”从现在开始！';
+			var feedSettings = {
+				'template_bundle_id': 1,
+		        'template_data' : {
+		        	'images': [{'src': 'http://static.hapyfish.com/renren/apps/island/images/feed/join.gif', 'href': 'http://apps.renren.com/{%$smarty.const.APP_NAME%}/'}],
+		            'title': title,
+		            'body' : body
+		        },
+		        'callback': function(ok){console.log('here in feed callback!!');},
+		        'body_general' : '',
+		        'user_message_prompt' : '',
+		        'user_message' : '快来加入领取吧！'
+			};
+			XN.Connect.showFeedDialog(feedSettings);
+    	}
+    </script>
+
+</body>
+</html>

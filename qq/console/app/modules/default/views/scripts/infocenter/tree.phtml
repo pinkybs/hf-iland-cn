@@ -1,0 +1,94 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>乐鱼数码APP运营管理平台</title>
+
+<link type="text/css" href="{%$staticUrl%}/style/otree.css" rel="stylesheet">
+<script src="{%$staticUrl%}/script/jquery.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/script/otree.js" type="text/javascript"></script>
+<style type="text/css">
+body{padding: 0;margin: 0;}
+.tab {font-size: 12px;}
+.tab a,.tab a:visited{color: #666;}
+.details{padding-top: 4px;}
+</style>
+<script type="text/javascript">
+var STATIC_URL = '{%$staticUrl%}';
+var treeObj_d = new oTree('treeObj_d',0);
+treeObj_d.onClick=function(id)
+{
+    if(top)
+    { 
+        top.indexObj.changeNav(id);
+        var indexArr = treeObj_d.getPids(id);
+        for (var i=indexArr.length-1;i>=0;i--) 
+    	{
+    	    if(treeObj_d.aNodes[indexArr[i]].dataUrl)
+    	    {
+    	        top.indexObj.currentDMenuId=indexArr[i];
+    	        break;
+    	    }
+    	}
+        
+    }
+    if(treeObj_d.aNodes[id]._hc) return;
+    setPath(id);
+}
+function setPath(id)
+{
+	var indexArr = treeObj_d.getPids(id);
+	indexArr.push(id);
+	var ps = new Array();
+	ps.push('首页');
+	for (var i=0;i< indexArr.length;i++) 
+	{
+	   if(typeof treeObj_d.aNodes[indexArr[i]]=='undefined')return;
+        //这里的clickTreeNode方法定义在tree.html中
+        if(typeof treeObj_d.aNodes[indexArr[i]].title=='undefined') continue;
+        ps.push('<a href="javascript:void(0)" onclick="tree.treeObj_d.toggle(' + indexArr[i] +')">' + treeObj_d.aNodes[indexArr[i]]['title'] + '</a>');
+    }
+    if(top)//父框架
+    {
+    	var path = ps.join(' - ');
+        top.window.document.getElementById('cont_general_op_path').innerHTML =  path;
+    }
+    
+}
+
+treeObj_d.add(10195, 10171, '客服工具', '/tools/cs', '客服工具', 'main', '', '', false, '',3407);
+
+treeObj_d.add(10196, 10171, '运营工具', '', '运营工具', 'main', '', '', false, '',3408);
+treeObj_d.add(11961, 10196, '公告管理', '/maintenance/notice', '公告管理', 'main', '', '', false, '',34081);
+
+treeObj_d.add(10197, 10171, '<span style="color:#999">运维工具</span>', '', '<span style="color:#999">运维工具</span>', 'main', '', '', false, '',-3409);
+treeObj_d.add(10171, 0, '欢乐海岛', '', '欢乐海岛', 'main', '', '', false, '',-1);
+$(function()
+{
+    if(treeObj_d.aNodes.length==0) $('#treeDiv').html("<p style='font-size:12px;margin:10px 25px'>没有数据</p>");
+    else treeObj_d.toTree($('#treeDiv'));
+    var did=0;
+    var id=2864; 
+    var mainWin = top.window.frames["main"]
+    treeObj_d.selectTo(id,did);
+    var mainUrl='0';
+    if(did !=0 && id>100000) 
+    {
+        if(mainUrl==0)
+            top.window.open(treeObj_d.aNodes[id].url,'main');
+        else 
+            top.window.open(mainUrl,'main');
+    }
+    setPath(2864);
+});
+
+function mang_menu()
+{
+     top.window.open('/infocenter/subsystem/systemmanager/user_fav_menu.php','main');
+}
+</script>
+</head><body>
+
+<div style="position: absolute; width: 100%; height: 100%; background-color: rgb(255, 255, 255); overflow: auto;">
+<div style="margin: 2px 0px 0px -10px;" class="otree" id="treeDiv"></div>
+</div>
+</body></html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>快乐岛主</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 100%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;padding:5px 5px;}
+td{padding:2px 5px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+.memo{color: #FF0000;}
+.end{background: none repeat scroll 0 0 #EAF2F5;font-weight:bold;text-align:right;}
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/ofc/js/swfobject.js" type="text/javascript"></script>
+	<div>
+		<div id="searchTab" class="div7">
+			<label style="padding-left: 15px;">统计开始日期：<input type="text" value="{%$startday%}" class="DatePicker" name="startday" id="startday"></label>
+			<label style="padding-left: 15px;">统计结束日期：<input type="text" value="{%$endday%}" class="DatePicker" name="endday" id="endday"></label>
+			<input type="button" name="submit" id="submit" onclick="javascript:getContent();" value="查看" />
+		</div>
+		<div id="div_chart" class="div1">
+			<div id="main_chart"></div>
+		</div>
+	</div>
+	<div id="data_area" style="margin:10px;"></div>
+	<script type="text/javascript">
+		var chart_data = '{%$chart%}';
+		var editId = 0;
+		var swfReady = false;
+		
+		function findSWF(movieName)
+		{
+		  if (navigator.appName.indexOf("Microsoft")!= -1) {
+		    return window[movieName];
+		  } else {
+		    return document[movieName];
+		  }
+		}
+		
+		function ofc_ready()
+		{
+			swfReady = true;
+		}
+		
+		function open_flash_chart_data()
+		{
+		    return chart_data;
+		}
+		
+		function showChart()
+		{
+		  var tmp = findSWF('main_chart');
+		  if (tmp) {
+		  	tmp.load(chart_data);
+		  }
+		}
+
+		var params = { allowScriptAccess: "always", menu:"false", wmode: "opaque", allowFullScreen: "false", bgcolor: "#ffffff", align: "middle", quality: "high"};
+		swfobject.embedSWF("{%$staticUrl%}/ofc/open-flash-chart.swf", "main_chart", "100%", "250", "9.0.0", null, null, params);
+	</script>
+
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function editMemo(id)
+{
+	var txtMemo = $('#txt_memo_' + id);
+	var lblMemo = $('#memo_' + id);
+	var editMemo = $('#edit_memo_' + id);
+	if (txtMemo) {
+		var val = lblMemo.text();
+		txtMemo.val(val);
+		txtMemo.show();
+		txtMemo.focus();
+		lblMemo.hide();
+		editMemo.hide();
+	}
+}
+
+function saveMemo(id, d)
+{
+	var txtMemo = $('#txt_memo_' + id);
+	var lblMemo = $('#memo_' + id);
+	var editMemo = $('#edit_memo_' + id);
+	if (txtMemo) {
+		var val = txtMemo.val();
+		var oldVal = lblMemo.text();
+		if (val != oldVal) {
+			lblMemo.text(val);
+			$.post('/statapi/editmemo?platform={%$platform%}', {day:d, memo:val});
+		}
+		txtMemo.hide();
+		editMemo.show();
+		lblMemo.show();
+	}
+}
+
+function formateDate(day)
+{
+	return day.substr(0,4) + '-' + day.substr(4,2) + '-' + day.substr(6,2);
+}
+
+function getContent()
+{
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var dt = {startday:startday, endday:endday};
+	$.get('/statapi/main?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+
+			var goldTitle = '充值金额';
+
+            if ( '{%$platform%}' == 'soha_vietnam' ) {
+            	goldTitle = '充值金额(平台币：RMB/平台币=0.3)';
+            }
+            else if ( '{%$platform%}' == 'nk_poland' ) {
+                goldTitle = '充值金额(平台币：RMB/平台币=8.3/40约0.21)';
+            }
+			
+			var html = '<table><tr><th>日期</th><th>总用户数</th><th>新增用户</th><th>活跃用户(旧-登录用户)</th><th>活跃用户(新-历史登录两天)</th><th>活跃用户(新-连续登录两天)</th><th>活跃率</th>'
+					 + '<th>'+goldTitle+'</th><th>充值宝石（实际）</th><th>充值宝石（赠送）</th><th>消费岛钻</th><th>发出岛钻</th><th>充值次数</th><th>充值人数</th><th>付费率</th><th>ARPU值</th><th>DARPU值</th><th width="120">备注</th></tr>';
+
+			var content = data.data;
+			//active_twoday
+			if (content) {
+				var activeRate = 0, t_activeRate = 0, a_activeRate = 0;
+				var payRate = 0, t_payRate = 0, a_payRate = 0;
+				var arpu = 0;
+				var darpu = 0;
+				var num = 0;
+				var t_add_user = 0, t_active = 0, t_active_twoday = 0, t_active_secondday = 0, t_pay_total_amount = 0,t_actualGold = 0, t_giftGold = 0, t_pay_user_count = 0, t_pay_count = 0, t_arpu = 0, t_darpu = 0, t_cost_gold = 0, t_send_gold = 0;
+				var a_add_user = 0, a_active = 0, a_active_twoday = 0, a_active_secondday = 0, a_pay_total_amount = 0,a_actualGold = 0, a_giftGold = 0, a_pay_user_count = 0, a_pay_count = 0, a_arpu = 0, a_darpu = 0, a_cost_gold = 0, a_send_gold = 0;
+				for(var i in content) {
+					num++;
+
+					//微博消费倍数
+					if ( '{%$platform%}' == 'weibo' ) {
+						content[i].pay_total_amount = content[i].pay_total_amount/100;
+					}
+
+					//充值宝石（实际），按人民币实际比例换算宝石数，1：10 或 1：1
+					//充值宝石（赠送），充值时额外赠送宝石数
+					if ( '{%$platform%}' == 'fb_taiwan' || '{%$platform%}' == 'fb_thailand' || '{%$platform%}' == 'soha_vietnam' ) {
+	                    //content[i].actualGold = content[i].pay_total_amount;
+	                    //content[i].giftGold = content[i].pay_gold_count - content[i].actualGold;
+                        content[i].actualGold = 0;
+                        content[i].giftGold = 0;
+					}
+					else if ( '{%$platform%}' == 'kimotw' || '{%$platform%}' == 'kr_nate' || '{%$platform%}' == 'nk_poland' ) {
+                        content[i].actualGold = 0;
+                        content[i].giftGold = 0;
+					}
+					else {
+                        content[i].actualGold = content[i].pay_total_amount * 10;
+                        content[i].giftGold = content[i].pay_gold_count - content[i].actualGold;
+					}
+					
+					t_add_user += parseInt(content[i].add_user);
+					t_active += parseInt(content[i].active);
+                    t_active_twoday += parseInt(content[i].active_twoday);
+                    t_active_secondday += parseInt(content[i].active_secondday);
+					t_pay_total_amount += parseInt(content[i].pay_total_amount);
+					
+					t_actualGold += parseInt(content[i].actualGold);
+					t_giftGold += parseInt(content[i].giftGold);
+                    
+					t_pay_user_count += parseInt(content[i].pay_user_count);
+					t_pay_count += parseInt(content[i].pay_count);
+					t_cost_gold += parseInt(content[i].cost_gold);
+					t_send_gold += parseInt(content[i].send_gold);
+					if (parseInt(content[i].active) == 0 || parseInt(content[i].total_count) == 0) {
+						activeRate = 0;
+					} else {
+						activeRate = Math.round(parseInt(content[i].active)*10000.0/parseInt(content[i].total_count))/100;
+						t_activeRate += activeRate;
+					}
+					if (parseInt(content[i].pay_user_count) == 0 || parseInt(content[i].active) == 0) {
+						payRate = 0;
+					} else {
+						payRate = Math.round(parseInt(content[i].pay_user_count)*10000.0/parseInt(content[i].active))/100;
+						t_payRate += payRate;
+					}
+					if (parseInt(content[i].pay_user_count) == 0) {
+						arpu = 0;
+						darpu = 0;
+					} else {
+						arpu = Math.round(parseInt(content[i].pay_total_amount)*100.0/parseInt(content[i].pay_user_count))/100;
+						darpu = Math.round(parseInt(content[i].pay_total_amount)*100.0/parseInt(content[i].active))/100;
+					}
+					t_arpu += arpu;
+					t_darpu += darpu;
+	    			html += '<tr';
+	    			if (i%2 == 0) {
+	    				html += ' class="odd"';
+	    			}
+	    			/*update by hdf add send_gold*/
+	    			var send_gold = '';
+	    			if(content[i].send_gold != undefined) {
+	    				send_gold = content[i].send_gold;
+		    		}
+		    		/*******************************/
+	    			html += '><td>' + formateDate(content[i].log_time) + '</td>'
+	    				  + '<td>' + content[i].total_count + '</td>'
+	    				  + '<td><span title="男：' + content[i].add_user_male + '/女：' + content[i].add_user_female + '">' + content[i].add_user + '</span></td>'
+	    				  + '<td><span title="男：' + content[i].active_male + '/女：' + content[i].active_female + '">' + content[i].active + '</span></td>'
+	    				  + '<td>' + content[i].active_secondday + '</td>'
+	    				  + '<td>' + content[i].active_twoday + '</td>'
+	    				  + '<td>' + activeRate + '%</td>'
+	    				  + '<td>' + content[i].pay_total_amount + '</td>'
+                          + '<td>' + content[i].actualGold + '</td>'
+                          + '<td>' + content[i].giftGold + '</td>'
+	    				  + '<td>' + content[i].cost_gold + '</td>'
+	    				  + '<td>' + send_gold + '</td>'
+	    				  + '<td>' + content[i].pay_user_count + '</td>'
+	    				  + '<td>' + content[i].pay_count + '</td>'
+	    				  + '<td>' + payRate + '%</td>'
+	    				  + '<td>' + arpu + '</td>'
+	    				  + '<td>' + darpu + '</td>'
+	    				  + '<td id="td_memo_' + i + '" align="center"><input id="txt_memo_' + i + '" style="display:none;" onblur="saveMemo(\'' + i + '\', \'' + content[i].log_time + '\');" /><lable id="edit_memo_' + i + '"><span class="memo" id="memo_' + i + '">' + content[i].memo + '</span>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="editMemo(\'' + i + '\')">编辑</a></lable></td>'
+	    				  + '</tr>';
+				}
+				if (num > 0) {
+					a_add_user = Math.round(t_add_user/num);
+					a_active = Math.round(t_active/num);
+                    a_active_twoday = Math.round(t_active_twoday/num);
+                    a_active_secondday = Math.round(t_active_secondday/num);
+					a_activeRate = Math.round(t_activeRate*100/num)/100;
+					a_pay_total_amount = Math.round(t_pay_total_amount/num);
+					
+                    a_actualGold = Math.round(t_actualGold/num);
+                    a_giftGold = Math.round(t_giftGold/num);
+                    
+					a_pay_user_count = Math.round(t_pay_user_count/num);
+					a_pay_count = Math.round(t_pay_count/num);
+					a_payRate = Math.round(t_payRate*100/num)/100;
+					a_arpu = Math.round(t_arpu*100/num)/100;
+					a_darpu = Math.round(t_darpu*100/num)/100;
+					a_cost_gold = Math.round(t_cost_gold/num);
+					a_send_gold = Math.round(t_send_gold/num);
+				}
+				
+				html += '<tr class="end"><td>合计</td><td></td><td>' + t_add_user + '</td><td></td><td></td><td></td><td></td><td>' + t_pay_total_amount + '</td><td>' + t_actualGold + '</td><td>' + t_giftGold + '</td><td>' + t_cost_gold + '</td><td>' + t_send_gold + '</td><td>' + t_pay_user_count + '</td><td>' + t_pay_count + '</td><td></td><td></td><td></td><td></td></tr>'
+					  + '<tr class="end"><td>平均</td><td></td><td>' + a_add_user + '</td><td>' + a_active + '</td><td>' + a_active_secondday + '</td><td>' + a_active_twoday + '</td><td>' + a_activeRate + '%</td><td>' + a_pay_total_amount + '</td><td>' + a_actualGold + '</td><td>' + a_giftGold + '</td><td>' + a_cost_gold + '</td><td>' + a_send_gold + '</td><td>' + a_pay_user_count + '</td><td>' + a_pay_count + '</td><td>' + a_payRate + '%</td><td>' + a_arpu + '</td><td>' + a_darpu + '</td><td></td></tr>';
+			}
+			
+			html += '<tr><th>日期</th><th>总用户数</th><th>新增用户</th><th>活跃用户(旧-登录用户)</th><th>活跃用户(新-历史登录两天)</th><th>活跃用户(新-连续登录两天)</th><th>活跃率</th>'
+					 + '<th>'+goldTitle+'</th><th>充值宝石（实际）</th><th>充值宝石（赠送）</th><th>消费岛钻</th><th>发出岛钻</th><th>充值次数</th><th>充值人数</th><th>付费率</th><th>ARPU值</th><th>DARPU值</th><th width="120">备注</th></tr>';
+
+			html += '</table>';
+			$('#data_area').html(html);
+			
+			var chartData = data.chart;
+			if (chartData) {
+				chart_data = chartData;
+				showChart();
+			}
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+getContent();
+
+</script>
+</body>
+</html>

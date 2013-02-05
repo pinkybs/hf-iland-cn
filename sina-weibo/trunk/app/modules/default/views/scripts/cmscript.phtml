@@ -1,0 +1,281 @@
+<script type="text/javascript" src="http://game.weibo.com/media/center/javascript/bin/wyx.connect.js"></script>
+<script type="text/javascript">
+var HFApp = {
+		appId: "{%$appId%}",
+		appHost: "{%$hostUrl%}",
+
+		feedapi2: function(title,content,img,description,para) {
+			if (description==undefined || description == null) {
+				description = '【快乐岛主】' + content;
+			}
+			if (para==undefined || para == null) {
+				para = '';
+			}
+			var opts = {
+			   method:'sendWeibo',
+			   params:{
+				  appId: HFApp.appId,
+			      content: content,//引导用户输入信息，在输入区域显示
+			      imageUrl: img,//发送图片的URL
+			      title: title,//新鲜事标题,
+			      templateContent: description,//新鲜事默认发送内容（40个汉字以内，英文和数字算半个汉字
+			      link:"http://game.weibo.com/{%$smarty.const.APP_NAME%}/",//游戏入口链接（可选）
+			      actionText:"开始游戏",//游戏次链接文字（可选）
+			      actionUrl:"http://game.weibo.com/{%$smarty.const.APP_NAME%}/index?"+ para//游戏次链接（可选）
+			   }
+			};
+			WYX.Connect.send(opts,function(data){
+			    //callBack function
+				//alert('feed send done');
+			});
+	    },
+
+	    feed: function(feedSettings) {
+			try {
+				if (feedSettings) {
+					var title = '快乐岛主';
+					var content = feedSettings.text;
+					var templateContent = feedSettings.templateContent;//'分享这一刻，来说点什么吧';
+					var img = feedSettings.img;
+					var link = "http://game.weibo.com/{%$smarty.const.APP_NAME%}/";
+					var actionUrl = 'http://game.weibo.com/{%$smarty.const.APP_NAME%}/';
+					var actionText = '开始游戏';
+					if (feedSettings.linktext) {
+						actionText = feedSettings.linktext;
+					}
+					if (feedSettings.para) {
+						actionUrl += 'index?' + feedSettings.para;
+						link += 'index?' + feedSettings.para;
+					}
+			    	var opts = {
+			    		method:'sendWeibo',
+						params:{
+							appId: HFApp.appId,
+					      	content: content,
+					      	imageUrl: img,
+					      	title: title,
+					      	templateContent: templateContent,
+					      	link:link,
+					      	actionText:actionText,
+					      	actionUrl:actionUrl
+						}
+			    	};
+					WYX.Connect.send(opts,function(data){
+					    //callBack function
+						if (window.console && console.debug) {
+			    			console.debug('feed sent');
+			    			HFApp.fireDelay();
+				  		}
+					});
+				}
+			}catch(e){}
+	    },
+
+	    resize: function(height) {
+	    	WYX.Connect.init();
+	    	WYX.Connect.resizeHeight(height);
+		},
+
+		achieve: function(achvId) {
+			var opts = {
+			   method:'achievement',
+			   params:{
+			      appId: HFApp.appId,
+			      achvId: achvId,//'成就的ID',
+			      mode:WidgetMode.NORMAL //发送成就信息弹出框，展现方式，WidgetMode.NORMAL|WidgetMode.MINI默认为 WidgetMode.NORMAL
+			   }
+			}
+
+			WYX.Connect.send(opts,function(data){
+			    //callBack function
+			});
+		},
+
+		rank: function(rankId, value) {
+			var opts = {
+			   method:'leaderboards',
+			   params:{
+			      appId: HFApp.appId,
+			      leaderboardId: rankId,//排行ID
+			      value: value,//排行值
+			      mode:WidgetMode.NORMAL //发送成就信息弹出框，展现方式，WidgetMode.NORMAL|WidgetMode.MINI默认为 WidgetMode.NORMAL
+			   }
+			}
+			WYX.Connect.send(opts,function(data){
+			  //callBack function
+			});
+		},
+
+	    invite: function(actor, target, targetName, callbackUrl) {
+	    	var opts = {
+	 		   method:'invite',
+	 		   params:{
+	 			  appId: HFApp.appId,
+	 		      uid: actor, //'当前用户的ID',
+	 		      friends: [{id: target, name: targetName}], //[{id:'好友的ID',name:'好友'}],
+	 		      content: '欢迎加入',
+	 		      title: '快来一起玩快乐岛主吧',
+	 		      action: callbackUrl//'邀请form的action属性，用户发送邀请后，被邀请人的ID（参数名: ids[]）会提交给此URL'
+	 		   }
+	 		};
+	 		WYX.Connect.send(opts,function(data){
+	 		    //callBack function
+	 			//alert('invite done');
+				//alert(data);
+	 		});
+	    },
+
+	    setMode: function(mode) {
+		    //WidgetMode.NORMAL 	0 	int 	成就或排行widget弹出方式，正常的
+	    	//WidgetMode.MINI 		1 	int 	成就或排行widget弹出方式，迷你的，顶部滑出的方式。
+	    	//WidgetMode.DELAY 		2 	int 	成就或排行widget弹出方式，延时的，由fireDelay方法触发。
+	    	var opts = {
+				method:'setWidgetMode',
+ 	 		   	params:{
+ 	 	 		   	mode: mode
+ 	 		   }
+ 	 		};
+	    	WYX.Connect.send(opts, function(data){
+		  		//callBack function
+		  		if (window.console && console.debug) {
+	    			console.debug('set WidgetMode.DELAY');
+		  		}
+			});
+		},
+
+		fireDelay: function() {
+			WYX.Connect.send({method:'fireDelay'}, function(data){
+			  	//callBack function
+				if (window.console && console.debug) {
+	    			console.debug('fireDelay done');
+		  		}
+			});
+		},
+
+		loadHtml: function(url, method, pardata, dataType, id) {//require jquery api support
+			if (!method) { //("POST"  or  "GET")
+				method = 'GET';
+			}
+			if (!dataType) {//xml
+				dataType = "text";
+			}
+			$.ajax({
+                type: method,
+                url: url,
+                data: pardata,
+                dataType: dataType,
+                success: function(resp){
+                	$("#" + id).html(resp);
+                }
+	 		});
+		}
+	}
+
+    WYX.Connect.init();
+    window.setTimeout(function() {
+    	WYX.Connect.init();
+    	//HFApp.setMode(WidgetMode.DELAY);
+
+    }, 2000);
+
+    function showFanbox()
+    {
+        $("#fanbox").toggle('fast');
+    }
+
+    function initInvite(show)
+    {
+    {% if $smarty.const.APP_ID==1142074347 %}
+    	//$("#divWyxFrame").html('<iframe src="http://game.weibo.com/home/widget/selector?&target=self&appId=1142074347&mode=naf&action=http%3A%2F%2Fweibo-t1.happyfish001.com%2Finvite%2Fsend&excludeIds=&pageSize=12&content=%E6%B2%99%E6%BB%A9%E7%8B%82%E6%AC%A2%E3%80%81%E6%B5%B7%E5%B2%9B%E5%AF%BB%E5%AE%9D%EF%BC%81%E5%85%A8%E5%9B%BD%E7%AC%AC%E4%B8%80%E6%AC%BE%E6%B5%B7%E5%B2%9B%E6%A8%A1%E6%8B%9F%E7%BB%8F%E8%90%A5%E6%B8%B8%E6%88%8F%EF%BC%8C%E5%B8%A6%E4%BD%A0%E4%B9%90%E4%BA%AB%E6%B5%AA%E6%BC%AB%E6%B5%B7%E5%B2%9B%E7%94%9F%E6%B4%BB%EF%BC%8C%E4%B8%80%E8%B5%B7%E6%9D%A5%E7%8E%A9%E5%90%A7&callback=http%3A%2F%2Fgame.weibo.com%2Fisland_dev" width="95%" height="470px" frameborder="no"></iframe>');
+    	$("#divWyxFrame").html('<div class="requestForm"><form method="post" action="http://game.weibo.com/home/widget/requestForm" id="createToolFriend" target = "friendSelector"><input type="hidden" name="target" value="self" /><input type="hidden" name="appId" value="1142074347" /><input type="hidden" name="modes" value="all,af,naf" /><input type="hidden" name="selectedMode" value="naf" /><input type="hidden" name="action" value="http://weibo-t1.happyfish001.com/invite/send" /><input type="hidden" name="excludedIds" value="" /><input type="hidden" name="pageSize" value="16" /><input type="hidden" name="content" value="沙滩狂欢、海岛寻宝！全国第一款海岛模拟经营游戏，带你乐享浪漫海岛生活，一起来玩吧" /><input type="hidden" name="callback" value="http://game.weibo.com/island_dev/" /></form><iframe width="670px" height="470px" frameborder="0" src="" name="friendSelector" scrolling="no" id="friendSelector"></iframe></div>');
+    {% else %}
+    	//$("#divWyxFrame").html('<iframe src="http://game.weibo.com/home/widget/selector?&target=self&appId=401380203&mode=naf&action=http%3A%2F%2Ft.happyfishgame.com.cn%2Finvite%2Fsend&excludeIds=&pageSize=20&content=%E6%B2%99%E6%BB%A9%E7%8B%82%E6%AC%A2%E3%80%81%E6%B5%B7%E5%B2%9B%E5%AF%BB%E5%AE%9D%EF%BC%81%E5%85%A8%E5%9B%BD%E7%AC%AC%E4%B8%80%E6%AC%BE%E6%B5%B7%E5%B2%9B%E6%A8%A1%E6%8B%9F%E7%BB%8F%E8%90%A5%E6%B8%B8%E6%88%8F%EF%BC%8C%E5%B8%A6%E4%BD%A0%E4%B9%90%E4%BA%AB%E6%B5%AA%E6%BC%AB%E6%B5%B7%E5%B2%9B%E7%94%9F%E6%B4%BB%EF%BC%8C%E4%B8%80%E8%B5%B7%E6%9D%A5%E7%8E%A9%E5%90%A7&callback=http%3A%2F%2Fgame.weibo.com%2Fhappyisland" width="95%" height="470px" frameborder="no"></iframe>');
+    	$("#divWyxFrame").html('<div class="requestForm"><form method="post" action="http://game.weibo.com/home/widget/requestForm" id="createToolFriend" target = "friendSelector"><input type="hidden" name="target" value="self" /><input type="hidden" name="appId" value="401380203" /><input type="hidden" name="modes" value="all,af,naf" /><input type="hidden" name="selectedMode" value="naf" /><input type="hidden" name="action" value="http://t.happyfishgame.com.cn/invite/send" /><input type="hidden" name="excludedIds" value="" /><input type="hidden" name="pageSize" value="16" /><input type="hidden" name="content" value="沙滩狂欢、海岛寻宝！全国第一款海岛模拟经营游戏，带你乐享浪漫海岛生活，一起来玩吧" /><input type="hidden" name="callback" value="http://game.weibo.com/happyisland/" /></form><iframe width="670px" height="470px" frameborder="0" src="" name="friendSelector" scrolling="no" id="friendSelector"></iframe></div>');
+    {% /if %}
+
+    	document.getElementById("createToolFriend").submit();
+    	if ('1' == show) {
+    		showInvite();
+    	}
+    }
+
+    function showInvite()
+    {
+    	$("#selFriend").toggle('fast');
+    }
+
+    /* about gift page -S */
+    function showGift()
+    {
+    	if ($("#divGiftFrame").html() == '') {
+    		topGift();
+    	}
+    	$("#giftBox").toggle('fast');
+    }
+
+    function topGift()
+    {
+    	var url = HFApp.appHost + "/gift/top";
+		var pardata = {};
+		HFApp.loadHtml(url, 'POST', pardata, 'text', 'divGiftFrame');
+    }
+
+    function getGift()
+    {
+    	var url = HFApp.appHost + "/gift/get";
+		var pardata = {};
+		HFApp.loadHtml(url, 'POST', pardata, 'text', 'divGiftFrame');
+    }
+
+    function postGift()
+    {
+    	var url = HFApp.appHost + "/gift/post";
+		var pardata = {};
+		HFApp.loadHtml(url, 'POST', pardata, 'text', 'divGiftFrame');
+    }
+
+    function friendsGift(tid, gid)
+    {
+    	var url = HFApp.appHost + "/gift/friends";
+		var pardata = {'tid':tid, 'gid':gid};
+		HFApp.loadHtml(url, 'POST', pardata, 'text', 'divGiftFrame');
+    }
+
+    function showGiftLogPost(page)
+    {
+    	var url = HFApp.appHost + "/gift/post";
+		var pardata = {'page':page};
+		HFApp.loadHtml(url, 'POST', pardata, 'text', 'divGiftFrame');
+    }
+
+    function showGiftLogGet(page)
+    {
+    	var url = HFApp.appHost + "/gift/get";
+		var pardata = {'page':page};
+		HFApp.loadHtml(url, 'POST', pardata, 'text', 'divGiftFrame');
+    }
+    /* about gift page -E */
+
+
+    function initGameOther()
+    {
+    	//console.debug('init game other');
+    	initInvite();
+	    $("#mnuInvite,#mnuInviteCls,#mnuFan,#mnuFanCls,#mnuGift,#mnuGiftCls").unbind('click');
+	    $("#mnuInvite").click(showInvite);
+	    $("#mnuInviteCls").click(showInvite);
+	    $("#mnuFan").click(showFanbox);
+	    $("#mnuFanCls").click(showFanbox);
+	    $("#mnuGift").click(showGift);
+	    $("#mnuGiftCls").click(showGift);
+	    $("#slider").html('<ul><li style="display:inline"><a href="http://blog.sina.com.cn/s/blog_807f4cf50100zbk5.html"><img src="{%$staticUrl%}/apps/island/images/slider/newitem-20111107-1.jpg" style="display:none;"/></a></li><li style="display:inline"><a href="#"><img src="{%$staticUrl%}/apps/island/images/slider/newitem-20110718-1.jpg" style="display:none;"/></a></li><li style="display:inline"><a href="#"><img src="{%$staticUrl%}/apps/island/images/slider/newitem-20110718-1.jpg" style="display:none;"/></a></li></ul>');
+	    $("#slider").flashSlider({controlsShow: false,vertical: true, speed: 1500, pause: 6000});
+	    //$("#extfrmRank").html('<iframe src="http://game.weibo.com/home/widget/box?box=friend&appId=401380203&width=760&title=%E6%8E%92%E8%A1%8C%E6%A6%9C&select=2" width="760" height="186" frameborder="no"></iframe>');
+    }
+
+	$(document).ready(function() {
+		if (typeof(IS_INDEX_PAGE) == "undefined") {
+			initGameOther();
+		}
+	});
+</script>

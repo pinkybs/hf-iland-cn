@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>系统发放及补偿-运营</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+div,form,dl,dt,dd,img,h1,h2,h3,h4,h5,h6,ul,ol,li,p,span,table,th,td,a{margin:0;padding:0;border:0}
+img{border:none;vertical-align:middle}
+body{font-family:"宋体",Verdana,Arial,Helvetica,sans-serif;font-size:12px}
+button{border:none;cursor:pointer;background:none;font-size:12px;text-align:center}
+
+#msgboxDiv {display:none;position:absolute;}
+
+-->
+</style>
+</head>
+<body>
+<div>
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/jquery.dragndrop.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<div id="loadItemDiv"><a href="javascript:void(0);" onclick="getItemList(0);">获取物品列表</a></div>
+	
+	<div id="item_info_area" style="display:none;">
+	<table style="width:1000px;">
+	<tr>
+	<th rowspan="2">门牌号：</th>
+	<td><textarea id="uid" name="uids" style="width:540px;height:100px;"></textarea></td>
+	</tr>
+	<tr>
+	<td>多个门牌号请用逗号( , )隔开</td>
+	</tr>
+	<tr style="height:30px;">
+	<th>爱心：</th>
+	<td><input id="love" type="text" name="love" value="" size="30" ></input></td>
+	</tr>
+	<tr style="height:30px;">
+	<th>金币：</th>
+	<td><input id="gold" type="text" name="gold" value="" size="30" ></input></td>
+	</tr>
+	<tr>
+	<th rowspan="2">物品：</th>
+	<td>
+		<select id="slt_type" onchange="selectType(this.value)">
+			<option value="-1">请选择类型</option >&nbsp;&nbsp;
+			<option value="1">装饰物</option>&nbsp;&nbsp;
+			<option value="2">建筑</option>&nbsp;&nbsp;
+			<option value="3">道具卡</option>&nbsp;&nbsp;
+			<option value="4">材料</option>&nbsp;&nbsp;
+		</select>&nbsp;&nbsp;(<span style="color:red;">红色标识</span>的为商店不可卖)
+	</td>
+	</tr>
+	<tr style="height:160px;">
+	<td><textarea id="txtSendItemList" style="width:540px;height:150px;"></textarea></td>
+	</tr>
+	<tr style="height:70px;">
+	<th rowspan="2">feed：</th>
+	<td><textarea id="feed" name="feed" style="width:540px;height:60px;"></textarea></td>
+	</tr>
+	<tr>
+	<td>发送feed&nbsp;<input type="checkbox" id="sendFeed" name="sendFeed" checked="true"/></td>
+	</tr>
+	</table>
+	<input type="button" value="发放" onclick="send();" id="button" style="display:none; margin:20px 300px;"/>
+	</div>
+	<div style="clear:both;"></div>
+	<div style="width:417px;position:absolute;top:200px;left:100px;display:none;" class="layer_global" id="msgboxDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle"></h3><button title="关闭" id="closeQuery" onclick="closeQuery();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="msgboxContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:200px;left:280px;display:none;" class="layer_global" id="decoratelistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择装饰物和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery1();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="decoratelistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:200px;left:280px;display:none;" class="layer_global" id="buildinglistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择建筑和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery2();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="buildinglistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:200px;left:280px;display:none;" class="layer_global" id="cardlistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择道具卡和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery3();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="cardlistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width:417px;position:absolute;top:200px;left:280px;display:none;" class="layer_global" id="materiallistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择材料和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery4();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="materiallistContent"></span></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+var ITEM_LIST = null;
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d H:i:s');
+}
+
+function msgbox(title, msg, x, y)
+{
+	if (!x) x = 50;
+	if (!y) y = 100;
+	$('#msgboxDiv').css({left: x, top: y});
+	$('#msgboxTitle').html(title);
+	$('#msgboxContent').html(msg);
+	$('#msgboxDiv').show();
+}
+
+function closeQuery()
+{
+	$('#msgboxDiv').hide();
+}
+
+function closeQuery1()
+{
+	$('#decoratelistDiv').hide();
+}
+function closeQuery2()
+{
+	$('#buildinglistDiv').hide();
+}
+function closeQuery3()
+{
+	$('#cardlistDiv').hide();
+}
+function closeQuery4()
+{
+	$('#materiallistDiv').hide();
+}
+
+function addItem(selectId, numId)
+{
+	var id = $('#' + selectId).val();
+	if (id == '-1') {
+		alert('请选择物品！');
+		return false;
+	}
+	
+	var num = $('#' + numId).val();
+	if (num == '') {
+		alert('请填写数量！');
+		return false;
+	}
+	
+	var checkText = $('#' + selectId).find("option:selected").text();
+	var data = $('#txtSendItemList').val();
+	var appendData = checkText + ':' + id + '*' + num + "\n";
+	$('#txtSendItemList').val(data + appendData);
+}
+
+$.ajaxSetup({cache:false});
+
+function getItemList(type)
+{
+	var dt = {type:type};
+	$.get('/maintenanceapi/getitemlist?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			ITEM_LIST = data;
+			var html = '';
+			if (data.decoratelist) {
+				html = '<select id="slt_decroate"><option value="-1">请选择</option>';
+				for(var i in data.decoratelist) {
+					html += '<option value="' + data.decoratelist[i].cid + '"';
+					if (data.decoratelist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.decoratelist[i].name + '[' + data.decoratelist[i].cid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="decorate_num">&nbsp;&nbsp;<input type="button" id="btn_decorate_ok" value="确定" onclick="addItem(\'slt_decroate\', \'decorate_num\');" />';
+				$('#decoratelistContent').html(html);
+			}
+			
+			if (data.buildinglist) {
+				html = '<select id="slt_building"><option value="-1">请选择</option>';
+				for(var i in data.buildinglist) {
+					html += '<option value="' + data.buildinglist[i].cid + '"';
+					if (data.buildinglist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.buildinglist[i].name + '[' + data.buildinglist[i].cid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="building_num">&nbsp;&nbsp;<input type="button" id="btn_building_ok" value="确定" onclick="addItem(\'slt_building\', \'building_num\');" />';
+				$('#buildinglistContent').html(html);
+			}
+			
+			if (data.cardlist) {
+				html = '<select id="slt_card"><option value="-1">请选择</option>';
+				for(var i in data.cardlist) {
+					html += '<option value="' + data.cardlist[i].cid + '"';
+					if (data.cardlist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.cardlist[i].name + '[' + data.cardlist[i].cid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="card_num">&nbsp;&nbsp;<input type="button" id="btn_card_ok" value="确定" onclick="addItem(\'slt_card\', \'card_num\');" />';
+				$('#cardlistContent').html(html);
+			}
+			
+			if (data.materiallist) {
+				html = '<select id="slt_material"><option value="-1">请选择</option>';
+				for(var i in data.materiallist) {
+					html += '<option value="' + data.materiallist[i].cid + '"';
+					if (data.materiallist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.materiallist[i].name + '[' + data.materiallist[i].cid + ']</option>';
+				}
+				html += '</select>&nbsp;&nbsp;&nbsp;&nbsp;数量: <input type="text" id="material_num">&nbsp;&nbsp;<input type="button" id="btn_material_ok" value="确定" onclick="addItem(\'slt_material\', \'material_num\');" />';
+				$('#materiallistContent').html(html);
+			}
+			
+			$('#item_info_area').show();
+			$('#button').show();
+			$('#loadItemDiv').hide();
+		} else {
+			msgbox('错误', data.errmsg, 50, 100);
+		}
+	}, "json");
+}
+
+function selectType(value)
+{
+	switch (value) {
+		case '1':
+			$('#decoratelistDiv').show();
+			break;
+		case '2':
+			$('#buildinglistDiv').show();
+			break;
+		case '3':
+			$('#cardlistDiv').show();
+			break;
+		case '4':
+			$('#materiallistDiv').show();
+			break;
+	}
+}
+
+function trimItemData(data)
+{
+	data = data.replace(/(^\s*)|(\s*$)/g, "");
+	if (data != '') {
+		var d = data.split("\n");
+		var t;
+		var s = [];
+		for (var i = 0; i < d.length; i++) {
+			if (d[i].indexOf(':') != -1) {
+				t = d[i].split(':');
+				s.push(t[1]);
+			}
+		}
+		return s.join(',');
+	} else {
+		return '';
+	}
+}
+
+function send()
+{
+	var uid = $("#uid").val();
+	var feed = $("#feed").val();
+	var gold = $("#gold").val();
+	var love = $("#love").val();
+	var itemData = $("#txtSendItemList").val();
+	var item = trimItemData(itemData);
+	var sendfeed = $("#sendFeed").attr('checked') ? 1 : 0;
+	var dt = {uid:uid, love:love, gold:gold, item:item, feed:feed, sendfeed:sendfeed};
+	$.get('/maintenanceapi/senditem?platform={%$platform%}', dt, function(data) {
+		if(data.num > 0){
+			alert('发放成功，数量为' + data.num);
+		} else{
+			alert('请检查');
+		}
+	}, "json");
+}
+
+/*
+$().ready(function() {
+	$('.layer_global').Drags({
+		handler: '.layer_global_title'
+	});
+});*/
+
+</script>
+</body>
+</html>

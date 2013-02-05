@@ -1,0 +1,5 @@
+#! /bin/sh
+cd $1
+$2 -f stat-supervisitor.php
+
+/home/admin/website/weibo/island/bin/stat-supervisitor.cron /home/admin/website/weibo/island/bin/ /usr/local/php-cgi/bin/php 1>1.log 2>&1 &

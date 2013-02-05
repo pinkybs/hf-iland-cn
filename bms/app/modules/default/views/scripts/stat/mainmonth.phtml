@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>快乐岛主</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 100%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;padding:5px 5px;}
+td{padding:2px 5px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+.memo{color: #FF0000;}
+.end{background: none repeat scroll 0 0 #EAF2F5;font-weight:bold;text-align:right;}
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/ofc/js/swfobject.js" type="text/javascript"></script>
+	<div>
+		<div id="searchTab" class="div7">
+			<label style="padding-left: 15px;">统计开始日期：<input type="text" value="{%$startday%}" class="DatePicker" name="startday" id="startday"></label>
+			<label style="padding-left: 15px;">统计结束日期：<input type="text" value="{%$endday%}" class="DatePicker" name="endday" id="endday"></label>
+			<input type="button" name="submit" id="submit" onclick="javascript:getContent();" value="查看" />
+		</div>
+		<div id="div_chart" class="div1">
+			<div id="main_chart"></div>
+		</div>
+	</div>
+	<div id="data_area" style="margin:10px;"></div>
+	<script type="text/javascript">
+		var chart_data = '{%$chart%}';
+		var editId = 0;
+		var swfReady = false;
+		
+		function findSWF(movieName)
+		{
+		  if (navigator.appName.indexOf("Microsoft")!= -1) {
+		    return window[movieName];
+		  } else {
+		    return document[movieName];
+		  }
+		}
+		
+		function ofc_ready()
+		{
+			swfReady = true;
+		}
+		
+		function open_flash_chart_data()
+		{
+		    return chart_data;
+		}
+		
+		function showChart()
+		{
+		  var tmp = findSWF('main_chart');
+		  if (tmp) {
+		  	tmp.load(chart_data);
+		  }
+		}
+
+		var params = { allowScriptAccess: "always", menu:"false", wmode: "opaque", allowFullScreen: "false", bgcolor: "#ffffff", align: "middle", quality: "high"};
+		//swfobject.embedSWF("{%$staticUrl%}/ofc/open-flash-chart.swf", "main_chart", "100%", "250", "9.0.0", null, null, params);
+	</script>
+
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function formateDate(day)
+{
+	return day.substr(0,4) + '-' + day.substr(4,2);
+}
+
+function getContent()
+{
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var dt = {startday:startday, endday:endday};
+	$.get('/statapi/mainmonth?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>日期</th><th>总用户数</th><th>新增用户</th><th>活跃用户(MAU)</th><th>活跃率</th>'
+					 + '<th>充值</th></tr>';
+
+			var content = data.data;
+			if (content) {
+				var activeRate = 0;
+				var num = 0;
+				var t_add_user = 0, t_active = 0, t_amount = 0;
+				var a_add_user = 0, a_active = 0, a_amount = 0;
+				for(var i in content) {
+					num++;
+					t_add_user += parseInt(content[i].add_user);
+					t_active += parseInt(content[i].active_user);
+					t_amount += parseInt(content[i].pay_amount);
+					if (parseInt(content[i].active_user) == 0 || parseInt(content[i].total_user) == 0) {
+						activeRate = 0;
+					} else {
+						activeRate = Math.round(parseInt(content[i].active_user)*10000.0/parseInt(content[i].total_user))/100 + '%';
+					}
+	    			html += '<tr';
+	    			if (i%2 == 0) {
+	    				html += ' class="odd"';
+	    			}
+	    			html += '><td>' + formateDate(content[i].log_time) + '</td>'
+	    				  + '<td>' + content[i].total_user + '</td>'
+	    				  + '<td>' + content[i].add_user + '</td>'
+	    				  + '<td>' + content[i].active_user + '</td>'
+	    				  + '<td>' + activeRate + '</td>'
+	    				  + '<td>' + content[i].pay_amount + '</td>'
+	    				  + '</tr>';
+				}
+				if (num > 0) {
+					a_add_user = Math.round(t_add_user/num);
+					a_active = Math.round(t_active/num);
+					a_amount = Math.round(t_amount/num);
+				}
+				
+				html += '<tr class="end"><td>合计</td><td></td><td>' + t_add_user + '</td><td></td><td></td><td>' + t_amount + '</td></tr>'
+					  + '<tr class="end"><td>平均</td><td></td><td>' + a_add_user + '</td><td>' + a_active + '</td><td></td><td>' + a_amount + '</td></tr>';
+			}
+
+			html += '</table>';
+			$('#data_area').html(html);
+			
+			var chartData = data.chart;
+			if (chartData) {
+				chart_data = chartData;
+				showChart();
+			}
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+getContent();
+
+</script>
+</body>
+</html>

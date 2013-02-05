@@ -1,0 +1,569 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>系统设置</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<style type="text/css">
+
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 1100px;margin:10px 15px 10px 5px;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;padding:5px 5px;}
+td{padding:2px 5px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+
+.sys_wrapper {background:url({%$staticUrl%}/image/infocenter/bg.png) repeat-x 0 -50px #FFF;border:#C6D3F3 solid 1px;padding:10px;margin-right:10px;}
+.sys_wrapper h2{font-size:16px;font-weight:bold;margin-bottom:10px;padding-bottom:5px;border-bottom:1px #f1f1e2 solid;}
+.sys_wrapper ul li{margin:20px;float:left;}
+
+#msgboxDiv {display:none;position:absolute;}
+
+.open{color:#000000}
+.close{color:#FF0000}
+
+</style>
+
+<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+</head>
+<body>
+<div class="sys_wrapper">
+	<h2>系统设置</h2>
+	<ul>
+	   <li><a href="javascript:void(0)" onclick="getPlatform();">平台设置</a></li>
+	   <li><a href="javascript:void(0)" onclick="getAccount();">帐号管理</a></li>  
+	</ul>
+	<div style="clear:both;"></div>
+	<div id="data_area"></div>
+	<div id="data_access_area"></div>
+</div>
+
+<div style="display: none;"></div>
+
+<div style="width: 417px; display: none;" class="layer_global" id="msgboxDiv">
+	<div class="layer_global_main">
+		<div class="layer_global_title"><h3 id="msgboxTitle"></h3><button title="关闭" id="closeQuery" onclick="closeQuery();"><span class="none">╳</span></button></div>
+		<div class="layer_global_cont">
+			<div style="margin: 20px;" class="wrap"><span id="msgboxContent"></span></div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var platform_new_id = 1;
+var platform_row = 0;
+
+var account_new_id = 1;
+var account_row = 0;
+
+var access_new_id = 1;
+var access_row = 0;
+
+var data_platform = null;
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d H:i:s');
+}
+
+function msgbox(title, msg, x, y)
+{
+	//if (!x) x = 150;
+	//if (!y) y = 50;
+	$('#msgboxTitle').html(title);
+	$('#msgboxContent').html(msg);
+	
+	x = ($(window).width()/2)-(417/2) + parseInt(document.documentElement.scrollLeft);
+	y = ($(window).height()/2)-(parseInt($('#msgboxDiv').height())/2) + parseInt(document.documentElement.scrollTop);
+	$('#msgboxDiv').css({left: x, top: y});
+	
+	$('#msgboxDiv').show();
+	setTimeout(closeQuery, 3000);
+}
+
+function closeQuery()
+{
+	$('#msgboxDiv').hide();
+}
+
+function updatePlatform(pid)
+{
+	var txtTitle = $('#platform_title_' + pid);
+	var txtDesp = $('#platform_desp_' + pid);
+	var txtIndex = $('#platform_index_' + pid);
+
+	var title = txtTitle.val();
+	var desp = txtDesp.val();
+	var index = txtIndex.val();
+	
+	txtTitle.attr("disabled", true);
+	txtDesp.attr("disabled", true);
+	txtIndex.attr("disabled", true);
+	
+	var data = {pid:pid, title:title, desp:desp, index:index};
+	$.post('/sysapi/updateplatform', data, function(data) {
+		if (data.errno == 0) {
+			var ok = data.data;
+			if (ok) {
+				msgbox('成功', '更新成功', 250, 100);
+			} else {
+				msgbox('错误', '更新失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '更新失败', 250, 100);
+		}
+		
+		txtTitle.attr("disabled", false);
+		txtDesp.attr("disabled", false);
+		txtIndex.attr("disabled", false);
+	
+	}, "json");
+}
+
+function newPlatform()
+{
+	var txtPid = $('#platform_new_pid');
+	var txtProject = $('#platform_new_project');
+	var txtName = $('#platform_new_name');
+	var txtTitle = $('#platform_new_title');
+	var txtDesp = $('#platform_new_desp');
+	var txtIndex = $('#platform_new_index');
+
+	var pid = txtPid.val();
+	var project = txtProject.val();
+	var name = txtName.val();
+	var title = txtTitle.val();
+	var desp = txtDesp.val();
+	var index = txtIndex.val();
+	
+	txtPid.attr("disabled", true);
+	txtName.attr("disabled", true);
+	txtTitle.attr("disabled", true);
+	txtDesp.attr("disabled", true);
+	txtIndex.attr("disabled", true);
+	
+	var data = {pid:pid, project:project, name:name, title:title, desp:desp, index:index};
+	$.post('/sysapi/newplatform', data, function(data) {
+		if (data.errno == 0) {
+			var ok = data.data;
+			if (ok) {
+				platform_new_id++;
+	    		var	html = '<td>' + pid + '</td>'
+						  + '<td>' + project + '</td>'
+	    				  + '<td>' + name + '</td>'
+	    				  + '<td><input id="platform_title_' + pid + '" value="' + title + '"/></td>'
+	    				  + '<td><input id="platform_desp_' + pid + '" value="' + desp + '"/></td>'
+	    				  + '<td><input id="platform_index_' + pid + '" value="' + index + '"/></td>'
+	    				  + '<td><a href="javascript:void(0)" onclick="updatePlatform(\'' + pid + '\');">更新</a></td>'
+	    				  + '</tr>';
+				$('#platform_row_' + platform_row).html(html);
+				$('#platform_row_' + platform_row).after('<tr id="platform_row_' + (platform_row+1) + '"><td><input id="platform_new_pid" /></td><td><input id="platform_new_project" /></td><td><input id="platform_new_name" /></td><td><input id="platform_new_title" /></td><td><input id="platform_new_desp" /></td><td><input id="platform_new_index" /></td><td id="platform_new_' + platform_new_id + '"><a href="javascript:void(0)" onclick="newPlatform()">新增</a></td>');
+				platform_row++;
+				
+				msgbox('成功', '更新成功', 250, 100);
+			} else {
+				msgbox('错误', '更新失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '更新失败', 250, 100);
+		}
+		
+		txtPid.attr("disabled", false);
+		txtName.attr("disabled", false);
+		txtTitle.attr("disabled", false);
+		txtDesp.attr("disabled", false);
+		txtIndex.attr("disabled", false);
+		
+	}, "json");
+}
+
+function getPlatform()
+{
+	$.get('/sysapi/getplatform', {}, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>平台ID</th><th>项目</th><th>平台名称</th><th>平台标题</th><th>平台描述</th>'
+					 + '<th>显示顺序</th><th></th></tr>';
+
+			var content = data.data;
+			if (content) {
+				for(var i in content) {
+	    			html += '<tr id="platform_row_' + platform_row + '"><td>' + content[i].pid + '</td>'
+  				  		  + '<td>' + content[i].project + '</td>'
+	    				  + '<td>' + content[i].name + '</td>'
+	    				  + '<td><input id="platform_title_' + content[i].pid + '" value="' + content[i].title + '"/></td>'
+	    				  + '<td><input id="platform_desp_' + content[i].pid + '" value="' + content[i].desp + '"/></td>'
+	    				  + '<td><input id="platform_index_' + content[i].pid + '" value="' + content[i].index + '"/></td>'
+	    				  + '<td><a href="javascript:void(0)" onclick="updatePlatform(\'' + content[i].pid + '\');">更新</a></td>'
+	    				  + '</tr>';
+	    			platform_row++;
+				}
+			}
+			
+			html += '<tr id="platform_row_' + platform_row + '"><td><input id="platform_new_pid" /></td><td><input id="platform_new_project" /></td><td><input id="platform_new_name" /></td><td><input id="platform_new_title" /></td><td><input id="platform_new_desp" /></td><td><input id="platform_new_index" /></td><td id="platform_new_1"><a href="javascript:void(0)" onclick="newPlatform()">新增</a></td>';
+
+			html += '</table>';
+			$('#data_area').html(html);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+function changeStatus(uid)
+{
+	var status = $('#account_status_' + uid);
+	status.toggleClass('close', status.val() == '1');
+}
+
+function changeStatus2()
+{
+	var status = $('#account_new_status');
+	status.toggleClass('close', status.val() == '1');
+}
+
+function getAccount()
+{
+	$.get('/sysapi/getaccount', {}, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>用户ID</th><th>用户名</th><th>真实姓名</th><th>密码</th><th>状态</th>'
+					 + '<th>创建时间</th><th></th><th>权限</th></tr>';
+
+			var content = data.data;
+			if (content) {
+				for(var i in content) {
+	    			html += '<tr ';
+	    			if (i%2 == 0) {
+	    				html += 'class="odd"';
+	    			}
+	    			html += 'id="account_row_' + account_row + '"><td>' + content[i].uid + '</td>'
+	    				  + '<td>' + content[i].name + '</td>'
+	    				  + '<td><input id="account_realname_' + content[i].uid + '" value="' + content[i].real_name + '"/></td>'
+	    				  + '<td><input id="account_pwd_' + content[i].uid + '" value="' + '******' + '"/></td>'
+	    				  + '<td><select onchange="changeStatus(\'' + content[i].uid + '\');" id="account_status_' + content[i].uid + '"';
+	    			if (content[i].status != 0) {
+	    				html += ' class="close"';
+	    			}
+	    			html += '><option value="0" class="open"';
+	    			if (content[i].status == 0) {
+	    				html += ' selected="true"';
+	    			}
+	    			html += '>开启</option><option value="1" class="close"';
+	    			if (content[i].status != 0) {
+	    				html += ' selected="true"';
+	    			}
+	    			html += '>关闭</option></select></td>'
+	    				  + '<td>' + timeFormat(content[i].create_time) + '</td>'
+	    				  + '<td><a href="javascript:void(0)" onclick="updateAccount(\'' + content[i].uid + '\');">更新</a></td>'
+	    				  + '<td><a href="javascript:void(0)" onclick="getAccess(\'' + content[i].uid + '\');">编辑</a></td>'
+	    				  + '</tr>';
+	    			account_row++;
+				}
+			}
+			
+			html += '<tr id="account_row_' + account_row + '"><td></td><td><input id="account_new_name" /></td><td><input id="account_new_realname" /></td><td><input id="account_new_pwd" /></td><td><select id="account_new_status" onchange="changeStatus2();"><option value="0" class="open">开启</option><option value="1" class="close">关闭</option></select></td><td></td><td id="account_new_1"><a href="javascript:void(0)" onclick="newAccount()">新增</a></td><td></td>';
+
+			html += '</table>';
+			$('#data_area').html(html);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+function updateAccount(uid)
+{
+	var txtPwd = $('#account_pwd_' + uid);
+	var txtStatus = $('#account_status_' + uid);
+
+	var pwd = txtPwd.val();
+	var status = txtStatus.val();
+	
+	txtPwd.attr("disabled", true);
+	txtStatus.attr("disabled", true);
+	
+	var data = {uid:uid, status:status};
+	if (pwd != '******') {
+		data.pwd = pwd;
+	}
+	$.post('/sysapi/updateaccount', data, function(data) {
+		if (data.errno == 0) {
+			var ok = data.data;
+			if (ok) {
+				msgbox('成功', '更新成功', 250, 100);
+			} else {
+				msgbox('错误', '更新失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '更新失败', 250, 100);
+		}
+		
+		txtPwd.val('******');
+		txtPwd.attr("disabled", false);
+		txtStatus.attr("disabled", false);
+	
+	}, "json");
+}
+
+function newAccount()
+{
+	var txtName = $('#account_new_name');
+	var txtRealName = $('#account_new_realname');
+	var txtPwd = $('#account_new_pwd');
+	var txtStatus = $('#account_new_status');
+
+	var name = txtName.val();
+	var realname = txtRealName.val();
+	var pwd = txtPwd.val();
+	var status = txtStatus.val();
+	if (status == '') {
+		status = '0';
+	}
+	
+	txtName.attr("disabled", true);
+	txtRealName.attr("disabled", true);
+	txtPwd.attr("disabled", true);
+	txtStatus.attr("disabled", true);
+	
+	var data = {name:name, real_name:realname, pwd:pwd, status:status};
+	$.post('/sysapi/newaccount', data, function(data) {
+		if (data.errno == 0) {
+			var user = data.data;
+			if (user) {
+				account_new_id++;
+    			var html = '<td>' + user.uid + '</td>'
+    				  + '<td>' + user.name + '</td>'
+    				  + '<td><input id="account_realname_' + user.uid + '" value="' + user.real_name + '"/></td>'
+    				  + '<td><input id="account_pwd_' + user.uid + '" value="' + '******' + '"/></td>'
+	    			  + '<td><select onchange="changeStatus(\'' + user.uid + '\');" id="account_status_' + user.uid + '"';
+	    		if (user.status != '0') {
+	    			html += ' class="close"';
+	    		}
+	    		html += '><option value="0" class="open"';
+    			if (user.status == '0') {
+    				html += ' selected="true"';
+    			}
+    			html += '>开启</option><option value="1" class="close"';
+    			if (user.status != '0') {
+    				html += ' selected="true" ';
+    			}
+    			html += '>关闭</option></select></td>'
+    				  + '<td>' + timeFormat(user.create_time) + '</td>'
+    				  + '<td><a href="javascript:void(0)" onclick="updateAccount(\'' + user.uid + '\');">更新</a></td>'
+    				  + '<td><a href="javascript:void(0)" onclick="getAccess(\'' + user.uid + '\');">编辑</a></td>'
+    				  + '</tr>';
+				$('#account_row_' + account_row).html(html);
+				$('#account_row_' + account_row).after('<tr id="account_row_' + (account_row+1) + '"><td></td><td><input id="account_new_name" /></td><td><input id="account_new_realname" /></td><td><input id="account_new_pwd" /></td><td><select id="account_new_status" onchange="changeStatus2();"><option value="0" class="open">开启</option><option value="1" class="close">关闭</option></select></td><td></td><td id="account_new_' + account_new_id + '"><a href="javascript:void(0)" onclick="newAccount()">新增</a></td><td></td>');
+				account_row++;
+				
+				msgbox('成功', '新增成功', 250, 100);
+			} else {
+				msgbox('错误', '新增失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '新增失败', 250, 100);
+		}
+		
+	}, "json");
+}
+
+function getAccess(uid)
+{
+	$.get('/sysapi/getaccess', {uid:uid}, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th>平台ID</th><th>平台名称</th><th>客服工具</th><th>运营工具</th>'
+					 + '<th>运维工具</th><th>统计工具</th><th></th><th></th></tr>';
+
+			var content = data.access;
+			if (content) {
+				for(var i in content) {
+	    			html += '<tr id="access_row_' + access_row + '">'
+	    				  + '<td>' + content[i].pid + '</td>'
+	    				  + '<td>' + content[i].name + '</td>'
+	    				  + '<td><input type="checkbox" id="access_m1_' + content[i].pid + '" ';
+	    			if (content[i].m_1 == '1') {
+	    				html += 'checked="true" ';
+	    			}
+	    			html += '/></td>'
+	    				 + '<td><input type="checkbox" id="access_m2_' + content[i].pid + '" ';
+	    			if (content[i].m_2 == '1') {
+	    				html += 'checked="true" ';
+	    			}
+	    			html += '/></td>'
+	    				 + '<td><input type="checkbox" id="access_m3_' + content[i].pid + '" ';
+	    			if (content[i].m_3 == '1') {
+	    				html += 'checked="true" ';
+	    			}
+	    			html += '/></td>'
+	    				 + '<td><input type="checkbox" id="access_m4_' + content[i].pid + '" ';
+	    			if (content[i].m_4 == '1') {
+	    				html += 'checked="true" ';
+	    			}
+	    			html += '/></td>'
+	    				 + '<td><a href="javascript:void(0)" onclick="updateAccess(\'' + uid + '\', \'' + content[i].pid + '\');">更新</a></td>'
+	    				 + '<td><a href="javascript:void(0)" onclick="deleteAccess(\'' + uid + '\', \'' + content[i].pid + '\', \'' + access_row + '\');">删除</a></td>'
+	    				 + '</tr>';
+	    				 
+	    			access_row++;
+				}
+			}
+			
+			var platform = data.platform;
+			if (platform) {
+				html += '<tr id="access_row_' + access_row + '"><td></td><td><select id="access_platform_list">';
+				for(var j in platform) {
+					html += '<option value="' + platform[j].pid + '">' + platform[j].name + '</option>';
+				}
+				html += '</select>'
+					  + '<td><input type="checkbox" id="access_m1_new" /></td>'
+					  + '<td><input type="checkbox" id="access_m2_new" /></td>'
+					  + '<td><input type="checkbox" id="access_m3_new" /></td>'
+					  + '<td><input type="checkbox" id="access_m4_new" /></td>'
+					  + '<td><a href="javascript:void(0)" onclick="newAccess(\'' + uid + '\');">新增</a></td><td></td></tr>';
+			}
+			
+			html += '</table>';
+			$('#data_access_area').html(html);
+		} else {
+			$('#data_access_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+function updateAccess(uid, pid)
+{
+	var chkm1 = $('#access_m1_' + pid);
+	var chkm2 = $('#access_m2_' + pid);
+	var chkm3 = $('#access_m3_' + pid);
+	var chkm4 = $('#access_m4_' + pid);
+
+	var m1 = chkm1.attr('checked') ? '1' : '0';
+	var m2 = chkm2.attr('checked') ? '1' : '0';
+	var m3 = chkm3.attr('checked') ? '1' : '0';
+	var m4 = chkm4.attr('checked') ? '1' : '0';
+	
+	var data = {uid:uid, pid:pid, m1:m1, m2:m2, m3:m3, m4:m4};
+	$.post('/sysapi/updateaccess', data, function(data) {
+		if (data.errno == 0) {
+			var ok = data.data;
+			if (ok) {
+				msgbox('成功', '更新成功', 250, 100);
+			} else {
+				msgbox('错误', '更新失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '更新失败', 250, 100);
+		}
+	
+	}, "json");
+}
+
+function deleteAccess(uid, pid, row)
+{
+	var data = {uid:uid, pid:pid};
+	$.post('/sysapi/deleteaccess', data, function(data) {
+		if (data.errno == 0) {
+			var ok = data.data;
+			if (ok) {
+				$('#access_row_' + row).remove();
+				msgbox('成功', '删除成功', 250, 100);
+			} else {
+				msgbox('错误', '删除失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '删除失败', 250, 100);
+		}
+	
+	}, "json");
+}
+
+function newAccess(uid)
+{
+	var selPlatform = $('#access_platform_list');
+	var chkm1 = $('#access_m1_new');
+	var chkm2 = $('#access_m2_new');
+	var chkm3 = $('#access_m3_new');
+	var chkm4 = $('#access_m4_new');
+
+	var pid = selPlatform.val();
+	var m1 = chkm1.attr('checked') ? '1' : '0';
+	var m2 = chkm2.attr('checked') ? '1' : '0';
+	var m3 = chkm3.attr('checked') ? '1' : '0';
+	var m4 = chkm4.attr('checked') ? '1' : '0';
+	
+	var data = {uid:uid, pid:pid, m1:m1, m2:m2, m3:m3, m4:m4};
+	$.post('/sysapi/newaccess', data, function(data) {
+		if (data.errno == 0) {
+			var info = data.access;
+			if (info) {
+				var html = ['<td>', info.pid, '</td><td>', info.name, '</td>',
+					'<td><input type="checkbox" id="access_m1_', info.pid, '" '];
+					
+    			if (info.m_1 == '1') {
+    				html.push('checked="true" ');
+    			}
+    			html.push('/></td>', '<td><input type="checkbox" id="access_m2_', info.pid, '" ');
+    			if (info.m_2 == '1') {
+    				html.push('checked="true" ');
+    			}
+    			html.push('/></td>', '<td><input type="checkbox" id="access_m3_', info.pid, '" ');
+    			if (info.m_3 == '1') {
+    				html.push('checked="true" ');
+    			}
+    			html.push('/></td>', '<td><input type="checkbox" id="access_m4_', info.pid, '" ');
+    			if (info.m_4 == '1') {
+    				html.push('checked="true" ');
+    			}
+    			html.push('/></td>', '<td><a href="javascript:void(0)" onclick="updateAccess(\'', uid, '\', \'', info.pid, '\');">更新</a></td>',
+    				 '<td><a href="javascript:void(0)" onclick="deleteAccess(\'', uid, '\', \'', info.pid, '\', \'', access_row, '\');">删除</a></td>', '</tr>');
+    				 
+				$('#access_row_' + access_row).html(html.join(''));
+				
+				var platform = data.platform;
+				if (platform) {
+					html = ['<tr id="access_row_', access_row + 1, '"><td></td><td><select id="access_platform_list">'];
+					for(var j in platform) {
+						html.push('<option value="', platform[j].pid, '">', platform[j].name, '</option>');
+					}
+					html.push('</select>',
+						  '<td><input type="checkbox" id="access_m1_new" /></td>',
+						  '<td><input type="checkbox" id="access_m2_new" /></td>',
+						  '<td><input type="checkbox" id="access_m3_new" /></td>',
+						  '<td><input type="checkbox" id="access_m4_new" /></td>',
+						  '<td><a href="javascript:void(0)" onclick="newAccess(\'',
+						  uid, '\');">新增</a></td><td></td></tr>'
+					);
+					
+					$('#access_row_' + access_row).after(html.join(''));
+				}
+				access_row++;
+				
+			
+				msgbox('成功', '新增成功', 250, 100);
+			} else {
+				msgbox('错误', '新增失败', 250, 100);
+			}
+		} else {
+			msgbox('错误', '新增失败', 250, 100);
+		}
+	
+	}, "json");
+}
+
+
+</script>
+</body>
+</html>

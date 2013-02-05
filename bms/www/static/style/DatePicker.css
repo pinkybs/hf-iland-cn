@@ -1,0 +1,28 @@
+.DatePicker
+{
+	color:#000;
+    background: #ffffff;
+    border-color: #999999;
+    border-style: solid;
+    border-width: 1px;
+    font-family: Tahoma, Arial;
+    width:80px;
+	text-align: center;
+	behavior: url(/style/Calendar.htc);
+}
+
+.DateMonthPicker
+{
+	font-size: 9pt;
+	font-family: "Tahoma" ;
+	text-decoration: none;
+	behavior: url(/style/calendar_month.htc);
+}
+
+.DateTimePicker
+{
+	font-size: 9pt;
+	font-family: "Tahoma" ;
+	text-decoration: none;
+	behavior: url(/style/Calendar_Time.htc);
+}

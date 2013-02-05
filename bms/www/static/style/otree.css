@@ -1,0 +1,18 @@
+.otree {
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.otree ul,.otree li{margin:0;padding:0}
+.otree .openNode{background:url(../image/infocenter/dtree/otree.gif) no-repeat 0 0;}
+.otree .closeNode{background:url(../image/infocenter/dtree/otree.gif) no-repeat  0 -20px;}
+.otree .lastOpenNode{background:url(../image/infocenter/dtree/otree.gif) no-repeat  0 -40px;}
+.otree .lastCloseNode{background:url(../image/infocenter/dtree/otree.gif) no-repeat  0 -60px;}
+.otree .nisiNode{background:url(../image/infocenter/dtree/otree.gif) no-repeat -20px -80px;}
+.otree .lastNode{background:url(../image/infocenter/dtree/otree.gif) no-repeat 0 -100px;}
+.otree .icon{width:18px;height:18px;margin-bottom:-4px;cursor:pointer;}
+.otree .cNode{cursor:pointer;}
+.otree li{font-size:12px;line-height:18px;list-style:none;clear:both;margin:1px 0px;color:#333;white-space:nowrap;}
+.otree .line {background:url(../image/infocenter/dtree/otree.gif) repeat-y -795px 0;}
+.otree a:link,.otree a:visited{color:#333;text-decoration:none;}
+.otree a:hover,.otree a:active{text-decoration:underline;}
+.otree ul{margin-left:20px;}
+.otree .selected,.otree a:link.selected,.otree a:visited.selected {color:#ff5217;font-weight:bold;}

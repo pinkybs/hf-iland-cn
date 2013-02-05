@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>客户端加载时间</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 100%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;}
+td{padding:2px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+.right{text-align:right;}
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:120px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+		<div id="loadItemDiv"><a href="javascript:void(0);" onclick="getItemList(0)">获取物品列表</a></div>
+	<div id="item_info_area" style="display:none;">
+		<select id="slt_type" onchange="selectType(this.value)">
+		<option value="-1">请选择类型</option >&nbsp;&nbsp;
+		<option value="1">背景</option>&nbsp;&nbsp;
+		<option value="2">装饰物</option>&nbsp;&nbsp;
+		<option value="3">设施</option>&nbsp;&nbsp;
+		<option value="4">道具卡</option>&nbsp;&nbsp;
+		</select>
+	</div>
+	<input type="hidden" id="formcid" value="" />
+	<div style="width: 417px; display: none;" class="layer_global" id="msgboxDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle"></h3><button title="关闭" id="closeQuery" onclick="closeQuery();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="msgboxContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width: 417px; display: none;" class="layer_global" id="backgroundlistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择背景和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery1();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="backgroundlistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width: 417px; display: none;" class="layer_global" id="buildinglistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择装饰物和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery2();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="buildinglistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width: 417px; display: none;" class="layer_global" id="plantlistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择设施和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery3();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="plantlistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+	<div style="width: 417px; display: none;" class="layer_global" id="cardlistDiv">
+		<div class="layer_global_main">
+			<div class="layer_global_title"><h3 id="msgboxTitle">请选择道具卡和数量</h3><button title="关闭" id="closeQuery" onclick="closeQuery4();"><span class="none">╳</span></button></div>
+			<div class="layer_global_cont">
+				<div style="margin: 20px;" class="wrap"><span id="cardlistContent"></span></div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+
+var ITEM_LIST = null;
+
+function timeFormat(time)
+{
+	var timestamp = time*1000;
+	return (new Date(timestamp)).format('Y-m-d H:i:s');
+}
+
+function msgbox(title, msg, x, y)
+{
+	if (!x) x = 50;
+	if (!y) y = 100;
+	$('#msgboxDiv').css({left: x, top: y});
+	$('#msgboxTitle').html(title);
+	$('#msgboxContent').html(msg);
+	$('#msgboxDiv').show();
+}
+
+function closeQuery()
+{
+	$('#msgboxDiv').hide();
+}
+
+function closeQuery1()
+{
+	$('#backgroundlistDiv').hide();
+}
+function closeQuery2()
+{
+	$('#buildinglistDiv').hide();
+}
+function closeQuery3()
+{
+	$('#plantlistDiv').hide();
+}
+function closeQuery4()
+{
+	$('#cardlistDiv').hide();
+}
+
+function addItem(selectId)
+{
+	var id = $('#' + selectId).val();
+	$('#formcid').val(selectId);
+	if (id == '-1') {
+		alert('请选择物品！');
+		return false;
+	}
+}
+
+$.ajaxSetup({cache:false});
+
+function getItemList(type)
+{
+	var dt = {type:type};
+	$.get('/maintenanceapi/getitemlist?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			ITEM_LIST = data;
+			var html = '';
+			if (data.backgroundlist) {
+				html = '<select id="slt_background" onchange="addItem(this.value)"><option value="-1">请选择</option>';
+				for(var i in data.backgroundlist) {
+					html += '<option value="' + data.backgroundlist[i].bgid + '"';
+					if (data.backgroundlist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.backgroundlist[i].name + '[' + data.backgroundlist[i].bgid + ']</option>';
+				}
+				html += '</select>';
+				$('#backgroundlistContent').html(html);
+			}
+			
+			if (data.buildinglist) {
+				html = '<select id="slt_building" onchange="addItem(this.value)"><option value="-1">请选择</option>';
+				for(var i in data.buildinglist) {
+					html += '<option value="' + data.buildinglist[i].cid + '"';
+					if (data.buildinglist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.buildinglist[i].name + '[' + data.buildinglist[i].cid + ']</option>';
+				}
+				html += '</select>';
+				$('#buildinglistContent').html(html);
+			}
+			
+			if (data.plantlist) {
+				html = '<select id="slt_plant" onchange="addItem(this.value)"><option value="-1">请选择</option>';
+				for(var i in data.plantlist) {
+					html += '<option value="' + data.plantlist[i].cid + '"';
+					if (data.plantlist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.plantlist[i].name + '[' + data.plantlist[i].cid + ']</option>';
+				}
+				html += '</select>';
+				$('#plantlistContent').html(html);
+			}
+			
+			if (data.backgroundlist) {
+				html = '<select id="slt_card" onchange="addItem(this.value)"><option value="-1">请选择</option>';
+				for(var i in data.cardlist) {
+					html += '<option value="' + data.cardlist[i].cid + '"';
+					if (data.cardlist[i].can_buy == '0') {
+						html += ' style="color:red"';
+					}
+					html += '>' + data.cardlist[i].name + '[' + data.cardlist[i].cid + ']</option>';
+				}
+				html += '</select>';
+				$('#cardlistContent').html(html);
+			}
+			
+			$('#item_info_area').show();
+			$('#loadItemDiv').hide();
+		} else {
+			msgbox('错误', data.errmsg, 50, 100);
+		}
+	}, "json");
+}
+
+function selectType(value)
+{
+	switch (value) {
+		case '1':
+			$('#backgroundlistDiv').show();
+			break;
+		case '2':
+			$('#buildinglistDiv').show();
+			break;
+		case '3':
+			$('#plantlistDiv').show();
+			break;
+		case '4':
+			$('#cardlistDiv').show();
+			break;
+	}
+}
+</script>
+	<div id="searchTab" class="div7">
+		<label style="padding-left: 15px;">开始日期:<input type="text" value="{%$startday%}" class="DatePicker" name="startday" id="startday"></label>
+		<label style="padding-left: 15px;">结束日期:<input type="text" value="{%$endday%}" class="DatePicker" name="endday" id="endday"></label>
+		<input type="button" name="submit" id="submit" onclick="javascript:getContent();" value="查看" />
+	</div>
+	<div id="data_area" style="margin:10px;"></div>
+	<div id="data_area2" style="margin:10px;"></div>
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function getContent()
+{
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var cid = $("#formcid").val();
+	var dt = {startday:startday, endday:endday, cid:cid};
+	$.get('/statapi/propsale?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var aryHtml = ['<table style="width:70%;"><tr><th >时间</th><th>道具ID</th><th>数量</th><th>金币</th><th>宝石</th></tr>'];
+
+			var content = data.data;
+			var total = data.total;
+			if (content) {
+				for(var i in content) {
+    				var date = content[i].date;
+    				var gold = parseInt(content[i].gold);
+    				var coin = parseInt(content[i].coin);
+    				var num = parseInt(content[i].num);
+    				var cid = parseInt(content[i].cid);
+    				
+					var oddStyle = '';
+    				if (i%2 ==1) {
+    					oddStyle = 'odd';
+    				}
+    				aryHtml.push('<tr class="odd">'); 
+    				aryHtml.push('<td align="center">', date, '</td>');
+    				aryHtml.push('<td align="center">', cid, '</td>');
+    				aryHtml.push('<td align="center">', num, '</td>');
+    				aryHtml.push('<td align="center">', coin, '</td>');
+    				aryHtml.push('<td align="center">', gold, '</td>');
+    				aryHtml.push('</tr>');
+				}
+			}
+			aryHtml.push('<tr class="odd">');
+			aryHtml.push('<td align="center">合计</td>');
+			aryHtml.push('<td align="center"></td>');
+			aryHtml.push('<td align="center">', total.tnum, '</td>');
+			aryHtml.push('<td align="center">', total.tcoin, '</td>');
+			aryHtml.push('<td align="center">', total.tgold, '</td>');
+			aryHtml.push('</tr>');
+			aryHtml.push('</table>');
+			$('#data_area').html(aryHtml.join(''));
+			
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>捕鱼统计后台</title>
+</head>
+<body>
+	<div>
+	<table align=center>
+		<tr>
+			<td><a href="{%$hostUrl%}/mycatchfish/fishinfo">修改鱼信息</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/probability">修改鱼捕获概率</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/relicplant">修改遗迹建筑</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/stat">查看统计</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/fishmatch">赛鱼统计</a>&nbsp;&nbsp;&nbsp;</td>
+		</tr>
+	</table>
+	</div>
+	<br><br>
+	
+	<div>
+		<form action="{%$hostUrl%}/mycatchfish/stat" method="get">
+		<table align=center>
+			<tr>
+				<td>请输入日期:</td>
+				<td><input type="text" name="date" value="{%$date%}"></td>
+				<td><input type="submit" name="search" value="查询"></td>
+			</tr>
+		</table>
+		<input type="hidden" name="act" value="search">
+		</form>
+		<table align=center>
+			<tr>
+				<td height=50>&nbsp;</td>
+			</tr>
+		</table>
+		{% if $info.id %}
+		<table border=0 width=75% align=center>	
+		  	<tr><td width=20% align=center><b>亲吻鱼</b></td><td>{%$info.fishId1%}</td></tr>
+			<tr><td width=20% align=center><b>斑马鱼</b></td><td>{%$info.fishId2%}</td></tr>
+			<tr><td width=20% align=center><b>虎皮鱼</b></td><td>{%$info.fishId3%}</td></tr>
+			<tr><td width=20% align=center><b>蓝蝶鱼</b></td><td>{%$info.fishId4%}</td></tr>
+			<tr><td width=20% align=center><b>玫瑰鱼</b></td><td>{%$info.fishId5%}</td></tr>
+			<tr><td width=20% align=center><b>刺猬鱼</b></td><td>{%$info.fishId6%}</td></tr>
+			<tr><td width=20% align=center><b>可乐杯</b></td><td>{%$info.fishId7%}</td></tr>
+			<tr><td width=20% align=center><b>小乌贼</b></td><td>{%$info.fishId8%}</td></tr>
+			<tr><td width=20% align=center><b>灯笼鱼</b></td><td>{%$info.fishId9%}</td></tr>
+			<tr><td width=20% align=center><b>飞剑鱼</b></td><td>{%$info.fishId10%}</td></tr>
+			<tr><td width=20% align=center><b>维塔斯</b></td><td>{%$info.fishId11%}</td></tr>
+			<tr><td width=20% align=center><b>奥尼尔</b></td><td>{%$info.fishId12%}</td></tr>
+			<tr><td width=20% align=center><b>喷泉鲸</b></td><td>{%$info.fishId13%}</td></tr>
+			<tr><td width=20% align=center><b>香蕉皮</b></td><td>{%$info.fishId14%}</td></tr>
+			<tr><td width=20% align=center><b>小小鱼</b></td><td>{%$info.fishId15%}</td></tr>
+			<tr><td width=20% align=center><b>小海龟</b></td><td>{%$info.fishId16%}</td></tr>
+			<tr><td width=20% align=center><b>小海狮</b></td><td>{%$info.fishId17%}</td></tr>
+			<tr><td width=20% align=center><b>墨鱼仔</b></td><td>{%$info.fishId18%}</td></tr>
+			<tr><td width=20% align=center><b>蓝月亮</b></td><td>{%$info.fishId19%}</td></tr>
+			<tr><td width=20% align=center><b>小螃蟹</b></td><td>{%$info.fishId20%}</td></tr>
+			<tr><td width=20% align=center><b>酒瓶</b></td><td>{%$info.fishId21%}</td></tr>
+			<tr><td width=20% align=center><b>翘嘴鱼</b></td><td>{%$info.fishId22%}</td></tr>
+			<tr><td width=20% align=center><b>珍珠鱼</b></td><td>{%$info.fishId23%}</td></tr>
+			<tr><td width=20% align=center><b>小水母</b></td><td>{%$info.fishId24%}</td></tr>
+			<tr><td width=20% align=center><b>小海马</b></td><td>{%$info.fishId25%}</td></tr>
+			<tr><td width=20% align=center><b>石斑鱼</b></td><td>{%$info.fishId26%}</td></tr>
+			<tr><td width=20% align=center><b>蝴蝶鱼</b></td><td>{%$info.fishId27%}</td></tr>
+			<tr><td width=20% align=center><b>颜料</b></td><td>{%$info.fishId28%}</td></tr>
+			<tr><td width=20% align=center><b>大头鱼</b></td><td>{%$info.fishId29%}</td></tr>
+			<tr><td width=20% align=center><b>龙虾</b></td><td>{%$info.fishId30%}</td></tr>
+			<tr><td width=20% align=center><b>魔鬼鱼</b></td><td>{%$info.fishId31%}</td></tr>
+			<tr><td width=20% align=center><b>金鱼</b></td><td>{%$info.fishId32%}</td></tr>
+			<tr><td width=20% align=center><b>刀型鱼</b></td><td>{%$info.fishId33%}</td></tr>
+			<tr><td width=20% align=center><b>粉色长条鱼</b></td><td>{%$info.fishId34%}</td></tr>
+			<tr><td width=20% align=center><b>苹果核</b></td><td>{%$info.fishId35%}</td></tr>
+			
+		  	<tr><td width=20% align=center><b>紫色扁鱼</b></td><td>{%$info.fishId36%}</td></tr>
+			<tr><td width=20% align=center><b>蓝色扁鱼</b></td><td>{%$info.fishId37%}</td></tr>
+			<tr><td width=20% align=center><b>秃头鱼</b></td><td>{%$info.fishId38%}</td></tr>
+			<tr><td width=20% align=center><b>桃红小丑鱼</b></td><td>{%$info.fishId39%}</td></tr>
+			<tr><td width=20% align=center><b>紫色小丑鱼</b></td><td>{%$info.fishI40%}</td></tr>
+			<tr><td width=20% align=center><b>黄色小丑鱼</b></td><td>{%$info.fishId41%}</td></tr>
+			<tr><td width=20% align=center><b>埃及鱼</b></td><td>{%$info.fishId42%}</td></tr>
+			<tr><td width=20% align=center><b>红黄鱼</b></td><td>{%$info.fishId43%}</td></tr>
+			<tr><td width=20% align=center><b>蓝色神仙鱼</b></td><td>{%$info.fishId44%}</td></tr>
+			<tr><td width=20% align=center><b>绿色神仙鱼</b></td><td>{%$info.fishId45%}</td></tr>
+			<tr><td width=20% align=center><b>黄色睛睛鱼</b></td><td>{%$info.fishId46%}</td></tr>
+			<tr><td width=20% align=center><b>朋克鱼</b></td><td>{%$info.fishId47%}</td></tr>
+			<tr><td width=20% align=center><b>色条鲳鱼</b></td><td>{%$info.fishId48%}</td></tr>
+			<tr><td width=20% align=center><b>黄色龅牙鱼</b></td><td>{%$info.fishId49%}</td></tr>
+			<tr><td width=20% align=center><b>紫色龅牙鱼</b></td><td>{%$info.fishId50%}</td></tr>
+			
+			<tr><td width=20% align=center><b>绿色心情</b></td><td>{%$info.fishId51%}</td></tr>
+			<tr><td width=20% align=center><b>蓝色幻想</b></td><td>{%$info.fishId52%}</td></tr>
+			<tr><td width=20% align=center><b>麦芽</b></td><td>{%$info.fishId53%}</td></tr>
+			<tr><td width=20% align=center><b>图腾</b></td><td>{%$info.fishId54%}</td></tr>
+			<tr><td width=20% align=center><b>灰色神仙</b></td><td>{%$info.fishId55%}</td></tr>
+			<tr><td width=20% align=center><b>彩条鱼</b></td><td>{%$info.fishId56%}</td></tr>
+			<tr><td width=20% align=center><b>黄色神仙鱼</b></td><td>{%$info.fishId57%}</td></tr>
+			<tr><td width=20% align=center><b>粉丝神仙鱼</b></td><td>{%$info.fishId58%}</td></tr>
+			<tr><td width=20% align=center><b>绿色胖胖鱼</b></td><td>{%$info.fishId59%}</td></tr>
+			<tr><td width=20% align=center><b>大嘴鱿鱼</b></td><td>{%$info.fishId60%}</td></tr>
+			<tr><td width=20% align=center><b>黄鳍悍鱼</b></td><td>{%$info.fishId61%}</td></tr>
+			<tr><td width=20% align=center><b>神奇蟹</b></td><td>{%$info.fishId62%}</td></tr>
+			<tr><td width=20% align=center><b>剑鱼</b></td><td>{%$info.fishId63%}</td></tr>
+			<tr><td width=20% align=center><b>摇摇鱼</b></td><td>{%$info.fishId64%}</td></tr>
+			<tr><td width=20% align=center><b>紫色传说</b></td><td>{%$info.fishId65%}</td></tr>
+			
+			<tr><td width=20% align=center><b>超级小海狮</b></td><td>{%$info.fishId66%}</td></tr>
+			<tr><td width=20% align=center><b>超级墨鱼仔</b></td><td>{%$info.fishId67%}</td></tr>
+			<tr><td width=20% align=center><b>超级蓝月亮</b></td><td>{%$info.fishId68%}</td></tr>
+			<tr><td width=20% align=center><b>超级小水母</b></td><td>{%$info.fishId69%}</td></tr>
+			<tr><td width=20% align=center><b>超级小海马</b></td><td>{%$info.fishId70%}</td></tr>
+			<tr><td width=20% align=center><b>超级石斑鱼</b></td><td>{%$info.fishId71%}</td></tr>
+			<tr><td width=20% align=center><b>超级蝴蝶鱼</b></td><td>{%$info.fishId72%}</td></tr>
+			<tr><td width=20% align=center><b>超级大头鱼</b></td><td>{%$info.fishId73%}</td></tr>
+			<tr><td width=20% align=center><b>超级龙虾</b></td><td>{%$info.fishId74%}</td></tr>
+			<tr><td width=20% align=center><b>超级魔鬼鱼</b></td><td>{%$info.fishId75%}</td></tr>
+			<tr><td width=20% align=center><b>超级金鱼</b></td><td>{%$info.fishId76%}</td></tr>
+			<tr><td width=20% align=center><b>超级维塔斯</b></td><td>{%$info.fishId77%}</td></tr>
+			<tr><td width=20% align=center><b>超级奥尼尔</b></td><td>{%$info.fishId78%}</td></tr>
+			<tr><td width=20% align=center><b>超级喷泉鲸</b></td><td>{%$info.fishId79%}</td></tr>
+			<tr><td width=20% align=center><b>超级蓝蝶鱼</b></td><td>{%$info.fishId80%}</td></tr>
+			<tr><td width=20% align=center><b>超级玫瑰鱼</b></td><td>{%$info.fishId81%}</td></tr>
+			
+			<tr><td width=20% align=center><b>超级蝴蝶鱼</b></td><td>{%$info.fishId82%}</td></tr>
+			<tr><td width=20% align=center><b>超级大头鱼</b></td><td>{%$info.fishId83%}</td></tr>
+			<tr><td width=20% align=center><b>超级龙虾</b></td><td>{%$info.fishId84%}</td></tr>
+			<tr><td width=20% align=center><b>超级魔鬼鱼</b></td><td>{%$info.fishId85%}</td></tr>
+			<tr><td width=20% align=center><b>超级金鱼</b></td><td>{%$info.fishId86%}</td></tr>
+			<tr><td width=20% align=center><b>超级维塔斯</b></td><td>{%$info.fishId87%}</td></tr>
+			<tr><td width=20% align=center><b>超级奥尼尔</b></td><td>{%$info.fishId88%}</td></tr>
+			<tr><td width=20% align=center><b>超级喷泉鲸</b></td><td>{%$info.fishId89%}</td></tr>
+			<tr><td width=20% align=center><b>超级蝴蝶鱼</b></td><td>{%$info.fishId90%}</td></tr>
+			<tr><td width=20% align=center><b>超级大头鱼</b></td><td>{%$info.fishId91%}</td></tr>
+			<tr><td width=20% align=center><b>超级龙虾</b></td><td>{%$info.fishId92%}</td></tr>
+			<tr><td width=20% align=center><b>超级魔鬼鱼</b></td><td>{%$info.fishId93%}</td></tr>
+			<tr><td width=20% align=center><b>超级金鱼</b></td><td>{%$info.fishId94%}</td></tr>
+			
+			<tr><td width=20% align=center><b>购买大鱼炮数量</b></td><td>{%$info.card%}</td></tr>
+			<tr><td width=20% align=center><b>使用大鱼炮次数</b></td><td>{%$info.cannon1%}</td></tr>
+			<tr><td width=20% align=center><b>使用小鱼炮次数</b></td><td>{%$info.cannon2%}</td></tr>
+			<tr><td width=20% align=center><b>第二个海岛解锁人数</b></td><td>{%$info.open_island1%}</td></tr>
+			<tr><td width=20% align=center><b>第三个海岛解锁人数</b></td><td>{%$info.open_island2%}</td></tr>
+			<tr><td width=20% align=center><b>第四个海岛解锁人数</b></td><td>{%$info.open_island3%}</td></tr>
+			<tr><td width=20% align=center><b>第五个海岛解锁人数</b></td><td>{%$info.open_island4%}</td></tr>
+			
+			<tr><td width=20% align=center><b>第六个海岛解锁人数</b></td><td>{%$info.open_island5%}</td></tr>
+			<tr><td width=20% align=center><b>第七个海岛解锁人数</b></td><td>{%$info.open_island6%}</td></tr>
+			<tr><td width=20% align=center><b>第八个海岛解锁人数</b></td><td>{%$info.open_island7%}</td></tr>
+			<tr><td width=20% align=center><b>第九个海岛解锁人数</b></td><td>{%$info.open_island8%}</td></tr>
+			<tr><td width=20% align=center><b>第十个海岛解锁人数</b></td><td>{%$info.open_island9%}</td></tr>
+			
+			<tr><td width=20% align=center><b>第十一个海岛解锁人数</b></td><td>{%$info.open_island10%}</td></tr>
+			<tr><td width=20% align=center><b>第十二个海岛解锁人数</b></td><td>{%$info.open_island11%}</td></tr>
+			<tr><td width=20% align=center><b>第十三个海岛解锁人数</b></td><td>{%$info.open_island12%}</td></tr>
+			<tr><td width=20% align=center><b>第十四个海岛解锁人数</b></td><td>{%$info.open_island13%}</td></tr>
+			<tr><td width=20% align=center><b>第十五个海岛解锁人数</b></td><td>{%$info.open_island14%}</td></tr>
+			
+			<tr><td width=20% align=center><b>使用刷鱼卡次数</b></td><td>{%$info.brush_card%}</td></tr>
+			<tr><td width=20% align=center><b>刷鱼的次数</b></td><td>{%$info.brush_num%}</td></tr>
+			
+			<tr><td width=20% align=center><b>第一个海岛刷鱼次数</b></td><td>{%$info.brush_island1%}</td></tr>
+			<tr><td width=20% align=center><b>第二个海岛刷鱼次数</b></td><td>{%$info.brush_island2%}</td></tr>
+			<tr><td width=20% align=center><b>第三个海岛刷鱼次数</b></td><td>{%$info.brush_island3%}</td></tr>
+			<tr><td width=20% align=center><b>第四个海岛刷鱼次数</b></td><td>{%$info.brush_island4%}</td></tr>
+			<tr><td width=20% align=center><b>第五个海岛刷鱼次数</b></td><td>{%$info.brush_island5%}</td></tr>
+			<tr><td width=20% align=center><b>第六个海岛刷鱼次数</b></td><td>{%$info.brush_island6%}</td></tr>
+			<tr><td width=20% align=center><b>第七个海岛刷鱼次数</b></td><td>{%$info.brush_island7%}</td></tr>
+			<tr><td width=20% align=center><b>第八个海岛刷鱼次数</b></td><td>{%$info.brush_island8%}</td></tr>
+			<tr><td width=20% align=center><b>第九个海岛刷鱼次数</b></td><td>{%$info.brush_island9%}</td></tr>
+			<tr><td width=20% align=center><b>第十个海岛刷鱼次数</b></td><td>{%$info.brush_island10%}</td></tr>
+			<tr><td width=20% align=center><b>第十一个海岛刷鱼次数</b></td><td>{%$info.brush_island11%}</td></tr>
+			<tr><td width=20% align=center><b>第十二个海岛刷鱼次数</b></td><td>{%$info.brush_island12%}</td></tr>
+			<tr><td width=20% align=center><b>第十三个海岛刷鱼次数</b></td><td>{%$info.brush_island13%}</td></tr>
+			<tr><td width=20% align=center><b>第十四个海岛刷鱼次数</b></td><td>{%$info.brush_island14%}</td></tr>
+			<tr><td width=20% align=center><b>第十五个海岛解锁人数</b></td><td>{%$info.brush_island15%}</td></tr>
+
+
+			<tr><td width=20% align=center><b>消耗金币</b></td><td>{%$info.coin%}</td></tr>
+			</table>
+		  {% /if %}
+	</div>
+</body>
+</html>

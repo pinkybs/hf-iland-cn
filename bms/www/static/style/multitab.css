@@ -1,0 +1,43 @@
+<!-- 横向多tab的样式 -->
+
+.details {
+	WIDTH: 100%; FONT-FAMILY: "宋体"; OVERFLOW: hidden; PADDING-TOP: 5px
+}
+.details A:link {
+	ZOOM: 1; TEXT-DECORATION: none
+}
+.details A:visited {
+	ZOOM: 1; TEXT-DECORATION: none
+}
+.details A:hover {
+	ZOOM: 1; TEXT-DECORATION: underline
+}
+.details A:active {
+	ZOOM: 1; TEXT-DECORATION: underline
+}
+.details .lead {
+	POSITION: relative; MARGIN-BOTTOM: -1px; HEIGHT: 24px
+}
+.details .lead .tab {
+	POSITION: absolute; TOP: 0px; LEFT: 11px
+}
+.details .lead .tab .item {
+	TEXT-ALIGN: center; LINE-HEIGHT: 25px; PADDING-LEFT: 15px; DISPLAY: block; BACKGROUND: url(../image/common/bt.jpg) no-repeat 0px -100px; FLOAT: left; HEIGHT: 24px; COLOR: #666; OVERFLOW: hidden; MARGIN-RIGHT: 1px
+}
+.details .lead .tab .item .co {
+	TEXT-ALIGN: center; LINE-HEIGHT: 25px; PADDING-RIGHT: 15px; DISPLAY: block; BACKGROUND: url(../image/common/bt.jpg) no-repeat right -100px; FLOAT: left; HEIGHT: 24px; COLOR: #666; OVERFLOW: hidden; CURSOR: pointer
+}
+.details .lead .tab .item_now {
+	TEXT-ALIGN: center; LINE-HEIGHT: 25px; PADDING-LEFT: 15px; DISPLAY: block; BACKGROUND: url(../image/common/bt.jpg) no-repeat 0px -50px; FLOAT: left; HEIGHT: 24px; COLOR: #666; OVERFLOW: hidden; FONT-WEIGHT: bold; MARGIN-RIGHT: 1px
+}
+.details .lead .tab .item_now .co {
+	TEXT-ALIGN: center; LINE-HEIGHT: 25px; PADDING-RIGHT: 15px; DISPLAY: block; BACKGROUND: url(../image/common/bt.jpg) no-repeat right -50px; FLOAT: left; HEIGHT: 24px; COLOR: #666; OVERFLOW: hidden; CURSOR: pointer
+}
+.details .lead .op {
+	POSITION: absolute; COLOR: #666; TOP: 5px; RIGHT: 9px
+}
+.details .bor {
+	BACKGROUND: url(../image/common/tab_bg.gif) #fff repeat-x; HEIGHT: 10px; OVERFLOW: hidden; BORDER-TOP: #c6d3f3 1px solid
+}
+
+<!-- end of 横向多tab

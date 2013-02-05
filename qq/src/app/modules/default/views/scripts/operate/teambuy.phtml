@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>团购后台</title>
+<script type="text/javascript" src="{% $staticUrl %}/js/jquery-1.4.3.min.js"></script>
+</head>
+<body>
+	<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% $hostUrl %}/operate/index"><b>返回首页</b></a>
+	<br /><br />
+	<div>
+		<form action="{%$hostUrl%}/operate/teambuyupdate" method="post">
+			&nbsp;&nbsp;&nbsp;&nbsp;物品   CID：<input type="text" name="operate[gid]" value="{% $shex.cid %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;物品数量：<input type="text" name="operate[num]" value="{% $shex.num %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;物品名字：<input type="text" name="operate[name]" value="{% $info.name %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;物品原价：<input type="text" name="operate[max_price]" value="{% $max_price %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;最低价格：<input type="text" name="operate[min_price]" value="{% $min_price %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;开始时间：<input type="text" name="operate[start_time]" value="{% $start_time %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;参加时间：<input type="text" name="operate[ok_time]" value="{% $join_time %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;购买时间：<input type="text" name="operate[buy_time]" value="{% $buy_time %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;起始人数：<input type="text" name="operate[start_num]" value="{% $info.start_num %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;最低人数：<input type="text" name="operate[min_num]" value="{% $info.min_num %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;最多人数：<input type="text" name="operate[max_num]" value="{% $info.max_num %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;降价比例(宝石)：<input type="text" name="operate[scale_gold]" value="{% $info.scale_gold %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;降价比例(金币)：<input type="text" name="operate[scale_coin]" value="{% $info.scale_coin %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;多少人变为金币：<input type="text" name="operate[bec_num]" value="{% $info.bec_num %}" /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;变为金币时价格：<input type="text" name="operate[bec_price]" value="{% $info.bec_price %}" />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="submit" value="更 新" />
+		</form>
+	</div>
+	<hr size="1" noshade="noshade" style="border:1px #cccccc dotted;"/>
+	<div>
+		<form action="{%$hostUrl%}/operate/clearteambuycache" method="post">
+			&nbsp;&nbsp;&nbsp;&nbsp;清理上一次团购信息(每次清理5000人)&nbsp;&nbsp;<input type="submit" value="清理" />
+			&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red;">剩余未清理人数：{% $hasnum %}</span>
+		</form>
+	</div><hr size="1" noshade="noshade" style="border:1px #cccccc dotted;"/>
+	<div>
+		<form action="{%$hostUrl%}/operate/teambuyswitch" method="post">
+			&nbsp;&nbsp;&nbsp;&nbsp;活动开关：&nbsp;&nbsp;&nbsp;&nbsp;
+			开放<input type="radio" name="teambuyswitch" value="1" checked/>&nbsp;&nbsp;&nbsp;&nbsp;
+			关闭<input type="radio" name="teambuyswitch" value="-1" />&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="submit" value="更改" />
+		</form>
+	</div><hr size="1" noshade="noshade" style="border:1px #cccccc dotted;"/>
+</body>
+</html>

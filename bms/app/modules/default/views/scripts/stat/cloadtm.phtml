@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>客户端加载时间</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 100%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;}
+td{padding:2px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+.right{text-align:right;}
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<div id="searchTab" class="div7">
+		<label style="padding-left: 15px;">开始日期:<input type="text" value="{%$startday%}" class="DatePicker" name="startday" id="startday"></label>
+		<label style="padding-left: 15px;">结束日期:<input type="text" value="{%$endday%}" class="DatePicker" name="endday" id="endday"></label>
+		<input type="button" name="submit" id="submit" onclick="javascript:getContent();" value="查看" />
+	</div>
+	<div id="data_area" style="margin:10px;"></div>
+	<div id="data_area2" style="margin:10px;"></div>
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function getContent()
+{
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var dt = {startday:startday, endday:endday};
+	$.get('/statapi/cloadtm?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var html = '<table><tr><th></th><th colspan="3">人次</th><th colspan="6">片头加载用时</th><th colspan="2"></th></tr>'
+						+ '<tr><th>日期</th><th>样本数</th><th>片头显示前离开(%)</th><th>素材加载中离开(%)</th><th>平均时间</th><th>&lt;1秒</th><th>1-3秒</th><th>3-6秒</th><th>6-10秒</th><th>&gt;10秒</th><th>素材加载用时</th><th>页面停留</th></tr>';
+
+			var content = data.data;
+			if (content) {
+				for(var i in content) {
+    				var log_time = content[i].log_time;
+    				var count_total = parseInt(content[i].count_total);
+    				var count_tm1_2_break = parseInt(content[i].count_tm1_2_break);
+    				var count_tm2_3_break = parseInt(content[i].count_tm2_3_break);
+    				var tm1_2 = content[i].tm1_2.split("|");;
+    				var tm2_3 = content[i].tm2_3.split("|");;
+    				var tm3_4 = content[i].tm3_4.split("|");;
+    				var pie_tm1_2_fast = parseInt(content[i].pie_tm1_2_fast);
+    				var pie_tm1_2_normal1 = parseInt(content[i].pie_tm1_2_normal1);
+    				var pie_tm1_2_normal2 = parseInt(content[i].pie_tm1_2_normal2);
+    				var pie_tm1_2_slow = parseInt(content[i].pie_tm1_2_slow);
+    				var pie_tm1_2_bad = parseInt(content[i].pie_tm1_2_bad);
+
+    				var count_total_new = parseInt(content[i].count_total_new);
+    				var count_tm1_2_break_new = parseInt(content[i].count_tm1_2_break_new);
+    				var count_tm2_3_break_new = parseInt(content[i].count_tm2_3_break_new);
+    				var tm1_2_new = content[i].tm1_2_new.split("|");;
+    				var tm2_3_new = content[i].tm2_3_new.split("|");;
+    				var tm3_4_new = content[i].tm3_4_new.split("|");;
+    				var pie_tm1_2_fast_new = parseInt(content[i].pie_tm1_2_fast_new);
+    				var pie_tm1_2_normal1_new = parseInt(content[i].pie_tm1_2_normal1_new);
+    				var pie_tm1_2_normal2_new = parseInt(content[i].pie_tm1_2_normal2_new);
+    				var pie_tm1_2_slow_new = parseInt(content[i].pie_tm1_2_slow_new);
+    				var pie_tm1_2_bad_new = parseInt(content[i].pie_tm1_2_bad_new);
+					var oddStyle = '';
+    				if (i%2 ==1) {
+    					oddStyle = 'odd';
+    				}
+        			html += '<tr class="odd">'
+        				  + '<td >' + log_time + '</td>'
+        				  //总用户人次
+        				  + '<td class="right">' + count_total + '</td>'
+        				  + '<td class="right">' + count_tm1_2_break + '(' + (count_tm1_2_break/count_total*100).toFixed(2) + '%)</td>'
+        				  + '<td class="right">' + count_tm2_3_break + '(' + (count_tm2_3_break/count_total*100).toFixed(2) + '%)</td>'
+
+        				  + '<td class="right"><span title="' + tm1_2[1] + '人样本">' + (tm1_2[0]/tm1_2[1]).toFixed(2) + '</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_fast + '人">' + (pie_tm1_2_fast/tm1_2[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_normal1 + '人">' + (pie_tm1_2_normal1/tm1_2[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_normal2 + '人">' + (pie_tm1_2_normal2/tm1_2[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_slow + '人">' + (pie_tm1_2_slow/tm1_2[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_bad + '人">' + (pie_tm1_2_bad/tm1_2[1]*100).toFixed(2) + '%</span></td>'
+
+        				  + '<td class="right"><span title="' + tm2_3[1] + '人样本">' + (tm2_3[0]/tm2_3[1]).toFixed(2) + '</span></td>'
+        				  + '<td class="right"><span title="' + tm3_4[1] + '人样本">' + (tm3_4[0]/tm3_4[1]).toFixed(2) + '(' + (tm3_4[0]/tm3_4[1]/60).toFixed(0) + '分钟)</span></td>'
+
+        				  + '</tr>'
+
+        				  //新用户人次
+        				  + '<tr class="">'
+        				  + '<td >' + '新安装用户' + '</td>'
+        				  + '<td class="right">' + count_total_new + '</td>'
+        				  + '<td class="right">' + count_tm1_2_break_new + '(' + (count_tm1_2_break_new/count_total_new*100).toFixed(2) + '%)</td>'
+        				  + '<td class="right">' + count_tm2_3_break_new + '(' + (count_tm2_3_break_new/count_total_new*100).toFixed(2) + '%)</td>'
+
+        				  + '<td class="right"><span title="' + tm1_2_new[1] + '人样本">' + (tm1_2_new[0]/tm1_2_new[1]).toFixed(2) + '</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_fast_new + '人">' + (pie_tm1_2_fast_new/tm1_2_new[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_normal1_new + '人">' + (pie_tm1_2_normal1_new/tm1_2_new[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_normal2_new + '人">' + (pie_tm1_2_normal2_new/tm1_2_new[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_slow_new + '人">' + (pie_tm1_2_slow_new/tm1_2_new[1]*100).toFixed(2) + '%</span></td>'
+        				  + '<td class="right"><span title="' + pie_tm1_2_bad_new + '人">' + (pie_tm1_2_bad_new/tm1_2_new[1]*100).toFixed(2) + '%</span></td>'
+
+        				  + '<td class="right"><span title="' + tm2_3_new[1] + '人样本">' + (tm2_3_new[0]/tm2_3_new[1]).toFixed(2) + '</span></td>'
+        				  + '<td class="right"><span title="' + tm3_4_new[1] + '人样本">' + (tm3_4_new[0]/tm3_4_new[1]).toFixed(2) + '(' + (tm3_4_new[0]/tm3_4_new[1]/60).toFixed(0) + '分钟)</span></td>'
+
+        				  + '</tr>';
+				}
+			}
+			html += '</table>';
+			$('#data_area').html(html);
+
+			var aryHtml = ['<table><tr><th></th><th colspan="10">浏览器未安装flash人次</th><th colspan="10">浏览器未启用cookie人次</th></tr>'];
+			aryHtml.push('<th>日期</th><th>样本数</th><th>IE6</th><th>IE7</th><th>IE8</th><th>IE9</th><th>FF</th><th>Chrome</th><th>Safari</th><th>Opera</th><th>Other</th>');
+			aryHtml.push('<th>样本数</th><th>IE6</th><th>IE7</th><th>IE8</th><th>IE9</th><th>FF</th><th>Chrome</th><th>Safari</th><th>Opera</th><th>Other</th>');
+			if (content) {
+				for(var i in content) {
+					var oddStyle = '';
+					var log_time = content[i].log_time;
+					var noFlash = $.parseJSON(content[i].noflash_browser);
+					var noCookie = $.parseJSON(content[i].nocookie_browser);
+
+					var noFlash_total = 0;
+					var noFlash_ie6 = 0;
+					var noFlash_ie7 = 0;
+					var noFlash_ie8 = 0;
+					var noFlash_ie9 = 0;
+					var noFlash_ff = 0;
+					var noFlash_chrome = 0;
+					var noFlash_safari = 0;
+					var noFlash_opera = 0;
+					var noFlash_other = 0;
+					var noFlash_total_new = 0;
+					var noFlash_ie6_new = 0;
+					var noFlash_ie7_new = 0;
+					var noFlash_ie8_new = 0;
+					var noFlash_ie9_new = 0;
+					var noFlash_ff_new = 0;
+					var noFlash_chrome_new = 0;
+					var noFlash_safari_new = 0;
+					var noFlash_opera_new = 0;
+					var noFlash_other_new = 0;
+
+					var noCookie_total = 0;
+					var noCookie_ie6 = 0;
+					var noCookie_ie7 = 0;
+					var noCookie_ie8 = 0;
+					var noCookie_ie9 = 0;
+					var noCookie_ff = 0;
+					var noCookie_chrome = 0;
+					var noCookie_safari = 0;
+					var noCookie_opera = 0;
+					var noCookie_other = 0;
+					var noCookie_total_new = 0;
+					var noCookie_ie6_new = 0;
+					var noCookie_ie7_new = 0;
+					var noCookie_ie8_new = 0;
+					var noCookie_ie9_new = 0;
+					var noCookie_ff_new = 0;
+					var noCookie_chrome_new = 0;
+					var noCookie_safari_new = 0;
+					var noCookie_opera_new = 0;
+					var noCookie_other_new = 0;
+
+    				if (noFlash) {
+    					noFlash_total = noFlash.total;
+    					noFlash_ie6 = noFlash.IE6;
+    					noFlash_ie7 = noFlash.IE7;
+    					noFlash_ie8 = noFlash.IE8;
+    					noFlash_ie9 = noFlash.IE9;
+    					noFlash_ff = noFlash.FF;
+    					noFlash_chrome = noFlash.Chrome;
+    					noFlash_safari = noFlash.Safari;
+    					noFlash_opera = noFlash.Opera;
+    					noFlash_other = noFlash.Other;
+    					noFlash_total_new = noFlash.total_new;
+    					noFlash_ie6_new = noFlash.IE6_new;
+    					noFlash_ie7_new = noFlash.IE7_new;
+    					noFlash_ie8_new = noFlash.IE8_new;
+    					noFlash_ie9_new = noFlash.IE9_new;
+    					noFlash_ff_new = noFlash.FF_new;
+    					noFlash_chrome_new = noFlash.Chrome_new;
+    					noFlash_safari_new = noFlash.Safari_new;
+    					noFlash_opera_new = noFlash.Opera_new;
+    					noFlash_other_new = noFlash.Other_new;
+					}
+
+					if (noCookie) {
+						noCookie_total = noCookie.total;
+    					noCookie_ie6 = noCookie.IE6;
+    					noCookie_ie7 = noCookie.IE7;
+    					noCookie_ie8 = noCookie.IE8;
+    					noCookie_ie9 = noCookie.IE9;
+    					noCookie_ff = noCookie.FF;
+    					noCookie_chrome = noCookie.Chrome;
+    					noCookie_safari = noCookie.Safari;
+    					noCookie_opera = noCookie.Opera;
+    					noCookie_other = noCookie.Other;
+    					noCookie_total_new = noCookie.total_new;
+    					noCookie_ie6_new = noCookie.IE6_new;
+    					noCookie_ie7_new = noCookie.IE7_new;
+    					noCookie_ie8_new = noCookie.IE8_new;
+    					noCookie_ie9_new = noCookie.IE9_new;
+    					noCookie_ff_new = noCookie.FF_new;
+    					noCookie_chrome_new = noCookie.Chrome_new;
+    					noCookie_safari_new = noCookie.Safari_new;
+    					noCookie_opera_new = noCookie.Opera_new;
+    					noCookie_other_new = noCookie.Other_new;
+					}
+
+    				if (i%2==1) {
+    					oddStyle = 'odd';
+    				}
+    				aryHtml.push('<tr class="odd">');
+    				aryHtml.push('<td >', log_time, '</td>');
+    				aryHtml.push('<td class="right">', noFlash_total, '</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie6, '(',(noFlash_ie6/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie7, '(',(noFlash_ie7/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie8, '(',(noFlash_ie8/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie9, '(',(noFlash_ie9/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ff, '(',(noFlash_ff/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_chrome, '(',(noFlash_chrome/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_safari, '(',(noFlash_safari/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_opera, '(',(noFlash_opera/noFlash_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_other, '(',(noFlash_other/noFlash_total*100).toFixed(1),'%)</td>');
+
+    				aryHtml.push('<td class="right">', noCookie_total, '</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie6, '(',(noCookie_ie6/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie7, '(',(noCookie_ie7/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie8, '(',(noCookie_ie8/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie9, '(',(noCookie_ie9/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ff, '(',(noCookie_ff/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_chrome, '(',(noCookie_chrome/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_safari, '(',(noCookie_safari/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_opera, '(',(noCookie_opera/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_other, '(',(noCookie_other/noCookie_total*100).toFixed(1),'%)</td>');
+    				aryHtml.push('</tr>');
+
+    				aryHtml.push('<tr class="">');
+    				aryHtml.push('<td >新安装用户</td>');
+    				aryHtml.push('<td class="right">', noFlash_total_new, '</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie6_new, '(',(noFlash_ie6_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie7_new, '(',(noFlash_ie7_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie8_new, '(',(noFlash_ie8_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ie9_new, '(',(noFlash_ie9_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_ff_new, '(',(noFlash_ff_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_chrome_new, '(',(noFlash_chrome_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_safari_new, '(',(noFlash_safari_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_opera_new, '(',(noFlash_opera_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noFlash_other_new, '(',(noFlash_other_new/noFlash_total_new*100).toFixed(1),'%)</td>');
+
+    				aryHtml.push('<td class="right">', noCookie_total_new, '</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie6_new, '(',(noCookie_ie6_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie7_new, '(',(noCookie_ie7_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie8_new, '(',(noCookie_ie8_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ie9_new, '(',(noCookie_ie9_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_ff_new, '(',(noCookie_ff_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_chrome_new, '(',(noCookie_chrome_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_safari_new, '(',(noCookie_safari_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_opera_new, '(',(noCookie_opera_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('<td class="right">', noCookie_other_new, '(',(noCookie_other_new/noCookie_total_new*100).toFixed(1),'%)</td>');
+    				aryHtml.push('</tr>');
+				}
+			}
+			aryHtml.push('</table>');
+			$('#data_area2').html(aryHtml.join(''));
+
+
+		} else {
+			$('#data_area').html('获取数据失败');
+			$('#data_area2').html('获取数据失败');
+		}
+	}, "json");
+}
+
+</script>
+</body>
+</html>

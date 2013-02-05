@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>欢乐海岛</title>
+<link href="{%$staticUrl%}/apps/island/main_2011041201.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+object#swfcontent {
+	display: inline;
+}
+
+.box {
+	border: 1px solid #CCCCCC;
+}
+-->
+</style>
+<script type="text/javascript">
+function flashChecker() {
+    var hasFlash=0;　　　　//是否安装了flash
+    var flashVersion=0;　　//flash版本
+
+    if(document.all) {
+        var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+        if(swf) {
+            hasFlash=1;
+            VSwf=swf.GetVariable("$version");
+            flashVersion=parseInt(VSwf.split(" ")[1].split(",")[0]);
+        }
+    } else {
+        if (navigator.plugins && navigator.plugins.length > 0) {
+            var swf=navigator.plugins["Shockwave Flash"];
+            if (swf) {
+        		hasFlash=1;
+               var words = swf.description.split(" ");
+               for (var i = 0; i < words.length; ++i) {
+               		if (isNaN(parseInt(words[i]))) continue;
+                    flashVersion = parseInt(words[i]);
+            	}
+            }
+        }
+    }
+	return {f:hasFlash,v:flashVersion};
+}
+</script>
+</head>
+<body style="margin-left:4px;">
+<div class="main" style="height:725px;">
+{%include file="menu.phtml"%}
+    {% if $showNotice == true %}
+	  <div class="guang">
+    	  <div class="guang_b" style="clear:both;"></div>
+	  {% foreach from=$mainNotice item=data %}
+    	  <div class="zleft guang_z ">{%if $data.link%}<a href="{%$data.link%}" target="_blank">[{%$data.create_time|date_format:"%Y-%m-%d"%}]  {%$data.title%}</a>{%else%}[{%$data.create_time|date_format:"%Y-%m-%d"%}]  {%$data.title%}{%/if%}</div>
+    	 {% /foreach %}
+</div>
+{% /if %}
+<div style="clear:both;"></div>
+	<div id="main_content">
+		<div id="loadingdiv" style="position: absolute; left: 350px; top: 250px;"><img src="{%$staticUrl%}/apps/island/images/common/loading0.gif" /><br/>加载中......</div>
+		<div id="flashdiv"></div>
+		<script src="{%$staticUrl%}/js/swfobject.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			function getCookie(name) {
+				var arr = document.cookie.match(new RegExp('(^| )'+name+'=([^;]*)(;|$)'));
+				if(arr != null) return unescape(arr[2]); return null;
+			}
+
+			var fls=flashChecker();
+			var s="";
+			if(fls.f && fls.v>=10) {
+				var hf_skey = getCookie('hf_skey');
+				if (hf_skey) {
+		        	var flashVars={"ver":"17","pNum":"11","uid":"{%$uid%}","loadingUi":"{%$staticUrl%}/swf/v2.0.1/loadingUi2.swf?v=2011072601","charge":"1", "interfaceUrl":"{%$hostUrl%}/api/initswf?v=2011072001","snsType":"qzone","platform":"{%$smarty.const.PLATFORM_SOURCE%}","pic1":"{%$staticUrl%}/html/b/images/load01.jpg","pic2":"{%$staticUrl%}/html/b/images/load02.jpg"};
+		        	var params = { base: "{%$staticUrl%}/", allowScriptAccess: "always", menu:"false", wmode: "opaque", allowFullScreen: "true", bgcolor: "#ffffff", align: "middle", quality: "high"};
+		        	var attrs = { id: "islandLoader", name: "islandLoader" };
+		        	swfobject.embedSWF("{%$staticUrl%}/swf/v2.0.1/islandLoader.swf?v=2011110901", "flashdiv",  "748", "600", "10.0", "{%$staticUrl%}/expressInstall.swf", flashVars, params, attrs);
+		        } else {
+		        	var html = '<div style="padding-top:50px;color:red;font-size:14px;text-align:center;">检测到您的浏览器没有开启或接收Cookie！请尝试开启后，重新进入。</div>'
+		        	$('#flashdiv').html(html);
+		        }
+			}
+			else {
+				var strhtml = '您没有安装Adobe Flash Player，或者Flash版本过低，建议安装10.0以上版本。<br/>请点击<a href="http://get.adobe.com/cn/flashplayer/" target="_blank">这里</a>进行安装。';
+				$('#loadingdiv').css('left', '100px');
+				$('#loadingdiv').css('top', '150px');
+				$('#loadingdiv').html(strhtml);
+			}
+
+			function hideLoading()
+			{
+	        	document.getElementById('loadingdiv').style.display = "none";
+			}
+		</script>
+	</div>
+</div>
+<script type="text/javascript">
+	var VIEWER_ID = {%$uid%};
+	var OWNER_ID = VIEWER_ID;
+	function goInvite()
+	{
+		location.href = '{%$hostUrl%}/invite/top';
+	}
+
+	function goPay()
+	{
+		HFApp.goQQPay();
+		//window.open('http://pay.qq.com/app_pay/pay.shtml?appid=610');
+		return;
+	}
+
+	function showuser(uid, name, face)
+	{
+	}
+
+	function reloadGame()
+	{
+		top.location.href = 'http://app.pengyou.qq.com/appframe.html?appid=610&height=950&frame=http%3A%2F%2Fmain.island.qzoneapp.com%2F';
+	}
+	function returnGift()
+	{
+		location.href = '{%$hostUrl%}/gift/top';
+	}
+	function goqqpay()
+	{
+		HFApp.goQQPay();
+		return;
+		//window.open('http://pay.qq.com/qzone/index.shtml?cm=mobile&aid=hlhd.op');
+	}
+
+	function goqqpayyear()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=qdqb&aid=hlhd.yop&paytime=year');
+	}
+	function goqqmonth()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=mobile&aid=hlhd.op');
+	}
+	function goqqyear()
+	{
+		window.open('http://pay.qq.com/qzone/index.shtml?cm=qdqb&aid=hlhd.yop&paytime=year');
+	}
+	function goqqyellow()
+	{
+		window.open('{%$staticUrl%}/html/hz/hz.html');
+	}
+	function gotoLuckyDraw()
+	{
+		window.open('http://qbar.qq.com/opensns/1098477.htm');
+	}
+	function sendLuckyDrawFeed()
+	{
+		var title = '快乐岛主嘉年华—Iphone4等你拿哦！你还在犹豫什么？赶快来参加吧~http://qbar.qq.com/opensns/1098477.htm';
+		var picUrl = '';
+
+		shareToWb(title, picUrl);
+	}
+	function sendTeamBuyFeed()
+    {
+		var title = '参加快乐岛主大团购活动，齐心协力捡便宜啦！ 你还在犹豫什么呢？快点进入游戏参活动吧！';
+		var picUrl = 'http://imgcache.qzoneapp.com/island/apps/island/images/event/teambuy.jpg';
+
+		shareToWb(title, picUrl);
+    }
+	function sendStromFeed()
+    	{
+    		var ajaxurl = '{%$hostUrl%}/event/sendstromfeed';
+    		$.ajax({
+    				type: "post",
+    				url: ajaxurl,
+    				dataType: "text",
+    				success: function(msg){
+    					//alert(msg);
+    				}
+    			});
+        }
+</script>
+
+ {%include file="footer.phtml"%}

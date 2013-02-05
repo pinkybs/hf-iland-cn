@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>捕鱼后台</title>
+<script>
+  	function sb_add()
+  	{
+  	  	var cid = document.getElementById('cid').value;
+    	var item_id = document.getElementById('item_id').value;
+    	var material = document.getElementById('material').value;
+		if(cid == "" || item_id == "" || material == "") {
+			alert('请填写完整!');
+			return false;
+		}
+	  	if(confirm("确定要添加吗?")) {
+			return true;
+		}
+		return false;
+  	}
+</script>
+</head>
+<body>
+	<div>
+	<table align=center>
+		<tr>
+			<td><a href="{%$hostUrl%}/mycatchfish/fishinfo">修改鱼信息</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/probability">修改鱼捕获概率</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/relicplant">修改遗迹建筑</a>&nbsp;&nbsp;&nbsp;</td>
+			<td><a href="{%$hostUrl%}/mycatchfish/stat">查看统计</a>&nbsp;&nbsp;&nbsp;</td>
+		</tr>
+	</table>
+	</div>
+	<br><br>
+	<div>
+				
+		  <table border=1 width=70% align=center>
+		  <tr>
+		  	<td width="100px;" align=center><b>初级建筑CID</b></td>
+			<td width="100px;" align=center><b>设施分区ID</b></td>
+			<td width="100px;" align=center><b>是否充值获得</b></td>
+			<td width="400px;" align=center><b>兑换需要的碎片</b></td>
+			<td width="100px;" align=center><b>操作</b></td>
+		  </tr>
+		  </table>
+		  {% if $data %}
+		  {% foreach from=$data item=data %}
+		  <form action="{%$hostUrl%}/mycatchfish/relicplant" method="post" target="tgIframe">
+		  <table border=1 width=70% align=center>
+		  <tr>
+		  	<td align=center width="100px;"><input type="text" name="cid" value="{%$data.cid%}" style="width:80px;"></td>
+			<td align=center width="100px;"><input type="text" name="item_id" value="{%$data.item_id%}" style="width:80px;"></td>
+			<td align=center width="100px;">
+			<select name="isGem" style="width:50px;">
+				<option value="0" {% if $data.isGem == 0 %}selected {%/if%} >否</option>
+				<option value="1" {% if $data.isGem == 1 %}selected {%/if%} >是</option>
+			</select>
+			</td>
+			<td align=center width="100px;">
+			<textarea style="width:400px;height:80px;" name="material">{%$data.material%}</textarea></td>
+			<td align=center width="100px;"><input type="submit" name="update" value="更新数值"></td>
+		  </tr>
+		  <input type="hidden" name="act" value="update">
+		  <input type="hidden" name="id" value="{%$data.id%}">
+		  </table>
+		  </form>		  
+		  {% /foreach %}
+		  {% /if %}
+		  
+		  <br><br><br>
+
+		  <form action="{%$hostUrl%}/mycatchfish/relicplant" method="post" onsubmit="return sb_add();">
+		  <table border=0 width=70% align=center>
+		  <tr>
+		  	<td align=center width="100px;" colspan=2><font color=red>添加遗迹建筑</font></td>
+		  </tr>
+		  <tr>
+		  	<td align=left width="100px;">初级建筑CID</td>
+		  	<td align=left width="100px;"><input type="text" name="cid" value="" style="width:80px;" id="cid"></td>
+		  </tr>	
+		  <tr>
+		  	<td align=left width="100px;">设施分区ID</td>
+		  	<td align=left width="100px;"><input type="text" name="item_id" value="" style="width:80px;" id="item_id"></td>
+		  </tr>			  	  
+		  <tr>
+		  	<td align=left width="100px;">是否充值获得</td>
+			<td align=left width="100px;">
+			<select name="isGem" style="width:50px;">
+				<option value="0" {% if $data.isGem == 0 %}selected {%/if%} >否</option>
+				<option value="1" {% if $data.isGem == 1 %}selected {%/if%} >是</option>
+			</select>
+			</td>
+		  </tr>
+		  <tr>
+		  	<td align=left width="100px;">兑换需要的碎片</td>			
+			<td align=left width="100px;">
+			<textarea style="width:400px;height:80px;" name="material" id="material">[[142441,5]*[142441,6]*[142441,7]*[142441,8]*[142441,9]*[142441,10]*[142441,11]*[142441,12]*[142441,13]*[142441,14]*[142441,3]*[142441,4]*[142441,5]*[142441,6]*[142441,7]]</textarea>
+			</td>
+		  </tr>
+		  <tr>			
+			<td align=center width="100px;" colspan=2><input type="submit" name="update" value="添  加"></td>
+		  </tr>
+		  </table>
+		  <input type="hidden" name="act" value="add">
+		  </form>
+		  
+	</div>
+</body>
+<iframe name="tgIframe" id="tgIframe" style="display:none;width:0;height:0;"></iframe>
+</html>

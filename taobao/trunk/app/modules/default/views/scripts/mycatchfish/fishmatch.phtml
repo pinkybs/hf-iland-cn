@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>赛鱼统计后台</title>
+<style type="text/css">
+td {
+	border: 1px solid #B1CBE2;
+}
+table {
+	border: 1px solid #666666;
+}
+</style>
+</head>
+<body>
+	<br />
+	<div>
+		<form action="{%$hostUrl%}/mycatchfish/fishmatch" method="post">
+		<table align=center>
+			<tr>
+				<td>请输入日期:</td>
+				<td><input type="text" name="date" value="{%$date%}"></td>
+				<td><input type="submit" name="search" value="查询"></td>
+				<td align=right width=400>
+				<a href="{%$hostUrl%}/mycatchfish/probability">去修改概率</a>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="{%$hostUrl%}/mycatchfish/product">去修改商品</a>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="{%$hostUrl%}/mycatchfish/stat">查看统计</a>									
+				</td>
+			</tr>
+		</table>
+		<input type="hidden" name="act" value="search">
+		</form>
+		日常统计<br/>
+		  <table border=0 width=50% >
+		  	<tr>
+			  	<td align=center><b>日期</b></td>
+			  	<td align=center><b>参加人数</b></td>
+			  	<td align=center><b>培育人数</b></td>
+			  	<td align=center><b>升级人数</b></td>
+			  	<td align=center><b>使用合成石人数</b></td>
+			  	<td align=center><b>完成海域1人数</b></td>
+		  	</tr>
+		  	  {% foreach from=$compound item=data %}
+		  	<tr>
+			  	<td align=center>{%$data.date%}</td>
+			  	<td align=center><b>{%$data.total_num%}</b></td>
+			  	<td align=center><b>{%$data.com%}</b></td>
+			  	<td align=center><b>{%$data.levelUp%}</b></td>
+			  	<td align=center><b>{%$data.card%}</b></td>
+			  	<td align=center><b>{%$sea.1.num%}</b></td>
+		  	</tr>
+		  	{%/foreach%}
+		  </table><br/>
+		  关卡统计<br/>
+		  <table border=0 width=20% >
+		  	<tr>
+			  	<td align=center><b>关卡</b></td>
+			  	<td align=center><b>挑战人数</b></td>
+			  	<td align=center><b>胜利次数</b></td>
+		  	</tr>
+		  	  {% foreach from=$pve item=data%}
+		  	<tr>
+			  	<td align=center>{%$data.tid%}</td>
+			  	<td align=center><b>{%$data.num%}</b></td>
+			  	<td align=center><b>{%$data.win%}</b></td>
+		  	</tr>
+		  	{%/foreach%}
+		  </table><br/>
+		  培育统计<br/>
+		   <table border=0 width=20% >
+		  	<tr>
+			  	<td align=center><b>鱼种</b></td>
+			  	<td align=center><b>总数</b></td>
+			  	<td align=center><b>成功数</b></td>
+		  	</tr>
+		  	  {% foreach from=$detail item=data%}
+		  	<tr>
+			  	<td align=center>{%$data.fid%}</td>
+			  	<td align=center><b>{%$data.total_num%}</b></td>
+			  	<td align=center><b>{%$data.s_num%}</b></td>
+		  	</tr>
+		  	{%/foreach%}
+		  </table>
+		  
+		   <table border=0 width=50%>
+		  	<tr>
+			  	<td align=center><b>单人培育次数</b></td>
+			  	<td align=center><b>人数</b></td>
+			  	<td align=center><b>成功数</b></td>
+			  	<td align=center><b>资质1个数</b></td>
+			  	<td align=center><b>资质2个数</b></td>
+			  	<td align=center><b>资质3个数</b></td>
+		  	</tr>
+		  	  {% foreach from=$step item=data%}
+		  	   {%if $data.type==1%}
+		  	<tr>
+			  	<td align=center>{%$data.step%}</td>
+			  	<td align=center><b>{%$data.total%}</b></td>
+			  	<td align=center><b>{%$data.s_num%}</b></td>
+			  	<td align=center>{%$data.prefix1%}</td>
+			  	<td align=center><b>{%$data.prefix2%}</b></td>
+			  	<td align=center><b>{%$data.prefix3%}</b></td>
+		  	</tr>
+		  	{%/if%}
+		  	{%/foreach%}
+		  </table><br/>
+		  升级统计<br/>
+		   <table border=0 width=70%>
+		  	<tr>
+			  	<td align=center><b>鱼种</b></td>
+			  	<td align=center><b>总次数</b></td>
+			  	<td align=center><b>成功数</b></td>
+			  	<td align=center><b>LEVEL2</b></td>
+			  	<td align=center><b>LEVEL3</b></td>
+			  	<td align=center><b>LEVEL4</b></td>
+			  	<td align=center><b>LEVEL5</b></td>
+			  	<td align=center><b>LEVEL6</b></td>
+			  	<td align=center><b>LEVEL7</b></td>
+			  	<td align=center><b>LEVEL8</b></td>
+			  	<td align=center><b>LEVEL9</b></td>
+			  	<td align=center><b>LEVEL10</b></td>
+		  	</tr>
+		  	  {% foreach from=$levelUp item=data%}
+		  	<tr>
+			  	<td align=center>{%$data.fid%}</td>
+			  	<td align=center>{%$data.total_num%}</td>
+			  	<td align=center>{%$data.s_num%}</td>
+			  	<td align=center>{%$data.level2%}</td>
+			  	<td align=center>{%$data.level3%}</td>
+			  	<td align=center>{%$data.level4%}</td>
+			  	<td align=center>{%$data.level5%}</td>
+			  	<td align=center>{%$data.level6%}</td>
+			  	<td align=center>{%$data.level7%}</td>
+			  	<td align=center>{%$data.level8%}</td>
+			  	<td align=center>{%$data.level9%}</td>
+			  	<td align=center>{%$data.level10%}</td>
+		  	</tr>
+		  	{%/foreach%}
+		  </table>
+		  
+		  <table border=0 width=20%>
+		  	<tr>
+			  	<td align=center><b>单人升级次数</b></td>
+			  	<td align=center><b>人数</b></td>
+			  	<td align=center><b>成功数</b></td>
+		  	</tr>
+		  	  {% foreach from=$step item=data%}
+		  	  {%if $data.type==2%}
+		  	<tr>
+			  	<td align=center>{%$data.step%}</td>
+			  	<td align=center><b>{%$data.total%}</b></td>
+			  	<td align=center><b>{%$data.s_num%}</b></td>
+		  	</tr>
+		  	{%/if%}
+		  	{%/foreach%}
+		  </table><br/>
+		  合成石统计<br/>
+		   <table border=0 width=15%>
+		  	<tr>
+			  	<td align=center><b>使用次数</b></td>
+			  	<td align=center><b>人数</b></td>
+		  	</tr>
+		  	  {% foreach from=$comCard item=data%}
+		  	<tr>
+			  	<td align=center><b>{%$data.step%}</b></td>
+			  	<td align=center><b>{%$data.num%}</b></td>
+		  	</tr>
+		  	{%/foreach%}
+		  </table><br/>
+		  		  符石统计<br/>
+		   <table border=0 width=15%>
+		  	<tr>
+			  	<td align=center><b>符石</b></td>
+			  	<td align=center><b>当日发出</b></td>
+			  	<td align=center><b>当日使用</b></td>
+		  	</tr>
+		  	  {% foreach from=$skill item=data%}
+		  	<tr>
+			  	<td align=center><b>{%$data.sid%}</b></td>
+			  	<td align=center><b>{%$data.get%}</b></td>
+			  	<td align=center><b>{%$data.use%}</b></td>
+		  	</tr>
+		  	{%/foreach%}
+		  </table><br/>
+		  竞技统计<br/>
+		  <table border=0 width=70%>
+		  	<tr>
+		  		<td align=center><b>好友次数</b></td>
+			  	<td align=center><b>好友人数</b></td>
+			  	<td align=center><b>竞技场次数</b></td>
+			  	<td align=center><b>竞技场人数</b></td>
+			  	<td align=center><b>发出声望</b></td>
+			  	<td align=center><b>使用声望</b></td>
+			  	<td align=center><b>发出资质石</b></td>
+			  	<td align=center><b>使用资质石</b></td>
+			  	<td align=center><b>精英</b></td>
+			  	<td align=center><b>神奇</b></td>
+		  	</tr>
+		  	<tr>
+			  	<td align=center><b>{%$pvp.num%}</b></td>
+			  	<td align=center><b>{%$pvp.pnum%}</b></td>
+			  	<td align=center><b>{%$pvp.num1%}</b></td>
+			  	<td align=center><b>{%$pvp.pnum1%}</b></td>
+			  	<td align=center><b>{%$pvp.snums%}</b></td>
+			  	<td align=center><b>{%$pvp.snumu%}</b></td>
+			  	<td align=center><b>{%$pvp.znums%}</b></td>
+			  	<td align=center><b>{%$pvp.znumu%}</b></td>
+			  	<td align=center><b>{%$pvp.prefix2%}</b></td>
+			  	<td align=center><b>{%$pvp.prefix3%}</b></td>
+		  	</tr>
+		  </table><br/>
+		  声望兑换<br/>
+		   <table border=0 width=15%>
+		  	<tr>
+			  	<td align=center><b>日期</b></td>
+			  	<td align=center><b>id</b></td>
+			  	<td align=center><b>数量</b></td>
+		  	</tr>
+		  	  {% foreach from=$zizhi item=data%}
+		  	<tr>
+			  	<td align=center><b>{%$data.date%}</b></td>
+			  	<td align=center><b>{%$data.id%}</b></td>
+			  	<td align=center><b>{%$data.num%}</b></td>
+		  	</tr>
+		  	{%/foreach%}
+		  </table>
+	</div>
+</body>
+</html>

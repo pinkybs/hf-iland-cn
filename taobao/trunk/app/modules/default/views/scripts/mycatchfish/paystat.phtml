@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>圣诞节后台配置</title>
+<style type="text/css">
+table{
+	border: 1px solid #C9C9C9;
+	background: none repeat scroll 0 0 #F5F8FC;
+}
+th{
+	border: 1px solid #C9C9C9;
+}
+.basic-input {
+	border: 1px solid #C9C9C9;
+	border-bottom-left-radius: 3px 3px;
+	border-bottom-right-radius: 3px 3px;
+	border-top-left-radius: 3px 3px;
+	border-top-right-radius: 3px 3px;
+	font-size: 14px;
+	height: 15px;
+	padding: 5px;
+	width: 200px;
+}
+.detail {
+	width:80%;
+}
+</style>
+</head>
+<body>
+<div id="wrapper">
+
+	<div id="content">
+		<div class="grid-8-2 clearfix">
+	    	<div class="article">
+				 <table style="margin-bottom:20px;width:40%;">
+			         <tr>
+			        <th>门牌号</th>
+			        <th>充值金额</th>
+			        </tr>
+			          {% foreach from=$list item=data key=key %}
+			         <tr>
+			        <th>{%$data.uid%}</th>
+			        <th>{%$data.money%}</th>
+			        </tr>
+			           {% /foreach %}
+			     </table>
+	    	</div>
+	    </div>
+	</div>
+</div>
+</body>
+</html>

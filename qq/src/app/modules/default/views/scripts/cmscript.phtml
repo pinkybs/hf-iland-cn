@@ -1,0 +1,170 @@
+<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+<!-- <script src="http://qzonestyle.gtimg.cn/ac/applib/fusion/lib_v1.10.js" charset="utf-8" type="text/javascript"></script> -->
+{% if $smarty.const.PLATFORM_SOURCE=="1" %}
+<script type="text/javascript" charset="utf-8" src="http://fusion.qq.com/fusion_loader?appid=610&platform=qzone"></script>
+{% else %}
+<script type="text/javascript" charset="utf-8" src="http://fusion.qq.com/fusion_loader?appid=610&platform=pengyou"></script>
+{% /if %}
+
+<script type="text/javascript">
+    function ffdebug(content) {
+    	if (window.console && console.debug) {
+    		console.debug(content);
+    	}
+    }
+
+	var HFApp = {
+		appId: '{%$smarty.const.APP_ID%}',
+
+		setHeight: function(height) {
+			if (isNaN(parseInt(height))) {
+				height = '1000';
+			}
+			fusion.canvas.setHeight(height);
+	    },
+
+		sendFeed: function(body, img) {
+			if (body == undefined) {
+				body = ' ';
+			}
+			if (img == undefined) {
+				//fusion.dialog.tweet({appid:HFApp.appId, msg:body});
+				fusion2.dialog.tweet({msg:body});
+			}
+			else {
+				//fusion.dialog.tweet({appid:HFApp.appId, msg:body, url:img});
+				fusion2.dialog.tweet({msg:body, url:img});
+			}
+		},
+
+		sendInvite: function() {
+			//fusion.dialog.inviteFriend({appid:HFApp.appId});
+			fusion2.dialog.invite();
+		},
+
+		toFriendPage: function(openId) {
+			fusion.nav.toFriendHome(openId);
+		},
+
+		toHomePage: function() {
+			fusion.nav.toHome();
+		},
+
+		shareToQzone: function(feed) {
+			var dt = new Date();
+			var p = {
+					url: 'http://rc.qzone.qq.com/myhome/610?ts='+ dt.getTime(),
+					desc: feed.templateContent,/*默认分享理由(可选)*/
+					summary: feed.text,/*摘要(可选)*/
+					title: '欢乐海岛',/*分享标题(可选)*/
+					site:'',/*分享来源 如：腾讯网(可选)*/
+					pics: feed.img /*分享图片的路径(可选)*/
+					};
+			var s = [];
+			for(var i in p){
+				s.push(i + '=' + encodeURIComponent(p[i]||''));
+			}
+			var url = 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?';
+			url = [url,s.join('&')].join('');
+			window.open(url, "", 'width=600, height=600, top=100, left=400, toolbar=no, menubar=no, scrollbars=no, location=yes, resizable=no, status=no');
+		},
+
+		isQzone: function() {
+			if (location.href.indexOf(".qzone.qzoneapp.com") > 0) {
+		    	return true;
+		    } else {
+		    	return false;
+		    }
+		},
+
+		qpointPay: function(id) {
+			$.ajax({
+                type: 'POST',
+                url: '/api/qpointpay',
+                data: {"cid": id},
+                dataType: "json",
+                timeout: 10000,
+                success: function(resp){
+                	if (resp.status==1) {
+                    	//alert(resp.token);
+                    	//alert(resp.url_params);
+                    	fusion.dialog.buy({
+                    	      appid : HFApp.appId,
+                    	      sandbox: "1",
+                    	      param : resp.url_params,
+                    	      callback : HFApp.payDone
+                    	   });
+                	}
+                	else {
+                		alert(resp.content);
+                    }
+                },
+        		error: function(resp){
+        			ffdebug('err:'+resp);
+        		},
+        		complete: function(resp){
+        			//ffdebug('complete:'+resp);
+        		}
+	 		});
+		},
+
+		qpointBuy: function(urlParams) {
+            //alert(urlParams);
+        	//fusion.dialog.buy({
+			fusion2.dialog.buy({
+        	      //appid : HFApp.appId,
+        	      {% if $smarty.const.QPOINT_PAY_HOST_BUY=="https://119.147.75.204" %}
+        	      sandbox: "1",
+        	      {% /if %}
+        	      param : urlParams,
+        	      //callback : HFApp.payDone
+        	      onSuccess : HFApp.payDone
+        	   });
+		},
+
+		goQQPay: function() {
+			//fusion.dialog.recharge({appid:HFApp.appId});
+			fusion2.dialog.recharge();
+		},
+
+		goQQPayCheck: function() {
+			//fusion.dialog.checkBalance({appid:HFApp.appId});
+			fusion2.dialog.checkBalance();
+		},
+
+
+		payDone:function(ret) {
+			//alert('pay done');
+			//alert(ret.ret);
+			callExternal1();
+		}
+	};
+
+
+	var _CHANELFOR_FLASH='';
+    function goQpointPay(token, chanel) {
+    	_CHANELFOR_FLASH = chanel;
+    	HFApp.qpointBuy(token);
+    	return;
+    }
+
+    function callExternal1() {
+    	thisMovie("islandLoader").callbackQPointPay(_CHANELFOR_FLASH, 0);
+    }
+
+    function thisMovie(movieName) {
+    	if (navigator.appName.indexOf("Microsoft") != -1) {
+    	   return window[movieName];
+    	}else{
+    	   return document[movieName];
+    	}
+    }
+
+</script>
+
+<script type="text/javascript">
+	//fusion.init();
+	fusion.system.debug() ;
+	//setTimeout(function(){fusion.init();}, 2000);
+	//fusion.system.debug();
+</script>

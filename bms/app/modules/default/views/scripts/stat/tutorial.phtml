@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>快乐岛主</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;margin-bottom:10px;width: 1100px;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;padding:4px;}
+td{padding:2px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+.end{background: none repeat scroll 0 0 #EAF2F5;font-weight:bold;text-align:right;}
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/ofc/js/swfobject.js" type="text/javascript"></script>
+	<div>
+		<div id="searchTab" class="div7">
+			<label style="padding-left: 15px;">统计开始日期：<input type="text" value="{%$startday%}" class="DatePicker" name="startday" id="startday"></label>
+			<label style="padding-left: 15px;">统计结束日期：<input type="text" value="{%$endday%}" class="DatePicker" name="endday" id="endday"></label>
+			<input type="button" name="submit" id="submit" onclick="javascript:getContent();" value="查看" />
+		</div>
+	</div>
+	<div id="data_area" style="margin:10px;overflow-x:auto;"></div>
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+var cachedata = null;
+
+function formateDate(day)
+{
+	return day.substr(0,4) + '-' + day.substr(4,2) + '-' + day.substr(6,2);
+}
+
+function showTable(content)
+{
+	var html = ['<table id="tb_tutorial_content"><tr><th rowspan="2">日期</th><th colspan="2">当日参加新手引导人数</th>'];
+	var j = 1;
+	for(j = 1; j <= 8; j++) {
+		html.push('<th colspan="2">引导 ', j, '</th>');
+	}
+	html.push('</tr><tr><th>总用户</th><th>新用户</th>');
+	for(j = 1; j <= 8; j++) {
+		html.push('<th>总(%)</th><th>新(%)</th>');
+	}
+	html.push('</tr>');
+
+	if (content) {
+		var tucount = tucount1 = 0;
+		var t1=[0,0,0,0,0,0,0,0];
+		var t2=[0,0,0,0,0,0,0,0];
+		var index = [1,3,2,7,4,5,6,8];
+		var n=0;
+		for(var i in content) {
+			n++;
+			var h1=[0,0,0,0,0,0,0,0];
+			var h2=[0,0,0,0,0,0,0,0];
+			html.push('<tr');
+			if (i%2 ==0) {
+				html.push(' class="odd"');
+			}
+			html.push('><td>', formateDate(content[i].log_time), '</td><td><span title="男：', content[i].data.mcount, '/女：', content[i].data.fcount, '">',
+				content[i].data.ucount, '</span></td><td><span title="男：', content[i].data.mcount1, '/女：', content[i].data.fcount1, '">',
+				content[i].data.ucount1, '</span></td>'
+			);
+			tucount += content[i].data.ucount;
+			tucount1 += content[i].data.ucount1;
+			//for(j = 1; j <= 8; j++) {
+			for(var k=0;k<8;k++) {
+				j = index[k];
+				h1[j-1] = Math.round((content[i].data['help_' + j].u * 10000.0)/content[i].data.ucount)/100;
+				h2[j-1] = Math.round((content[i].data['help_' + j].u1 * 10000.0)/content[i].data.ucount1)/100;
+				t1[j-1] += h1[j-1];
+				t2[j-1] += h2[j-1];
+				html.push('<td <span title="', content[i].data['help_' + j].u,  '/男：', content[i].data['help_' + j].m, '/女：', content[i].data['help_' + j].f, '">',
+					h1[j-1], '</span></td><td><span title="', content[i].data['help_' + j].u1 ,'/男：', content[i].data['help_' + j].m1, '/女：', content[i].data['help_' + j].f1, '">',
+					h2[j-1], '</span></td>'
+				);
+    	    }
+    	    html.push('</tr>');
+		}
+		html.push('<tr class="end"><td>平均</td><td>', Math.round(tucount/n), '</td><td>', Math.round(tucount1/n), '</td>');
+		//for(j = 1; j <= 8; j++) {
+		for(var k=0;k<8;k++) {
+			j = index[k];
+			html.push('<td>', Math.round(t1[j-1]*100.0/n)/100, '%</td><td>', Math.round(t2[j-1]*100.0/n)/100, '%</td>');
+		}
+	}
+
+	html.push('</table>');
+	$('#data_area').html(html.join(''));
+}
+
+function getContent()
+{
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var dt = {startday:startday, endday:endday};
+	$.get('/statapi/tutorial?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var content = data.data;
+			cachedata = content;
+			showTable(content);
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+getContent();
+
+</script>
+</body>
+</html>

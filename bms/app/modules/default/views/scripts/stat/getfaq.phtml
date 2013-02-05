@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>建筑升级-等级分布</title>
+<link media="screen" type="text/css" rel="stylesheet" href="{%$staticUrl%}/a/gb_app.css">
+<link type="text/css" rel="stylesheet" href="{%$staticUrl%}/style/itil.css">
+<style type="text/css">
+<!--
+html{overflow:scroll!important;}
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+a img,:link img,:visited img {
+	border: 0 none;
+}
+
+table{font-size:12px;border-collapse: collapse;border-spacing: 0;empty-cells: show;width: 98%;}
+th, td {border: 1px solid #B1CBE2;}
+th{background-color: #D5E7F3;}
+td{padding:2px;}
+.odd{background-color: #EAF2F5;}
+.total{font-weight:bold;}
+
+-->
+</style>
+<style type="text/css">@import url({%$staticUrl%}/script/calendar/jquery.datepick.css);</style>
+</head>
+<body>
+<div style="height:1500px; font-size:12px;">
+	<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/js/utils.js?v=1.0" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/script/calendar/jquery.datepick.js?v=20110107" type="text/javascript"></script>
+	<script src="{%$staticUrl%}/ofc/js/swfobject.js" type="text/javascript"></script>
+	<div>
+		<div id="searchTab" class="div7">
+			<label style="padding-left: 15px;">统计开始日期：<input type="text" value="{%$startday%}" class="DatePicker" name="startday" id="startday"></label>
+			<label style="padding-left: 15px;">统计结束日期：<input type="text" value="{%$endday%}" class="DatePicker" name="endday" id="endday"></label>
+			<input type="button" name="submit" id="submit" onclick="javascript:getContent();" value="查看" />
+		</div>
+		<span style="font-size:15px;font-weight:bold;">问题类型:</span>
+		<select id="slt_type" onchange="selectType(this.value)">
+			<option value="3">请选择问题类型</option >&nbsp;&nbsp;
+			<option value="1">意见</option>&nbsp;&nbsp;
+			<option value="2">bug</option>&nbsp;&nbsp;
+		</select>
+		<span style="font-size:15px;font-weight:bold;">按问题id查找:</span>
+		<input id="qid" value="" size="4"/>
+		<input type="button" value="查找" onclick="javascript:getContent();"/>
+		&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="导出" id="" onclick="javascript:exportfaq();"/>
+		<div id="div_chart">
+			<div id="level_chart">
+			</div>
+		</div>
+	</div>
+	<div id="data_area" style="margin:10px;"></div>
+	<input type="hidden" id="page" value=1 />
+	<input type="hidden" id="qtype" value=3 />
+</div>
+<script type="text/javascript">
+
+$.ajaxSetup({cache:false});
+
+function getContent()
+{	
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var page = $("#page").val();
+	var qtype = $("#qtype").val();
+	var qid = $("#qid").val();
+	var dt = {startday:startday, endday:endday, page:page, type:qtype,id:qid};
+	$.get('/statapi/getfaq?platform={%$platform%}', dt, function(data) {
+		if (data.errno == 0) {
+			var content = data.data.data;
+			var html = [];
+			html.push('<table><tr><th>问题类型</th><th>问题id</th><th>门牌号</th><th>问题描述</th><th>详细</th><th>ip</th><th style="width:85px;">地区</th><th style="width:60px;">线路</th><th style="width:62px;">flash版本</th><th>浏览器</th><th>日期</th></tr>');
+			var total = 0;
+			var i;
+			var count = 0, rate = 0, allCnt = 0;
+			for(i in content) {
+				var date = new Date(content[i].create_time*1000);
+				if(content[i].type == 1){
+					var type = '意见';
+				}else{
+					var type = 'bug';
+				}
+    			html.push('<tr');
+    			if (i%2 ==0) {
+    				html.push(' class="odd"');
+    			}
+    			html.push('><td>', type, '</td>',
+    				  '<td>', content[i].id, '</td>',
+    				  '<td>', content[i].uid, '</td>',
+    				  '<td>', content[i].title, '</td>',
+    				  '<td>', content[i].content, '</td>',
+    				  '<td>', content[i].ip, '</td>',
+    				  '<td>', content[i].diqu, '</td>',
+    				  '<td>', content[i].xianlu, '</td>',
+    				  '<td>', content[i].flash, '</td>',
+    				  '<td>', content[i].browser, '</td>',
+    				  '<td>', date.format("Y-m-d"), '</td>',
+    				  '</tr>');
+			}
+			html.push('</table><br/><br/>');
+			html.push(data.data.page);
+			$('#data_area').html(html.join(''));
+			
+			var chartData = data.chart;
+			if (chartData) {
+				chart_data = chartData;
+				showChart();
+			}
+		} else {
+			$('#data_area').html('获取数据失败');
+		}
+	}, "json");
+}
+
+getContent();
+
+$("#stattime").change(function (){
+	getContent();
+});
+
+function goPage(page)
+{
+	$("#page").val(page);
+	getContent();
+}
+
+function selectType(type)
+{
+	$("#qtype").val(type);
+	getContent();
+}
+function exportfaq()
+{
+	var html = [];
+	var startday = $("#startday").val();
+	var endday = $("#endday").val();
+	var page = $("#page").val();
+	var qtype = $("#qtype").val();
+	var qid = $("#qid").val();
+	html.push(
+		'<form method="post" action="/statapi/exportfaq" id="eform">',
+		'<input type="hidden" name="type" value="',qtype,'">',
+		'<input type="hidden" name="startday" value="',startday,'">',
+		'<input type="hidden" name="endday" value="',endday,'">',
+		'<input type="hidden" name="page" value="',page,'">',
+		'<input type="hidden" name="id" value="',qid,'">',
+		'<input type="hidden" name="platform" value="{%$platform%}">',
+		'</form>'
+		);
+	$('#level_chart').html(html.join(''));
+	$('#eform').submit();
+	
+}
+</script>
+</body>
+</html>

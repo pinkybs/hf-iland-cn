@@ -1,0 +1,39 @@
+/*首页样式*/
+/*头部 s*/
+.header a:link,
+.header a:visited{color:#3f6c96}
+.header .logo{position:relative; top:0;left:0;text-indent:-9999px;height:60px;background:url(../image/ozone/top.jpg) no-repeat;}
+.header .logo .goto_index{display: block;height: 60px;width: 265px;}
+.menu_top_wrap{position:absolute;right:8px;top:5px;}
+.menu_top_wrap a,.menu_top_wrap a:link,.menu_top_wrap a:visited{color: #04656A;}
+
+/*头部 s*/
+
+#content_frame_main .bread{padding:9px 10px 3px 10px;margin-bottom:10px;background-position:-74px -97px;border-bottom:1px solid #CCC;}
+#content_frame_main .menu_op{position:absolute;right:20px;top:7px;}
+#content_frame_main .menu_op a{margin-left:8px;}
+#content_frame_main{background: white;}
+/*layout s*/
+.wrap{margin:0 auto;}
+.header,
+.container{text-align:left;position:relative;width:100%}
+.content_main{position:relative;}
+#main_hit{position:relative;min-width:700px;overflow:hidden;}
+#content_frame_main{margin-left:202px;position:relative;z-index:2;height:100%;padding-left: 15px;}
+#cont_general_op_path{zoom:1;}
+#content_frame_sub{width:202px;position:absolute;top:0;left:0;_margin-left:0px;z-index:1;overflow: hidden;}
+
+
+
+
+/*全屏切换条 s*/
+.switch-bar{height:100%;position:absolute;left:202px;width:5px;z-index: 99;}
+.switch-bar a{cursor: e-resize;}
+.switch-bar a{height:100%;display:block;text-indent:-9999px;width:3px;border:1px solid #cde0ee;border-width:0 1px;background-color:#ebf3f8;background-position:0 center;outline:none;}
+.switch-bar a:hover{background-position:-6px center;}
+
+
+.header{z-index:100;overflow:hidden;font-family:Arial,Helvetica,sans-serif;height:60px;border:1px solid #BDD3EC;}
+#tree,#main{height:800px;}
+
+

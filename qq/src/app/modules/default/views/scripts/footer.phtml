@@ -1,0 +1,81 @@
+<iframe width="750" height="170" frameborder="0" scrolling="no" src="{%$staticUrl%}/html/b/index.html?v=2010111801"></iframe>
+
+<div style="width:750px;align:center;text-align:center;font-weight:bold;">
+<div>【欢乐海岛】应用由上海乐鱼数码提供，若您在游戏中遇到问题，请<a href="http://qbar.qq.com/opensns/197.htm" target="_blank">点击这里</a>，或者联系乐鱼客服：<a href="http://wpa.qq.com/msgrd?V=1&Uin=800004811&Site=欢乐海岛&Menu=yes" target="_blank"><img border="0" style="top:6px;position:relative;" alt="800004811" title="800004811" src="http://wpa.qq.com/pa?p=1:800004811:1"></a>
+</div>
+<div style="color:#3b5998;padding-top:2px;">小岛门牌号: {%$uid%}<span id="userinfo" style="color:red;"></span></div>
+<div>
+<script type="text/javascript">
+function shareToPengyou()
+{
+	var url = 'http://app.pengyou.qq.com/appframe.php?appid=610&height=950&frame=http%3A%2F%2Fmain.island.qzoneapp.com%2F';
+	window.open('http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?to=pengyou&url='+encodeURIComponent(url));
+}
+
+function shareToWb(title, picUrl)
+{
+	var _t = encodeURI(title);
+	var _url = encodeURIComponent('http://app.pengyou.qq.com/appframe.php?appid=610&height=950&frame=http%3A%2F%2Fmain.island.qzoneapp.com%2F');
+	var _appkey = encodeURI('ac837cbc11fd42c6a9930fdaeab0bd1f');
+	var _pic = encodeURI(picUrl);
+	var _site = 'http://app.pengyou.qq.com/appframe.php?appid=610&height=950&frame=http%3A%2F%2Fmain.island.qzoneapp.com%2F';
+	var _u = 'http://v.t.qq.com/share/share.php?url='+_url+'&appkey='+_appkey+'&site='+_site+'&pic='+_pic+'&title='+_t;
+	window.open( _u,'', 'width=700, height=600, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, location=no, resizable=no, status=no');
+}
+</script>
+</div>
+</div>
+
+{%include file="cmscript.phtml"%}
+<script type="text/javascript">
+	function sendNormalFeed()
+	{
+		if (HFApp.isQzone()) {
+			var feed = {templateContent:'阳光？沙滩？美女？帅哥！尽在欢乐海岛！赶快加入吧~\n', text:'赶快来玩吧~', img:'{%$staticUrl%}/apps/island/images/feed/join.jpg'};
+			HFApp.shareToQzone(feed);
+		} else {
+			HFApp.sendFeed('阳光？沙滩？美女？帅哥！尽在欢乐海岛！赶快加入吧~\n', '{%$staticUrl%}/apps/island/images/feed/join.jpg');
+		}
+		return true;
+	}
+
+	function sendfeeds(feed)
+    {
+		var obj = $.parseJSON(feed);
+		if (HFApp.isQzone()) {
+			var feed2 = {templateContent:obj.body, text:'赶快来玩吧~\n', img:obj.image};
+			HFApp.shareToQzone(feed2);
+		}
+		else {
+    		HFApp.sendFeed(obj.body, obj.image);
+		}
+    	return true;
+    }
+
+	function sendFeed(feed)
+    {
+		var obj = $.parseJSON(feed);
+		if (HFApp.isQzone()) {
+			var feed2 = {templateContent:obj.body, text:'赶快来玩吧~\n', img:obj.image};
+			HFApp.shareToQzone(feed2);
+		}
+		else {
+    		HFApp.sendFeed(obj.body, obj.image);
+		}
+    	return true;
+    }
+
+	function navToProfile(openid)
+	{
+		HFApp.toFriendPage(openid);
+		return true;
+	}
+
+	HFApp.setHeight("950");
+	var FIRST_LOGIN = '{%$newuser%}';
+	if (FIRST_LOGIN == '1') {
+		setTimeout(sendNormalFeed, 2500);
+    }
+</script>
+</body>
+</html>

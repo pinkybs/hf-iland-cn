@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>订单查询 | 快乐岛主</title>
+<link href="{%$staticUrl%}/apps/island/main_2011041101.css?v=1.01" rel="stylesheet" type="text/css" />
+<link href="{%$staticUrl%}/apps/island/pay_2011031501.css?v=1.00" rel="stylesheet" type="text/css" />
+<script src="{%$staticUrl%}/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+<script src="{%$staticUrl%}/js/jquery.flashSlider-1.0.min.js" type="text/javascript"></script>
+<style type="text/css">
+<!--
+a img,:link img,:visited img {
+	border: 0 none;
+}
+-->
+</style>
+</head>
+<body>
+<div class="main">
+    {%include file="menu.phtml"%}
+    <div class="chongzhicontent">
+    	<img src="{%$user.face%}" width="59" height="60" />
+    	<div class="xinxi">
+    		<div class="cname">{%$user.name|escape%}</div>
+    		<div class="shuzi">宝石： <span style="color:#3c7e9a;font-weight:bold;">{%$user.gold%}</span></div>
+    		<div class="fhyx"><a href="http://game.weibo.com/{%$smarty.const.APP_NAME%}/" target="_top"><img src="{%$staticUrl%}/apps/island/images/pay/back.gif" width="80" height="35" /></a></div>
+    	</div>
+    </div>
+
+    <div class="table">
+    	<ul>
+        	<li style="width:50px"></li>
+        	<li><a href="{%$baseUrl%}/pay/top"><div class="nav_02">充值宝石</div></a></li>
+        	<li><a href="{%$baseUrl%}/pay/log"><div class="nav_02">充值记录</div></a></li>
+        	<li><a href="{%$baseUrl%}/consumelogs/gold"><div class="nav_02">宝石消耗记录</div></a></li>
+        	<li><a href="{%$baseUrl%}/consumelogs/coin"><div class="nav_02">金币消耗记录</div></a></li>
+        	<li><a href="{%$baseUrl%}/pay/orderstatus"><div class="nav_01">订单查询</div></a></li>
+    	</ul>
+    </div>
+
+	<div id="searchorder" style="text-align:center;">
+		<div id="result" style="display:none;color:blue;font-size:larger;"></div>
+		<div><span id="msg" style="display:none;color:red;"></span></div>
+		<div style="margin-top:20px">请输入您的订单号（交易号）:<input type="text" id="txtOrderId" name="txtOrderId" value="" size="" maxlength="16"></input></div>
+ 		<div style="margin-top:30px"><input type="button" id="btnSearch" name="btnSearch"  value=" 查询 " /></div>
+	</div>
+</div>
+
+{%include file="cmscript.phtml"%}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#btnSearch").bind("click", doSearch);
+	});
+
+	function doSearch()
+	{
+		var orderId = $('#txtOrderId').val();
+		if (orderId=='' || orderId.length!=16) {
+			$('#msg').html('请确认您输入的订单号是16位。');
+			$('#msg').fadeIn("fast");
+			window.setTimeout(function(){$('#msg').fadeOut(2000);}, 2000);
+			return false;
+		}
+
+		$('#result').html('查询中,请稍后...').fadeIn("fast");
+		$('#btnSearch').attr("disabled", "disabled");
+		//request for info
+		$.ajax({
+        	type: 'post',
+			url: '{%$baseUrl%}/pay/searchorder',
+			data: 'orderid='+orderId,
+			dataType: 'json',
+			success:function(data){
+				/*alert(data);
+    			$.each(data, function(i, n){
+        	    	alert( "Item #" + i + ": " + n );
+        	    });*/
+
+				if(data != '' && data.status==1) {
+					$('#result').html(orderId+' 订单已成功支付，请到‘充值记录’中确认。').fadeIn("fast");
+				} else if(data != '' && data.status==0) {
+					$('#result').html(orderId+' 订单支付进行中，请到支付页面完成支付或稍后再查询。').fadeIn("fast");
+				} else if(data != '' && data.status==-1) {
+					$('#result').html("对不起，没有查找到该订单。"+orderId).fadeIn("fast");
+				} else {
+					$('#result').html('暂时无法查询订单，请稍后再试。');
+					alert("暂时无法查询订单，请稍后再试。");
+				}
+
+				$('#btnSearch').attr("disabled", '');
+				window.setTimeout(function(){$('#result').html('').fadeOut(2000);}, 5000);
+			},
+			error:function(){
+				alert("查询失败，请稍后再试。");
+				$('#btnSearch').attr("disabled", '');
+			}
+		});
+	}
+</script>
+</body>
+</html>

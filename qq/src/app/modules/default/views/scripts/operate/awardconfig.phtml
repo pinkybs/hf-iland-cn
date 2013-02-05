@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>连续登陆</title>
+</head>
+<body>
+	<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% $hostUrl %}/operate/index"><b>返回首页</b></a>
+	<br /><br />
+	<div>
+		<form action="{%$hostUrl%}/operate/awardconfigupdate" method="post">
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			CID:<input type="text" name="cid" size="8" value="{%$cid%}" />&nbsp;&nbsp;&nbsp;&nbsp;
+			结束时间:<input type="text" name="time" size="20" value="{%$time%}" />&nbsp;&nbsp;
+			<input type="submit" value="更新" />
+			<br /><br />
+		</form>
+	</div>
+</body>
+</html>

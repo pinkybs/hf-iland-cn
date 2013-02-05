@@ -1,0 +1,3 @@
+#! /bin/sh
+cd /home/admin/website/bin
+/home/admin/apps/php-cgi/bin/php -f /home/admin/website/bin/stat-tutorial.php
